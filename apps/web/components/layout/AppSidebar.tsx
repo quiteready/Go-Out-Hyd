@@ -30,7 +30,6 @@ import { LogoutButton } from "@/components/auth/LogoutButton";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { SidebarThemeSwitcher } from "@/components/SidebarThemeSwitcher";
-import { UsageTracker } from "@/components/chat/UsageTracker";
 
 export default function AppSidebar() {
   const pathname = usePathname();
@@ -198,15 +197,8 @@ export default function AppSidebar() {
           </>
         )}
 
-        {/* Spacer to push usage tracker to bottom */}
+        {/* Spacer to push footer to bottom */}
         <div className="flex-grow" />
-
-        {/* Usage Tracker - show for all authenticated users when expanded, positioned at bottom */}
-        {renderContentAsOpen && userId && (
-          <div className="px-2 pb-2">
-            <UsageTracker />
-          </div>
-        )}
       </SidebarContent>
       <SidebarFooter className="py-4 border-t flex flex-col space-y-2">
         {/* Theme switcher */}

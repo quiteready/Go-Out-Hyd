@@ -2,8 +2,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "dev:full": "concurrently \"npm run dev\" \"npm run stripe:listen\"",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -60,7 +58,6 @@
     "react-social-icons": "^6.24.0",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.5",
-    "stripe": "^18.5.0",
     "tailwind-merge": "^3.3.0",
     "zod": "^3.25.67"
   },
@@ -71,7 +68,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
-    "concurrently": "^9.1.0",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.31.2",
     "eslint": "^9",

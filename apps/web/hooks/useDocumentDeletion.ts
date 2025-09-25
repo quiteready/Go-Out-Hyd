@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { DocumentWithProcessingJob } from "@/lib/documents";
-import { useUsage } from "@/contexts/UsageContext";
 
 export interface UseDocumentDeletionReturn {
   deleteDialogOpen: boolean;
@@ -22,7 +21,6 @@ interface UseDocumentDeletionProps {
 export function useDocumentDeletion({
   setDocuments,
 }: UseDocumentDeletionProps): UseDocumentDeletionReturn {
-  const { refreshUsage } = useUsage();
 
   // Deletion state management
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -69,8 +67,6 @@ export function useDocumentDeletion({
       // Remove from local state
       setDocuments((prev) => prev.filter((doc) => doc.id !== deleteDocumentId));
 
-      // Refresh usage stats from server for accuracy
-      refreshUsage();
 
       // Show success toast
       toast.success(`Document "${deleteDocumentName}" deleted successfully`);
@@ -98,7 +94,7 @@ export function useDocumentDeletion({
       // Clear loading state
       setDeletingDocumentId(null);
     }
-  }, [deleteDocumentId, deleteDocumentName, setDocuments, refreshUsage]);
+  }, [deleteDocumentId, deleteDocumentName, setDocuments]);
 
   // Handle canceling document deletion
   const handleDeleteCancel = useCallback(() => {

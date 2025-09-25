@@ -4,7 +4,6 @@
 export * from "./conversations";
 export * from "./messages";
 export * from "./users";
-export * from "./usage-events";
 export * from "./documents";
 export * from "./document_chunks";
 export * from "./document_processing_jobs";

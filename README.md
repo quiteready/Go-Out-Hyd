@@ -1,6 +1,6 @@
-# RAG SaaS Template
+# RAG Simple
 
-A complete **Retrieval-Augmented Generation (RAG) SaaS application** built with modern technologies. This template allows users to upload documents and ask questions about them through an intelligent chat interface.
+A complete **Retrieval-Augmented Generation (RAG) application** built with modern technologies. This template allows users to upload documents and ask questions about them through an intelligent chat interface.
 
 ## 🌟 Cross-Platform Ready
 

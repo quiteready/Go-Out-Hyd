@@ -5,7 +5,6 @@ import { db } from "@/lib/drizzle/db";
 import { documents, documentProcessingJobs } from "@/lib/drizzle/schema";
 import { validateFileMetadata } from "@/lib/file-validation";
 import { generateSignedUploadUrl } from "@/lib/google-cloud";
-import { checkDocumentUploadLimits } from "@/lib/usage-tracking";
 import { randomUUID } from "crypto";
 
 const uploadRequestSchema = z.object({
@@ -51,13 +50,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Check usage limits before proceeding with upload
-    const usageCheck = await checkDocumentUploadLimits(user.id, fileSize);
-
-    if (!usageCheck.allowed) {
-      console.error("❌ [upload-url] Usage limit exceeded:", usageCheck.reason);
-      return NextResponse.json({ error: usageCheck.reason }, { status: 403 });
-    }
 
     // Validate file metadata using our validation system
     console.log("🔍 [upload-url] Validating file metadata...");

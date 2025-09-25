@@ -17,9 +17,6 @@ export const users = pgTable(
       .defaultNow()
       .notNull(),
 
-    // Stripe integration fields - only essential data for querying Stripe
-    stripe_customer_id: text("stripe_customer_id"),
-
     // Role-based access control
     role: text("role", {
       enum: ["member", "admin"],
@@ -30,7 +27,7 @@ export const users = pgTable(
   (t) => [
     // Add index for role-based queries
     index("role_idx").on(t.role),
-  ],
+  ]
 );
 
 // TypeScript types

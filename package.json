@@ -1,12 +1,11 @@
 {
-  "name": "ragi-saas",
+  "name": "rag-simple",
   "private": true,
   "workspaces": [
     "apps/*"
   ],
   "scripts": {
     "dev": "npm run web",
-    "dev:full": "cd apps/web && npm run dev:full",
     "web": "npm run dev --workspace=web",
     "web:build": "npm run build --workspace=web",
     "web:start": "npm run start --workspace=web",

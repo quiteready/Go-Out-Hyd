@@ -1,16 +1,16 @@
-# RAG SaaS Template - Complete Setup Guide
+# RAG Simple - Complete Setup Guide
 
-> **Comprehensive Setup Guide:** Complete configuration of RAG SaaS template with Next.js web application (@/web) and Python RAG processing service (@/rag-processor) for Google Cloud Platform deployment.
+> **Comprehensive Setup Guide:** Complete configuration of RAG Simple with Next.js web application (@/web) and Python RAG processing service (@/rag-processor) for Google Cloud Platform deployment.
 
 ---
 
 ## 1 · AI Instructions
 
-You are **ShipKit Setup Assistant**, guiding users through complete setup of the RAG SaaS application with Next.js web frontend, Python RAG processing backend, Supabase database, Google Cloud Platform deployment, and Stripe billing integration.
+You are **ShipKit Setup Assistant**, guiding users through complete setup of RAG Simple with Next.js web frontend, Python RAG processing backend, Supabase database, and Google Cloud Platform deployment.
 
 ### Setup Process
 
-You will guide users through 8 phases:
+You will guide users through 7 phases:
 
 1. **Prerequisites & Environment Setup** - Install tools and create accounts
 2. **Supabase Backend Setup** - Database, authentication, and storage (configures `apps/web/`)
@@ -18,8 +18,7 @@ You will guide users through 8 phases:
 4. **Web Application Setup** - Next.js app with chat interface (configures `apps/web/`)
 5. **Google Cloud Platform Setup** - GCP project and services (configures `apps/web/` and `apps/rag-processor/`)
 6. **RAG Processing Services Deployment** - Deploy RAG processor, GCS handler, and task processor services
-7. **Stripe Billing Setup** - Configure billing and subscription tiers (configures `apps/web/`)
-8. **Integration & Production Testing** - End-to-end verification
+7. **Integration & Production Testing** - End-to-end verification
 
 ### Communication Format
 
@@ -77,21 +76,21 @@ Ready to begin? Let's start with the first step...
 - **WEB APP + RAG PROCESSING SERVICES**: Next.js Frontend (`apps/web/`), RAG Processor (Cloud Run), GCS Handler (Cloud Function), Task Processor (Cloud Function)
 - **SINGLE .env.local file** for configuration: `apps/web/.env.local`
 - **Different working directories** for different commands (web vs rag-processor)
-- **Multiple platforms** to configure: Supabase, Google Cloud Platform, Stripe
+- **Multiple platforms** to configure: Supabase, Google Cloud Platform
 
 ### Success Criteria
 
-Setup is complete when all 8 phases are finished and user can successfully upload documents, process them with RAG, chat with AI about document content, and use billing features.
+Setup is complete when all 7 phases are finished and user can successfully upload documents, process them with RAG, and chat with AI about document content.
 
 ---
 
 ## 2 · Overview & Mission
 
-You are setting up the **RAG SaaS Template**, a complete production-ready Retrieval-Augmented Generation application that allows users to upload documents and ask questions about them through an intelligent chat interface.
+You are setting up **RAG Simple**, a complete production-ready Retrieval-Augmented Generation application that allows users to upload documents and ask questions about them through an intelligent chat interface.
 
 ### Architecture Overview
 
-This is a **complete fullstack RAG SaaS application** with **cloud-native architecture**:
+This is a **complete fullstack RAG application** with **cloud-native architecture**:
 
 ```
 📁 apps/
@@ -102,12 +101,12 @@ This is a **complete fullstack RAG SaaS application** with **cloud-native archit
   └── 📁 rag-task-processor/     ← Cloud Function to process items in queue
 ```
 
-- **🌐 `apps/web/`** - Next.js frontend with Supabase authentication and Stripe billing
+- **🌐 `apps/web/`** - Next.js frontend with Supabase authentication
 - **🐍 `apps/rag-processor/`** - Python RAG service for document processing and embeddings
 - **☁️ `apps/rag-gcs-handler/`** - Cloud Function triggered by file uploads to initiate processing
 - **⚙️ `apps/rag-task-processor/`** - Cloud Function that manages and executes document processing jobs
 
-**⚠️ IMPORTANT:** This is a **complete RAG SaaS product**. You'll deploy both frontend and backend to create a production-ready document processing platform.
+**⚠️ IMPORTANT:** This is a **complete RAG application**. You'll deploy both frontend and backend to create a production-ready document processing platform.
 
 <!-- AI INTERNAL REFERENCE - DO NOT SHOW TO USER -->
 
@@ -125,16 +124,16 @@ This is a **complete fullstack RAG SaaS application** with **cloud-native archit
 
 **👤 User Tasks (Must complete manually):**
 
-- Create accounts on external platforms (Supabase, Google Cloud, Stripe)
+- Create accounts on external platforms (Supabase, Google Cloud)
 - Navigate platform dashboards and configure settings
 - **Copy API keys and credentials from dashboards**
 - **Update your web app .env.local file immediately after obtaining each value**
-- Complete platform-specific configurations (authentication, billing, etc.)
+- Complete platform-specific configurations (authentication, etc.)
 - Verify access to external services through web interfaces
 
 **⚠️ CRITICAL UNDERSTANDING:** You only manage **ONE .env.local file**:
 
-- **`apps/web/.env.local`** - For the Next.js frontend (authentication, billing, chat interface)
+- **`apps/web/.env.local`** - For the Next.js frontend (authentication, chat interface)
 
 **🛑 Stop and Wait Points:**
 
@@ -151,7 +150,6 @@ This is a **complete fullstack RAG SaaS application** with **cloud-native archit
 - ✅ Set up a Google Cloud project with storage, AI services, and serverless functions
 - ✅ Deploy Python RAG processor with document processing pipeline
 - ✅ Configure end-to-end document upload, processing, and chat functionality
-- ✅ Set up Stripe billing integration with subscription tiers
 
 ---
 
@@ -166,7 +164,7 @@ This is a **complete fullstack RAG SaaS application** with **cloud-native archit
 **Why Claude Sonnet 4 1M (Thinking) (MAX MODE)?**
 
 - ✅ **1M Context Window** - Can maintain full context of this entire setup guide
-- ✅ **Maximum Accuracy** - Provides the most reliable guidance throughout all 8 phases
+- ✅ **Maximum Accuracy** - Provides the most reliable guidance throughout all 7 phases
 - ✅ **Complete Memory** - Remembers all previous setup steps and configurations
 - ✅ **Best Results** - Optimized for complex, multi-step technical processes
 
@@ -175,7 +173,7 @@ This is a **complete fullstack RAG SaaS application** with **cloud-native archit
 1. In Cursor, select **"Claude Sonnet 4 1M (Thinking) (MAX MODE)"**
 2. Avoid switching models mid-setup to maintain context consistency
 
-💡 **This ensures the AI assistant will have complete memory of your progress and provide accurate guidance throughout the entire RAG SaaS setup process.**
+💡 **This ensures the AI assistant will have complete memory of your progress and provide accurate guidance throughout the entire RAG Simple setup process.**
 
 ---
 
@@ -251,7 +249,7 @@ Down migrations are essential for:
 
 ### Phase Structure
 
-You will be guided through **8 phases** in this exact order:
+You will be guided through **7 phases** in this exact order:
 
 1. **Phase 1: Prerequisites & Environment Setup** - Install tools and create accounts
 2. **Phase 2: Supabase Backend Setup** - Database, authentication, and storage (configures `apps/web/`)
@@ -259,8 +257,7 @@ You will be guided through **8 phases** in this exact order:
 4. **Phase 4: Web Application Setup** - Next.js app with chat interface (configures `apps/web/`)
 5. **Phase 5: Google Cloud Platform Setup** - GCP project and services (configures `apps/web/` and `apps/rag-processor/`)
 6. **Phase 6: RAG Processing Services Deployment** - Deploy RAG processor, GCS handler, and task processor services
-7. **Phase 7: Stripe Billing Setup** - Configure billing and subscription tiers (configures `apps/web/`)
-8. **Phase 8: Integration & Production Testing** - End-to-end verification
+7. **Phase 7: Integration & Production Testing** - End-to-end verification
 
 **🔄 Configuration Flow:** Throughout the setup, you'll configure environment variables in the web app's file (`apps/web/.env.local`). The RAG processing services will automatically use these values during their deployment to Google Cloud Platform.
 
@@ -274,7 +271,7 @@ After each phase, verify completion:
 - ✅ Check for any errors or issues
 
 **🛑 STOP AND WAIT FOR USER APPROVAL BEFORE PHASE 1:**
-Ask the user: "Are you ready to begin Phase 1: Prerequisites & Environment Setup? Please confirm you understand the 8-phase process and are ready to start."
+Ask the user: "Are you ready to begin Phase 1: Prerequisites & Environment Setup? Please confirm you understand the 7-phase process and are ready to start."
 
 ---
 
@@ -390,10 +387,6 @@ Check each required tool and **tell the user exactly what they need to install**
    - ✅ If shows version: **"Google Cloud SDK is installed correctly"**
    - ❌ If command fails: **"You need to install Google Cloud SDK"**
 
-5. **Check Stripe CLI (for billing setup)**
-   - Run: `stripe --version`
-   - ✅ If shows version: **"Stripe CLI is installed correctly"**
-   - ❌ If command fails: **"You need to install Stripe CLI"**
 
 **🛑 AFTER VERIFICATION:**
 Provide a summary like: **"Please install the following missing tools: [list only missing tools]. All other tools are already installed correctly."**
@@ -486,41 +479,6 @@ exec -l $SHELL
 gcloud --version  # Should show gcloud SDK version
 ```
 
-#### Install Stripe CLI (for billing setup)
-
-1. **Download and install Stripe CLI**
-   - **macOS (Homebrew):**
-
-```bash
-brew install stripe/stripe-cli/stripe
-```
-
-- **Ubuntu/Debian:**
-
-```bash
-curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public |
-gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
-echo "deb [signed-by=/usr/share/keyrings/stripe.gpg]
-https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a
-/etc/apt/sources.list.d/stripe.list
-sudo apt update
-sudo apt install stripe
-```
-
-- **Windows (using Scoop):**
-
-```bash
-scoop bucket add stripe https://github.com/stripe/scoop-stripe-cli.git
-scoop install stripe
-```
-
-💡 **Alternative:** You can also download the CLI directly from [GitHub releases](https://github.com/stripe/stripe-cli/releases/latest)
-
-2. **Verify installation:**
-
-```bash
-stripe --version  # Should show Stripe CLI version
-```
 
 ### Step 1.3: Setup Project Dependencies
 
@@ -549,7 +507,6 @@ Before proceeding to Phase 2, verify:
 - ✅ Node.js (18+) and npm installed and verified
 - ✅ Python (3.10+) and UV package manager installed and verified
 - ✅ Google Cloud SDK installed and verified
-- ✅ Stripe CLI installed and verified
 - ✅ Project dependencies installed successfully
 - ✅ All required development tools are properly configured
 
@@ -771,7 +728,7 @@ http://localhost:3000/auth/confirm
 
 2. **Review Email Templates**
    - You'll see several template tabs at the top of the page
-   - The most important ones for this RAG SaaS template are **"Confirm signup"** and **"Reset password"**
+   - The most important ones for RAG Simple are **"Confirm signup"** and **"Reset password"**
    - These templates control what emails users receive for account verification and password resets
 
 3. **🛑 CHECKPOINT - Confirm Supabase Dashboard Configuration Complete**
@@ -781,7 +738,7 @@ http://localhost:3000/auth/confirm
    - ✅ **Redirect URL** added: `http://localhost:3000/auth/confirm`
    - ✅ **Email templates page** is now open in your browser
 
-   **Are you ready to proceed with email template customization? The AI assistant will now generate custom email templates for your RAG SaaS application.**
+   **Are you ready to proceed with email template customization? The AI assistant will now generate custom email templates for RAG Simple.**
 
 4. **🤖 AI ASSISTANT TASK - Generate Email Templates (Only After User Approval)**
    **You (the AI assistant) must now read these files before proceeding:**
@@ -1044,14 +1001,12 @@ npm run db:migrate
    **🔧 BACK TO SUPABASE DASHBOARD - Verify Database Schema**
    - In your Supabase dashboard, click **"Table Editor"** in the left sidebar
    - You should now see the database tables page with the following tables created:
-     - `users` - User profiles with Stripe billing integration and subscription tiers
+     - `users` - User profiles and authentication data
      - `documents` - Document metadata, file paths, and processing status
      - `document_chunks` - Processed text chunks with vector embeddings (text + multimodal)
      - `document_processing_jobs` - Background job tracking with detailed processing stages
      - `conversations` - Chat conversation records linked to users
      - `messages` - Individual chat messages with model tracking
-     - `user_usage` - Usage tracking for billing periods and message limits
-     - `webhook_events` - Stripe webhook event processing for idempotency
 
    💡 **If you don't see these tables:** The migrations may not have completed successfully. Check the terminal output for any errors. Ask the AI assistant to check the status of the migrations and fix any issues.
 
@@ -1059,7 +1014,7 @@ npm run db:migrate
 
 **🤖 AI ASSISTANT TASK - Set up the RPC functions for multimodal RAG:**
 
-The RAG-SaaS template includes two specialized RPC functions for high-performance vector similarity search with multimodal capabilities.
+RAG Simple includes two specialized RPC functions for high-performance vector similarity search with multimodal capabilities.
 
 💡 **Note:** Ensure you're in the `apps/web/` directory for ALL following Drizzle operations.
 
@@ -1223,7 +1178,7 @@ npm run db:migrate
 
    💡 **If you don't see these functions:** The RPC migration may not have completed successfully. Check the terminal output for any errors. Ask the AI assistant to check the status of the migrations and fix any issues.
 
-**💡 Key Features:** These RPC functions provide high-performance vector search for both text and multimodal content which is essential for the RAG-SaaS application.
+**💡 Key Features:** These RPC functions provide high-performance vector search for both text and multimodal content which is essential for the RAG application.
 
 ### Step 2.11: Set Up Document Timeout Cleanup
 
@@ -1618,7 +1573,7 @@ _Note: We'll test the full authentication flow and document processing after set
    - Fill in details:
 
 ```
-Project name: rag-saas-app (or your preferred name)
+Project name: rag-app (or your preferred name)
 Organization: [your organization or leave default]
 ```
 
@@ -2028,323 +1983,7 @@ This deployment will:
 
 ---
 
-## Phase 7: Stripe Billing Setup
-
-**Goal:** Configure Stripe billing, webhooks, and subscription tiers
-
-**🤖 AI Assistant will:**
-
-- Guide user through platform configuration
-- Help verify webhook setup
-
-**👤 User will:**
-
-- Create Stripe account and verify business information
-- Configure subscription products and pricing
-- Copy API keys and webhook secrets
-- Update environment variables
-
-### Step 7.1: Create Stripe Account
-
-**👤 USER TASK - Stripe account setup:**
-
-1. **Sign Up for Stripe**
-   - Go to [https://stripe.com](https://stripe.com)
-   - **For new users:** Click **"Start now"** in the top right corner
-   - **For existing users:** Click **"Sign in"** in the top right corner and skip to step 4
-
-2. **Create New Account (if clicking "Start now")**
-   - You'll be taken to the account creation page
-   - If you have a Google account, you can sign up with Google and fill in your full name and Country.
-   - If you prefer to sign up with email, fill in your information:
-     - **Email address:** Your business email
-     - **Full name:** Your full legal name
-     - **Password:** A secure password
-     - **Country:** Your country/region
-   - Click **"Create account"** to proceed
-
-3. **Sign In to Existing Account (if clicking "Sign in")**
-   - You'll see the sign-in page with multiple options: Email and Password, Sign in with Google, Sign in with passkey, and Sign in with SSO
-   - Choose your preferred sign-in method (Email and Password is the default)
-
-4. **Complete Account Setup**
-   - After signing in/up, you can either verify your business information or skip it and start in test mode **business sandbox** which is for testing and development
-   - If you want to verify your business information, you can provide your full business details, anytime by clicking on the **Switch to live account** button in the top right corner of the dashboard
-   - **Note:** You can start in test mode for development
-
-### Step 7.2: Configure Subscription Products
-
-**👤 USER TASK - Create subscription tiers:**
-
-1. **Navigate to Products**
-   - In your Stripe dashboard, click on **Product catalog** in the sidebar <!-- Guide the user to this exact path -->
-   - Click **"Add product"** to create subscription products
-
-2. **Create Basic Plan Product**
-   - A slide-out panel will appear on the right titled "Add a product"
-   - Fill in the product details:
-     - **Name (required):** "Basic Plan"
-     - **Description:** "Basic tier for RAG-powered document processing with essential features"
-   - In the pricing section of the same panel:
-     - **Pricing model:** Select **"Recurring"** (should already be selected)
-     - **Amount:** Enter `29` (or your preferred Basic plan price)
-     - **Currency:** USD (or your preferred currency)
-     - **Billing period:** Select **"Monthly"** from dropdown
-   - Click **"Add product"** to create the Basic plan product
-
-3. **Copy Basic Plan Price ID**
-   - After the Basic product is created, click on the newly created Basic plan product
-   - In the **Pricing** section, they'll see the price plan
-   - Click the **three dots (...)** menu next to the price
-   - Select **"Copy price ID"** from the dropdown menu
-   - Paste the ID immediately into your `apps/web/.env.local` file:
-
-   **Basic Plan Price ID:**
-
-```bash
-STRIPE_BASIC_PRICE_ID=price_your_basic_price_id
-```
-
-4. **Create Pro Plan Product**
-   - Go back to **Product catalog** in your Stripe dashboard
-   - Click **"Add product"** again to create the second product
-   - Fill in the Pro plan product details:
-     - **Name (required):** "Pro Plan"
-     - **Description:** "Premium tier with advanced features and higher usage limits"
-   - In the pricing section of the same panel:
-     - **Pricing model:** Select **"Recurring"**
-     - **Amount:** Enter `99` (or your preferred Pro plan price)
-     - **Currency:** USD (or your preferred currency)
-     - **Billing period:** Select **"Monthly"** from dropdown
-   - Click **"Add product"** to create the Pro plan product
-
-5. **Copy Pro Plan Price ID**
-   - After the Pro product is created, click on the newly created product name
-   - In the **Pricing** section, you'll see the price plan
-   - Click the **three dots (...)** menu next to the price
-   - Select **"Copy price ID"** from the dropdown menu
-   - Paste the ID immediately into your `apps/web/.env.local` file:
-
-   **Pro Plan Price ID:**
-
-```bash
-STRIPE_PRO_PRICE_ID=price_your_pro_price_id
-```
-
-💡 **Important:** Having separate products for each plan allows better subscription management and gives customers clear plan switching options in the customer portal.
-
-### Step 7.3: Get Stripe API Keys
-
-**👤 USER TASK - Get API keys:**
-
-1. **Navigate to API Keys**
-   - Click on the search bar at the top of your Stripe dashboard
-   - Type **"API keys"** and select **"Developers > API keys"** from the dropdown results
-   - You'll be taken to the API keys page
-
-2. **Get Publishable Key**
-   - In the **Standard keys** section, you'll see the **Publishable key** (starts with `pk_test_`)
-   - Click directly on the key value to copy it
-   - **Add to `apps/web/.env.local` ONLY:**
-
-```bash
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
-```
-
-3. **Get Secret Key**
-   - In the same API keys section, you'll see the **Secret key** (starts with `sk_test_`)
-   - Click directly on the key value to copy it
-   - **Add to `apps/web/.env.local` ONLY:**
-
-```bash
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-```
-
-### Step 7.4: Configure Customer Portal and Subscriptions
-
-**👤 USER TASK - Set up customer portal with subscription management:**
-
-1. **Navigate to Customer Portal Settings**
-   - Click on the search bar at the top of your Stripe dashboard
-   - Search for **"Customer Portal"** and click on the **"Settings > Billing > Customer portal"** option
-
-2. **Activate Customer Portal**
-   - Under the "Launch customer portal with a link" section, click **"Activate test link"** (or **"Activate link"** if in live mode)
-   - Stripe will generate a customer portal link
-   - Click on the generated link to copy it
-   - **Add to `apps/web/.env.local` ONLY:**
-
-```bash
-STRIPE_CUSTOMER_PORTAL_URL=https://billing.stripe.com/p/login/your_portal_url
-```
-
-3. **Configure Subscription Management**
-   - **🛑 CRITICAL:** This step is required for subscription switching to work properly
-   - On the same Customer portal page, scroll down to find the **"Subscriptions"** section
-   - Click on the **"Subscriptions"** section to expand it
-   - You should see various subscription management options
-
-4. **Enable Plan Switching**
-   - In the Subscriptions section, find the toggle for **"Customers can switch plans"**
-   - Switch this toggle **ON**
-   - This allows customers to upgrade/downgrade between your subscription tiers
-
-5. **Select Available Products for Switching**
-   - Below the toggle, you'll see a search field to select products
-   - Search for and select both products:
-     - Search for **"Basic Plan"** and select it
-     - Search for **"Pro Plan"** and select it
-   - Both products should now appear in the selected products list
-
-6. **Configure Plan Change Billing**
-   - In the same Subscriptions section, find **"When customers change plans or quantities"**
-   - Select one of these options:
-     - **"Prorate charges and credits"** (Recommended): Issue a credit for the unused portion of the current billing period and charge the new price for the remaining time
-     - **"No charges or credits"**: New pricing applies at the next billing cycle
-     - **"Charge or credit the full difference"**: Charge the full price difference immediately
-   - **Recommended setting:** Choose **"Prorate charges and credits"** for fair billing
-
-7. **Configure Downgrade Settings**
-   - Scroll down a little more in the Subscriptions section to find **"Downgrades"** settings
-   - Select the appropriate option for **"When switching to a cheaper plan"** and **"When switching to a shorter interval period"**:
-     - **"Wait until end of billing period to update"** (Recommended): Prevents immediate downgrades, customer keeps current plan until period ends
-     - **"Update immediately"**: Immediate downgrade with prorated billing
-   - **Recommended setting:** Choose **"Wait until end of billing period to update"** to prevent immediate service reduction
-
-8. **Save Customer Portal Configuration**
-   - After configuring all subscription settings, scroll to the top of the page
-   - Click **"Save changes"** to apply the configuration
-   - The customer portal is now properly configured for subscription management
-
-   💡 **Why these settings matter:**
-   - **Separate products** allow clear plan switching in the customer portal
-   - **Proration** ensures fair billing when customers change plans mid-cycle
-   - **End-of-period downgrades** prevent immediate service reduction and customer confusion
-   - **Plan switching enabled** gives customers self-service subscription management
-
-**💳 Note:** All Stripe configuration is only needed for the web app (`apps/web/`) since billing is handled there. The RAG processor doesn't need Stripe keys.
-
-**🛑 STOP AND WAIT FOR USER APPROVAL**
-Ask the user to confirm they have:
-
-- ✅ Created Stripe account and configured products
-- ✅ Copied all API keys to `apps/web/.env.local`
-- ✅ Verified environment file is complete
-
-### Step 7.5: Configure Local Webhook Testing
-
-**🤖 AI ASSISTANT TASK - Set up webhook testing:**
-
-1. **Verify Stripe CLI Installation**
-
-```bash
-stripe --version
-```
-
-**🛑 AI ASSISTANT IMPORTANT NOTE:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE NOTE TO USER -->
-Stripe CLI should already be installed from the prerequisites setup in Phase 1. If not installed, make sure to read Step 1.2 for installation instructions and proceed to install it properly depending on your operating system.
-
-2. **👤 USER TASK - Login to Stripe CLI**
-
-```bash
-stripe login
-```
-
-- This will open your browser to authenticate
-- Press **Enter** and complete authentication in the browser
-- You should see a confirmation that authentication was successful
-
-3. **Start Local Webhook Listener**
-
-```bash
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
-```
-
-**Expected Output:**
-
-```
-> Ready! You are using Stripe API Version [2025-06-30.basil]. Your webhook signing secret is whsec_19da5558dba2.... (^C to quit)
-```
-
-4. **👤 USER TASK - Copy Webhook Secret**
-   - From the output above, copy the webhook signing secret (starts with `whsec_`)
-   - **Add to `apps/web/.env.local` ONLY:**
-
-```bash
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-```
-
-💡 **Important:** Keep the `stripe listen` command running while testing. This forwards Stripe webhook events to your local development server.
-
-### Step 7.6: Verify Complete Environment Configuration
-
-**📋 Final Environment Configuration Overview**
-
-At this point, you should have the **`apps/web/.env.local` environment file** configured. Here's what it should contain:
-
----
-
-#### 🌐 **`apps/web/.env.local` Environment File**
-
-```bash
-# Development Environment Variables Template
-# Copy this file to .env.local and fill in your values
-
-# --- Database Configuration (Supabase - Drizzle ORM with pooler) ---
-DATABASE_URL=postgresql://postgres:abc123...@aws-0-eu-north-1.pooler.supabase.com:6543/postgres
-
-# --- Supabase Configuration ---
-SUPABASE_URL=https://abcdefghij.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiI...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiI...
-
-# --- Google AI Configuration ---
-# Get API key from: https://aistudio.google.com/app/apikey
-GEMINI_API_KEY=AIzaSyD...
-
-# --- Google Cloud Configuration (for file storage and other services) ---
-GOOGLE_CLOUD_PROJECT_ID=my-rag-project-123
-GOOGLE_CLOUD_REGION=us-central1
-GOOGLE_CLOUD_STORAGE_BUCKET=my-rag-project-123-rag-documents-dev
-
-# Service account key (base64 encoded) - for non-Vertex AI services
-GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY=your-service-account-key
-
-# --- Stripe Configuration (Development) ---
-# Get from: https://dashboard.stripe.com/test/apikeys
-STRIPE_SECRET_KEY=sk_test_51AbCdEf...
-STRIPE_WEBHOOK_SECRET=whsec_1AbCdEf...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51AbCdEf...
-
-# Stripe Price IDs (Test Mode)
-STRIPE_BASIC_PRICE_ID=price_1AbCdEf...
-STRIPE_PRO_PRICE_ID=price_1AbCdEf...
-
-# Optional: Stripe Customer Portal URL
-# STRIPE_CUSTOMER_PORTAL_URL=https://billing.stripe.com/p/login/test_AbCdEf...
-
-# --- Development Settings ---
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-💡 **Simplified Configuration:** This single environment file is used by both the web application (directly) and the RAG processor (automatically during deployment).
-
-**🛑 CHECKPOINT:** Confirm you have completed:
-
-- ✅ Stripe account created and verified
-- ✅ **Basic Plan** and **Pro Plan** created as separate products
-- ✅ Price IDs for both products copied to `apps/web/.env.local`
-- ✅ Stripe API keys added to `apps/web/.env.local`
-- ✅ **Customer portal activated** with plan switching enabled
-- ✅ **Billing and downgrade settings configured**
-- ✅ Stripe CLI installed and authenticated
-- ✅ Local webhook listener running (`stripe listen`)
-- ✅ Webhook secret added to environment
-- ✅ All Stripe environment variables configured
-
----
-
-## Phase 8: Integration & Production Testing
+## Phase 7: Integration & Production Testing
 
 **Goal:** Test end-to-end functionality and verify complete setup
 
@@ -2359,16 +1998,15 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - Test authentication flow manually
 - Verify document upload and processing
 - Check database records
-- Test billing features
 
-### Step 8.1: Test Application Startup
+### Step 7.1: Test Application Startup
 
 **🤖 AI ASSISTANT TASK - Start application:**
 
 1. **Start Development Server**
 
 ```bash
-npm run dev:full
+npm run dev
 ```
 
 2. **👤 USER TASK - Verify Application Loads**
@@ -2376,7 +2014,7 @@ npm run dev:full
    - You should see landing page without errors
    - Check browser console for any errors
 
-### Step 8.2: Test Authentication Flow
+### Step 7.2: Test Authentication Flow
 
 **👤 USER TASK - Test authentication manually:**
 
@@ -2397,7 +2035,7 @@ npm run dev:full
    - Navigate to **Table Editor** in the Supabase sidebar, and check the `users` table
    - You should see your test user record
 
-### Step 8.3: Test Document Processing Pipeline
+### Step 7.3: Test Document Processing Pipeline
 
 **👤 USER TASK - Test document upload and processing:**
 
@@ -2418,7 +2056,7 @@ npm run dev:full
      - **document_chunks** table: Should have the processed text chunks with vector embeddings
      - **document_processing_jobs** table: Should show completed processing jobs
 
-### Step 8.4: Test Chat Functionality
+### Step 7.4: Test Chat Functionality
 
 **👤 USER TASK - Test chat features:**
 
@@ -2444,44 +2082,33 @@ npm run dev:full
    - Verify conversation history is maintained
    - Check Supabase **Table Editor** → `conversations` and `messages` tables
 
-### Step 8.5: Test Billing Features
+### Step 7.5: Final Integration Test
 
-**👤 USER TASK - Test billing features:**
+**👤 USER TASK - Final Integration Tests:**
 
-💡 **Important:** Before testing billing features, ensure the Stripe CLI webhook listener is still running:
+1. **Test Complete Workflow**
+   - Upload a document and wait for processing to complete
+   - Ask questions about the document in chat
+   - Verify the AI responses include relevant document content
+   - Check that conversation history is maintained
 
-```bash
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
-```
+2. **Test Multiple Document Types**
+   - Try uploading different file types (PDF, TXT, DOCX, images)
+   - Verify each processes successfully
+   - Test querying information from multiple documents
 
-Keep this terminal window open during all billing tests.
-
-1. **Test Subscription Tiers**
+3. **Test User Profile**
    - Navigate to **Profile** page
-   - Should see current subscription tier (Free)
-   - Check usage limits display
-   - Verify usage tracking shows correct free tier limits
+   - Verify user information displays correctly
+   - Check that document and conversation counts are accurate
 
-2. **Test Subscription Upgrade**
-   - Click **"Upgrade"** on an "Available Plan" in the profile page
-   - Should redirect to Stripe checkout page
-   - Use Stripe test card: `4242 4242 4242 4242`
-   - Complete test checkout process
-   - Verify subscription upgrade in profile
+4. **Test Application Performance**
+   - Process several documents simultaneously
+   - Monitor Cloud Run logs in GCP console
+   - Verify no errors in browser console
+   - Check that responses remain fast and accurate
 
-3. **Test Usage Tracking**
-   - Process several documents to test usage tracking
-   - Send multiple chat messages
-   - Check if usage counters increment
-   - Verify premium features access with paid subscription
-
-4. **Test Billing Management**
-   - Navigate to billing management in profile
-   - Test updating payment method
-   - Test canceling subscription
-   - Verify customer portal link works
-
-### Phase 8 Completion Check
+### Phase 7 Completion Check
 
 Setup is now complete! Verify all functionality:
 
@@ -2491,9 +2118,9 @@ Setup is now complete! Verify all functionality:
 - ✅ Document upload and processing works
 - ✅ RAG-powered chat functionality works
 - ✅ Chat persistence and history works
-- ✅ Billing features work (subscription tiers, usage tracking)
-- ✅ Stripe checkout and webhook integration works
 - ✅ Complete RAG pipeline functional
+- ✅ Cloud infrastructure deployed and working
+- ✅ Vector search and document retrieval functional
 
 ---
 
@@ -2569,7 +2196,7 @@ npm run db:status
 **View database tables:**
 
 - **🌐 Open browser:** Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
-- **Select your project:** Choose your RAG SaaS project
+- **Select your project:** Choose your RAG project
 - **Navigate to tables:** Click on **"Table Editor"** in the left sidebar
 - **Browse data:** View tables and data directly in the Supabase interface
 
@@ -2584,28 +2211,6 @@ gcloud run services list        # Check Cloud Run services
 ```
 
 ---
-
-### Common Stripe Issues and Solutions
-
-**Issue: Stripe checkout not working or webhook failures**
-
-- **Root Cause:** Incorrect Stripe configuration or webhook issues
-- **Solution:**
-  - Verify all Stripe API keys are correctly set in environment variables
-  - Ensure Stripe CLI is running: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
-  - Verify webhook secret in `apps/web/.env.local` matches the one from Stripe CLI output
-  - Check Stripe CLI terminal for webhook event logs
-  - Test with Stripe test cards: `4242 4242 4242 4242`
-- **Quick Test:** Try subscription upgrade with test card and watch Stripe CLI logs for webhook events
-
-**Issue: Usage tracking not working or incorrect limits**
-
-- **Root Cause:** Database triggers or usage tracking logic issues
-- **Solution:**
-  - Verify all database migrations applied successfully
-  - Check usage tracking tables in Supabase Dashboard
-  - Ensure subscription status is properly synced from Stripe
-- **Quick Test:** Process documents and check usage counters in profile
 
 ---
 
@@ -2624,7 +2229,6 @@ gcloud run services list        # Check Cloud Run services
 
 - **Supabase:** Free tier (up to 50MB database)
 - **Google AI (Gemini):** Free tier available (generous quotas for development)
-- **Stripe:** Free for testing (only pay when processing real transactions)
 
 **Total Expected:** $5-20/month for development usage
 
@@ -2635,7 +2239,6 @@ gcloud run services list        # Check Cloud Run services
 3. **Monitor Gemini API usage** in Google AI Studio
 4. **Clean up test documents** regularly
 5. **Use Cloud Run scale-to-zero** to minimize idle costs
-6. **Use Stripe test mode** for development to avoid transaction fees
 
 ### Production Scaling
 
@@ -2646,13 +2249,12 @@ When ready for production:
 3. **Set up proper monitoring and alerting**
 4. **Configure auto-scaling policies**
 5. **Implement proper backup and disaster recovery**
-6. **Switch Stripe to live mode** with production webhooks
 
 ---
 
 ## 🎉 Congratulations!
 
-You have successfully set up the complete RAG SaaS application!
+You have successfully set up RAG Simple!
 
 **What you've accomplished:**
 
@@ -2677,9 +2279,8 @@ You have successfully set up the complete RAG SaaS application!
 
 1. **Customize the UI** to match your brand
 2. **Add more document types** or processing features
-3. **Implement billing** with Stripe integration
-4. **Deploy to production** when ready
-5. **Add advanced features** like conversation memory, document collaboration, etc.
+3. **Deploy to production** when ready
+4. **Add advanced features** like conversation memory, document collaboration, etc.
 
 **Need help?** Refer to the troubleshooting guide above or check the individual component documentation in the codebase.
 

@@ -9,7 +9,7 @@ import {
  * Parse upload error response from fetch API
  */
 export async function parseUploadError(
-  response: Response,
+  response: Response
 ): Promise<ParsedUploadError> {
   try {
     const errorData = await response.json();
@@ -38,7 +38,7 @@ export async function parseUploadError(
  * Parse structured upload error response
  */
 export function parseUploadErrorResponse(
-  errorData: UploadErrorResponse,
+  errorData: UploadErrorResponse
 ): ParsedUploadError {
   if (isStorageLimitError(errorData)) {
     return {
@@ -49,7 +49,6 @@ export function parseUploadErrorResponse(
         limit: errorData.usage.limit,
         remaining: errorData.usage.remaining,
         required: errorData.usage.required,
-        subscriptionTier: errorData.subscriptionTier,
       },
       originalError: errorData,
     };
@@ -122,7 +121,7 @@ export class UploadError extends Error {
  * Create an UploadError from a fetch response
  */
 export async function createUploadError(
-  response: Response,
+  response: Response
 ): Promise<UploadError> {
   const parsedError = await parseUploadError(response);
   return new UploadError(parsedError);

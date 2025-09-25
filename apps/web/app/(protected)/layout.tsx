@@ -1,12 +1,9 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { UserProvider } from "@/contexts/UserContext";
-import { UsageProvider } from "@/contexts/UsageContext";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/layout/AppSidebar";
 import { MobileHeaderContent } from "@/components/layout/MobileHeaderContent";
-import { Suspense } from "react";
-import { UpgradeSuccessToast } from "@/components/billing/UpgradeSuccessToast";
 import { getCurrentUserWithRole } from "@/lib/auth";
 
 // Force dynamic rendering to prevent static generation issues with authentication
@@ -31,22 +28,15 @@ export default async function ProtectedLayout({
 
   return (
     <UserProvider value={userWithRole.user}>
-      <UsageProvider>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <div className="flex min-h-screen w-full">
-            <AppSidebar />
-            <div className="flex-1 flex flex-col">
-              <MobileHeaderContent />
-              <main className="flex-1 pt-14 lg:pt-0">{children}</main>
-            </div>
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <div className="flex min-h-screen w-full">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col">
+            <MobileHeaderContent />
+            <main className="flex-1 pt-14 lg:pt-0">{children}</main>
           </div>
-
-          {/* Success Toast with Suspense boundary */}
-          <Suspense fallback={null}>
-            <UpgradeSuccessToast />
-          </Suspense>
-        </SidebarProvider>
-      </UsageProvider>
+        </div>
+      </SidebarProvider>
     </UserProvider>
   );
 }

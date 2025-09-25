@@ -14,7 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, FileText, X } from "lucide-react";
 
 import { useUploadQueue } from "@/hooks";
-import { useUsageValidation } from "@/hooks";
 import { UploadError } from "@/lib/upload-error-handling";
 import { BulkUploadArea } from "./BulkUploadArea";
 import { UploadProgress } from "./UploadProgress";
@@ -56,8 +55,6 @@ export function BulkUploadDialog({
     fileName: string;
   } | null>(null);
 
-  // Usage validation hook
-  const { validateFilesForUpload, isValidating } = useUsageValidation();
 
   const { queue, progress, addFiles, clearQueue } = useUploadQueue({
     onUploadComplete: (documentData: {
@@ -108,43 +105,8 @@ export function BulkUploadDialog({
   const handleFilesSelected = async (files: File[]): Promise<void> => {
     if (files.length === 0) return;
 
-    // First validate usage limits
-    const usageValidation = await validateFilesForUpload(files);
-
-    if (!usageValidation) {
-      // Handle validation error - usageError state is managed by the hook
-      toast.error("Unable to validate usage limits. Please try again.");
-      return;
-    }
-
-    // Check if any files were rejected due to usage limits
-    if (usageValidation.rejectedFiles.length > 0) {
-      if (usageValidation.allowedFiles.length > 0) {
-        // Some files can be uploaded, show toast and proceed with allowed files
-        const rejectedCount = usageValidation.rejectedFiles.length;
-        const allowedCount = usageValidation.allowedFiles.length;
-
-        toast.warning(
-          `${rejectedCount} file${rejectedCount !== 1 ? "s" : ""} ${rejectedCount !== 1 ? "were" : "was"} rejected because ${rejectedCount !== 1 ? "they would exceed" : "it would exceed"} your usage limits. ` +
-            `Proceeding with ${allowedCount} file${allowedCount !== 1 ? "s" : ""} that can be uploaded.`,
-          {
-            duration: 5000,
-          },
-        );
-
-        // Proceed with only the allowed files
-        proceedWithFileUpload(usageValidation.allowedFiles);
-      } else {
-        // No files can be uploaded, show upgrade warning
-        toast.warning(
-          "Selected files would exceed your usage limits. Please upgrade to continue or try uploading smaller files.",
-        );
-      }
-      return;
-    }
-
-    // No usage issues, proceed with normal file validation and upload
-    proceedWithFileUpload(usageValidation.allowedFiles);
+    // Proceed directly with file validation and upload
+    proceedWithFileUpload(files);
   };
 
   const proceedWithFileUpload = (filesToUpload: File[]): void => {
@@ -308,7 +270,7 @@ export function BulkUploadDialog({
                 onFilesSelected={handleFilesSelected}
                 maxFiles={10}
                 className="min-h-[250px] sm:min-h-[300px]"
-                disabled={isValidating}
+                disabled={false}
                 onConflictCancelled={() => {
                   // Switch to queue tab to show uploaded valid files
                   setActiveTab("queue");

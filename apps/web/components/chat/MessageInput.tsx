@@ -7,16 +7,11 @@ import { Send, Square } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
 import { AttachmentArea } from "./AttachmentArea";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { type ImagePreview } from "@/lib/chat-utils-client";
 import { IMAGE_UPLOAD_CONSTRAINTS, MODEL_CONFIG } from "@/lib/app-utils";
-import { useUsage } from "@/contexts/UsageContext";
 import { useChatState } from "@/contexts/ChatStateContext";
 
 export function MessageInput() {
-  // Get usage limit information directly from context
-  const { canSendMessage, loading: usageLoading } = useUsage();
-
   // Get chat state from context
   const {
     input,
@@ -60,14 +55,8 @@ export function MessageInput() {
 
   // Get placeholder text based on current state
   const placeholderText = (): string => {
-    if (usageLoading || isLoading) {
+    if (isLoading) {
       return "Loading...";
-    }
-
-    // Check all limit types using comprehensive validation
-    const usageCheck = canSendMessage();
-    if (!usageCheck.canSend && usageCheck.reason) {
-      return usageCheck.reason;
     }
 
     if (isStreaming) {
@@ -110,7 +99,7 @@ export function MessageInput() {
         />
       </div>
 
-      {/* Controls Row: Attachment + Model + Limit Badge + Send/Stop */}
+      {/* Controls Row: Attachment + Model + Send/Stop */}
       <div className="flex items-center gap-3">
         <ImageUpload
           onImagesSelected={handleImagesSelected}
@@ -123,24 +112,8 @@ export function MessageInput() {
 
         <Badge variant="outline">{MODEL_CONFIG.displayName}</Badge>
 
-        {/* Spacer to push items (badge, button) to the right */}
+        {/* Spacer to push button to the right */}
         <div className="flex-1" />
-
-        {/* Limit Badge (to the left of the send button) */}
-        {!canSendMessage().canSend && canSendMessage().upgradeRequired && (
-          <Link
-            href="/profile?scrollTo=plans"
-            aria-label="View plans"
-            className="group hidden sm:inline-block"
-          >
-            <Badge className="bg-orange-500 hover:bg-orange-500 shrink-0 opacity-50 transition-all duration-800 group-hover:opacity-100">
-              <span className="group-hover:hidden">Usage limit reached</span>
-              <span className="hidden group-hover:inline">
-                Upgrade or view plans
-              </span>
-            </Badge>
-          </Link>
-        )}
 
         {/* Dynamic Send/Stop Button - Far Right */}
         {isStreamingOrStopping ? (

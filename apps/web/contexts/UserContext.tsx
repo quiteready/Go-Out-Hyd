@@ -8,7 +8,6 @@ export interface UserContextType {
   full_name: string | null;
   created_at: Date;
   updated_at: Date;
-  stripe_customer_id: string | null;
   role: "member" | "admin";
 }
 

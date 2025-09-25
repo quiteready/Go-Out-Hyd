@@ -6,7 +6,6 @@ import { DefaultChatTransport, type TextUIPart, type FileUIPart } from "ai";
 import { type Conversation } from "@/lib/drizzle/schema";
 import { saveMessage } from "@/app/actions/chat";
 import { useUser } from "@/contexts/UserContext";
-import { useUsage } from "@/contexts/UsageContext";
 import { type ImagePreview } from "@/lib/chat-utils-client";
 import { toast } from "sonner";
 
@@ -35,7 +34,7 @@ interface ChatStateContextType {
   handleInputChange: (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => void;
   setInput: (value: string) => void;
   setMessages: (messages: ExtendedMessage[]) => void;
@@ -52,7 +51,7 @@ interface ChatStateContextType {
 
 // Create context
 const ChatStateContext = createContext<ChatStateContextType | undefined>(
-  undefined,
+  undefined
 );
 
 // Provider component
@@ -68,7 +67,6 @@ export function ChatStateProvider({
   initialMessages,
 }: ChatStateProviderProps) {
   const { id: userId } = useUser();
-  const { refreshUsage, loading: usageLoading, canSendMessage } = useUsage();
 
   // Initialize specialized hooks
   const attachments = useChatAttachments();
@@ -82,7 +80,7 @@ export function ChatStateProvider({
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setInput(e.target.value);
   };
@@ -132,11 +130,6 @@ export function ChatStateProvider({
         error.message || "An error occurred. Please try again.";
       toast.error(errorMessage);
 
-      // Refresh usage stats if it's a usage-related error
-      if (errorMessage.includes("Usage limit exceeded")) {
-        refreshUsage();
-      }
-
       // Reset streaming states on error (only the ones we control)
       streaming.setIsStopping(false);
       streaming.abortControllerRef.current = null;
@@ -145,9 +138,6 @@ export function ChatStateProvider({
       // Reset streaming states (only the ones we control)
       streaming.setIsStopping(false);
       streaming.abortControllerRef.current = null;
-
-      // Refresh usage stats after successful message (the API route records the event)
-      refreshUsage();
     },
   });
 
@@ -170,34 +160,29 @@ export function ChatStateProvider({
   const isStreaming = status === "streaming";
   const isLoading = status === "submitted";
 
-  // Reset stopping state when streaming stops and refresh usage for aborted streams
+  // Reset stopping state when streaming stops
   useEffect(() => {
     if (!isStreaming && streaming.isStopping) {
       streaming.setIsStopping(false);
-      refreshUsage();
     }
-  }, [isStreaming, streaming.isStopping, refreshUsage]);
+  }, [isStreaming, streaming]);
 
   // Form submission logic
   const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
+    e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
     if (!userId) return;
 
-    // Block submission when usage limits or prerequisites prevent sending
-    const usageGate = canSendMessage();
-    if (usageLoading || isStreaming || isLoading || !usageGate.canSend) {
-      toast.error(
-        usageGate.reason || "Usage limit reached. Upgrade to continue.",
-      );
+    // Block submission when already streaming or loading
+    if (isStreaming || isLoading) {
       return;
     }
 
     // Always require text input, regardless of attachments
     if (!input.trim()) {
       toast.error(
-        "Please enter a text query. Text is required for all searches.",
+        "Please enter a text query. Text is required for all searches."
       );
       return;
     }
@@ -221,7 +206,7 @@ export function ChatStateProvider({
       const result = await saveMessage(
         conversationHook.localConversation?.id || null,
         userInput,
-        filesToUpload,
+        filesToUpload
       );
 
       if (!result.success) {
@@ -272,10 +257,8 @@ export function ChatStateProvider({
     }
   };
 
-  // Determine if sending/regenerating should be disabled based on global usage check
-  const usageGate = canSendMessage();
-  const isSendDisabled =
-    usageLoading || isLoading || isStreaming || !usageGate.canSend;
+  // Determine if sending/regenerating should be disabled
+  const isSendDisabled = isLoading || isStreaming;
 
   const contextValue: ChatStateContextType = {
     // Attachments

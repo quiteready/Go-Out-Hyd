@@ -6,15 +6,11 @@ import {
   DocumentListRef,
 } from "@/components/documents/DocumentList";
 import { BulkUploadDialog } from "@/components/documents/BulkUploadDialog";
-import { DocumentsUsageWarningBanner } from "@/components/documents/DocumentsUsageWarningBanner";
-import { useUsage } from "@/contexts/UsageContext";
 import { toast } from "sonner";
 
 export default function DocumentsPage() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const { refreshUsage, canUpload } = useUsage();
 
-  // Replace refreshKey with direct refresh mechanism
   const documentListRef = useRef<DocumentListRef | null>(null);
 
   const handleUploadComplete = useCallback(
@@ -34,33 +30,17 @@ export default function DocumentsPage() {
         updatedAt: new Date().toISOString(),
       });
 
-      // Refresh usage stats from server for accuracy
-      refreshUsage();
-
       // Show success toast for upload completion
       toast.success(
         `"${documentData.originalFilename}" uploaded successfully. Processing started.`,
       );
     },
-    [refreshUsage],
+    [],
   );
 
   const handleUploadError = useCallback((error: string) => {
-    // Storage limit errors are handled gracefully with UI dialogs, so log as warnings
-    if (error.includes("Storage limit exceeded")) {
-      console.warn("⚠️ [Documents] Storage limit exceeded:", error);
-      toast.error("Storage limit exceeded. Please upgrade.");
-    } else if (
-      error.includes("Unsupported file type") ||
-      error.includes("File too large")
-    ) {
-      console.warn("⚠️ [Documents] File validation error:", error);
-      toast.error("File validation error. Please try again.");
-    } else {
-      console.error("💥 [Documents] Upload error:", error);
-      // Show toast for unexpected errors that aren't handled by specialized dialogs
-      toast.error(`Upload failed: ${error}`);
-    }
+    console.error("💥 [Documents] Upload error:", error);
+    toast.error(`Upload failed: ${error}`);
   }, []);
 
   const handleUploadClick = useCallback(() => {
@@ -76,14 +56,11 @@ export default function DocumentsPage() {
         </p>
       </div>
 
-      {/* Usage Warning Banner */}
-      <DocumentsUsageWarningBanner />
-
       <div className="w-full">
         <DocumentList
           ref={documentListRef}
           onUploadClick={handleUploadClick}
-          uploadDisabled={!canUpload}
+          uploadDisabled={false}
         />
       </div>
 

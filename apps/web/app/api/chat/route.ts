@@ -8,12 +8,10 @@ import {
 } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { getCurrentUserId } from "@/lib/auth";
-import { checkMessageLimits, recordUsageEvent } from "@/lib/usage-tracking";
 import { searchForRAGContext } from "@/lib/rag/search-service";
 import { env } from "@/lib/env";
 import { MODEL_CONFIG } from "@/lib/app-utils";
 import { EmbeddingServiceError } from "@/lib/embeddings/types";
-import { USAGE_EVENT_TYPES } from "@/lib/drizzle/schema/usage-events";
 import { handleAssistantMessage } from "@/app/actions/chat";
 
 // Use AI SDK UI message parts for request/response UI messages
@@ -57,17 +55,6 @@ export async function POST(req: Request): Promise<Response> {
       return new Response("conversationId is required", { status: 400 });
     }
 
-    // Check usage limits before processing the chat request
-    const usageCheck = await checkMessageLimits(userId);
-
-    if (!usageCheck.canSendMessage) {
-      console.error("❌ [chat] Message limit exceeded:", usageCheck.reason);
-      return new Response(
-        usageCheck.reason ||
-          "Usage limit exceeded. Please upgrade to continue.",
-        { status: 403 },
-      );
-    }
 
     let userText = "";
     const images: Array<{ name: string; url: string }> = [];
@@ -202,8 +189,6 @@ Only include the Sources section when you actually use information from the prov
       return new Response("No valid messages to process", { status: 400 });
     }
 
-    // Track if there was an error during streaming
-    let hasStreamError = false;
 
     // Use AI SDK with Google provider for streaming
     const result = streamText({
@@ -215,7 +200,6 @@ Only include the Sources section when you actually use information from the prov
       abortSignal: req.signal,
       onError: async ({ error }) => {
         console.log("❌ API onError called with error:", error);
-        hasStreamError = true;
 
         try {
           await handleAssistantMessage({
@@ -284,26 +268,6 @@ Only include the Sources section when you actually use information from the prov
           console.error("⚠️ Failed to handle UI stream finish:", error);
         }
 
-        // Only record usage event if there was no stream error (successful or aborted operations only)
-        if (!hasStreamError) {
-          try {
-            const usageResult = await recordUsageEvent(
-              USAGE_EVENT_TYPES.MESSAGE,
-            );
-            if (!usageResult.success) {
-              console.error(
-                "⚠️ Failed to record message usage event:",
-                usageResult.error,
-              );
-            } else {
-              console.log(
-                `✅ Recorded message usage event ${isAborted ? "(aborted)" : "(completed)"}`,
-              );
-            }
-          } catch (usageError) {
-            console.error("⚠️ Error recording usage event:", usageError);
-          }
-        }
       },
       consumeSseStream: consumeStream,
     });

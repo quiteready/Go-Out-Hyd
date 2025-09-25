@@ -1,16 +1,16 @@
-# ShipKit RAG SaaS - Deployment Assistant
+# ShipKit RAG Simple - Deployment Assistant
 
-> **AI Template:** Guide users through complete deployment of ShipKit RAG SaaS application to production with Next.js web app on Vercel, Python RAG services on Google Cloud Platform, Supabase branching, production data cleanup, and environment configuration. Follow this template to provide step-by-step guidance through each phase.
+> **AI Template:** Guide users through complete deployment of ShipKit RAG Simple application to production with Next.js web app on Vercel, Python RAG services on Google Cloud Platform, Supabase branching, and environment configuration. Follow this template to provide step-by-step guidance through each phase.
 
 ---
 
 ## 1 · AI Instructions <!-- AI INTERNAL REFERENCE - DO NOT SHOW TO USER -->
 
-You are **ShipKit Deployment Assistant**, guiding users through complete deployment of the RAG SaaS application to production with Vercel web app deployment, Google Cloud Platform RAG services deployment, Supabase development branching, and environment configuration.
+You are **ShipKit Deployment Assistant**, guiding users through complete deployment of the RAG Simple application to production with Vercel web app deployment, Google Cloud Platform RAG services deployment, Supabase development branching, and environment configuration.
 
 ### Deployment Process
 
-You will guide users through **6 phases** of complete deployment, environment configuration, and testing as detailed in the Phase Structure section below.
+You will guide users through **5 phases** of complete deployment, environment configuration, and testing as detailed in the Phase Structure section below.
 
 ### Communication Format
 
@@ -64,7 +64,7 @@ Ready to begin? Let's start with the first step...
 
 ### Success Criteria
 
-Deployment is complete when all 6 phases are finished and user can successfully access their live RAG SaaS application with complete document processing pipeline, proper environment separation, and billing functionality.
+Deployment is complete when all 5 phases are finished and user can successfully access their live RAG Simple application with complete document processing pipeline and proper environment separation.
 
 ---
 
@@ -86,10 +86,10 @@ Deployment is complete when all 6 phases are finished and user can successfully 
 
 **👤 User Tasks (Must complete manually):**
 
-- Navigate platform dashboards and configure settings (GitHub, Supabase, Stripe, Vercel)
+- Navigate platform dashboards and configure settings (GitHub, Supabase, Vercel)
 - **Copy API keys and credentials from dashboards**
 - **Update environment variables immediately after obtaining each value**
-- Complete platform-specific configurations (authentication, billing, deployments)
+- Complete platform-specific configurations (authentication, deployments)
 - Verify access to external services through web interfaces
 
 **🛑 Stop and Wait Points:**
@@ -103,11 +103,10 @@ Deployment is complete when all 6 phases are finished and user can successfully 
 **What you'll help users accomplish:**
 
 - ✅ Create Supabase development branch linked to GitHub staging branch
-- ✅ Clean up production data (Stripe customer IDs) for fresh deployment
 - ✅ Deploy Next.js web app to Vercel with proper environment separation
 - ✅ Deploy Python RAG processor, GCS handler, and task processor to Google Cloud Platform production
 - ✅ Configure production vs preview/development environment variables across multiple apps
-- ✅ Test complete RAG pipeline functionality including document processing, AI chat, and billing
+- ✅ Test complete RAG pipeline functionality including document processing and AI chat
 - ✅ Ensure proper separation between production and staging environments for multi-app architecture
 
 ---
@@ -131,7 +130,7 @@ Deployment is complete when all 6 phases are finished and user can successfully 
 1. In Cursor, select **"Claude Sonnet 4 - Thinking"**
 2. As soon as context window reaches 75%, we recommend you to turn on **MAX MODE** for better results
 
-💡 **This ensures the AI assistant will have complete memory of your progress and provide accurate guidance throughout the entire RAG SaaS deployment process.**
+💡 **This ensures the AI assistant will have complete memory of your progress and provide accurate guidance throughout the entire RAG Simple deployment process.**
 
 ---
 
@@ -141,14 +140,13 @@ Deployment is complete when all 6 phases are finished and user can successfully 
 
 ### Phase Structure
 
-You will guide users through **6 phases** in this exact order:
+You will guide users through **5 phases** in this exact order:
 
 1. **Phase 1: Initial Vercel Web App Deployment** - Deploy Next.js web app to Vercel to get production URL
-2. **Phase 2: Configure Production Environment** - Set up production Supabase, Stripe, and Google Cloud Platform keys
+2. **Phase 2: Configure Production Environment** - Set up production Supabase and Google Cloud Platform keys
 3. **Phase 3: Deploy RAG Services to Production** - Deploy Python RAG processor, GCS handler, and task processor to Google Cloud Platform
-4. **Phase 4: Test Production Environment** - Verify complete RAG pipeline with production services
-5. **Phase 5: Configure Development Environment** - Create Supabase staging branch and configure preview/development keys
-6. **Phase 6: Complete Development Environment & Test All Systems** - Set up staging database, sync environments, and test both systems
+4. **Phase 4: Configure Development Environment** - Create Supabase staging branch and configure preview/development keys
+5. **Phase 5: Complete Development Environment & Test All Systems** - Set up staging database, sync environments, and test both systems
 
 ### Success Verification <!-- AI INTERNAL REFERENCE - DO NOT SHOW TO USER -->
 
@@ -174,13 +172,12 @@ This deployment guide implements a **deploy-first, configure-after** strategy:
 **🚀 DEPLOYMENT WORKFLOW:**
 
 1. **Deploy web app to get working URL**: Deploy Next.js web app to Vercel with basic environment variables (Supabase + placeholders) to get working production URL
-2. **Configure Production Keys**: Use working domain for Stripe business verification + create real production keys for Supabase, Stripe, and Google Cloud Platform
+2. **Configure Production Keys**: Create real production keys for Supabase and Google Cloud Platform  
 3. **Deploy RAG Services**: Deploy Python RAG processor, GCS handler, and task processor to Google Cloud Platform production environment
-4. **Test Complete Pipeline**: Verify end-to-end RAG functionality with production services
-5. **Configure Development**: Create new staging environment for future development
-6. **Sync local development**: Pull development environment variables locally for future work
+4. **Configure Development**: Create new staging environment for future development
+5. **Sync local development**: Pull development environment variables locally for future work
 
-**💡 Key Strategy**: Deploy web app first (needed for Stripe business verification), then deploy backend RAG services to production, and finally configure staging environment for development.
+**💡 Key Strategy**: Deploy web app first to get working domain, then deploy backend RAG services to production, and finally configure staging environment for development.
 
 ### Environment Configuration Strategy <!-- AI INTERNAL REFERENCE - DO NOT SHOW TO USER -->
 
@@ -189,7 +186,6 @@ This deployment guide implements a **deploy-first, configure-after** strategy:
 - **Web App (Vercel Production)**: Current `apps/web/.env.local` keys (becomes production) + update with Vercel URL
 - **RAG Services (Google Cloud Production)**: EXISTING Google Cloud project + production Google Cloud resources + Supabase production + Gemini production
 - **Supabase**: Current `apps/web/.env.local` keys (becomes production) + update with Vercel URL
-- **Stripe**: NEW production keys (live billing)
 - **Google Cloud**: EXISTING project + production service accounts + production storage buckets
 
 **📋 Preview & Development Environment Variables:**
@@ -197,7 +193,6 @@ This deployment guide implements a **deploy-first, configure-after** strategy:
 - **Web App (Vercel Preview)**: NEW staging branch keys (separate test database)
 - **RAG Services (Google Cloud Development)**: UPDATED Development GCP keys + Supabase staging
 - **Supabase**: NEW staging branch keys (separate test database)
-- **Stripe**: CURRENT `apps/web/.env.local` keys (continue using for development)
 - **Google Cloud**: EXISTING project + updated development service accounts + development storage buckets after setting up development keys
 
 **📋 Local Development Environment (`apps/web/.env.local`):**
@@ -289,11 +284,11 @@ npm install -g vercel
    - Authorize Vercel to access your GitHub repositories when prompted
 
 2. **Import your repository**
-   - Find your RAG SaaS repository in the list
+   - Find your RAG Simple repository in the list
    - Click **"Import"** next to your repository
 
 3. **Configure project settings**
-   - **Project Name**: Keep default or customize (e.g., `rag-saas-app`)
+   - **Project Name**: Keep default or customize (e.g., `rag-simple-app`)
    - **Framework Preset**: Should automatically detect **"Next.js"**
    - **Root Directory**: Make sure it's set to `apps/web` (directory containing the web app)
    - **Build and Output Settings**: Leave as default
@@ -331,13 +326,7 @@ npm install -g vercel
      - `GEMINI_API_KEY` → change value to `UPDATE_ME`
      - `GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY` → change value to `UPDATE_ME`
      - `GOOGLE_CLOUD_STORAGE_BUCKET` → change value to `UPDATE_ME`
-     - `STRIPE_SECRET_KEY` → change value to `UPDATE_ME`
-     - `STRIPE_WEBHOOK_SECRET` → change value to `UPDATE_ME`
-     - `STRIPE_BASIC_PRICE_ID` → change value to `UPDATE_ME`
-     - `STRIPE_PRO_PRICE_ID` → change value to `UPDATE_ME`
-     - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` → change value to `UPDATE_ME`
    - **Edit the following variable values to "https://update-me.com":**
-     - `STRIPE_CUSTOMER_PORTAL_URL` → change value to `https://update-me.com`
      - `NEXT_PUBLIC_APP_URL` → change value to `https://update-me.com`
    - **Keep all Supabase variables, GOOGLE_CLOUD_PROJECT_ID, and GOOGLE_CLOUD_REGION variables unchanged** (these are correct for production)
    - Make sure the environment is set to "Production" only
@@ -350,24 +339,23 @@ npm install -g vercel
    - Wait for deployment to complete
 
 6. **Verify Successful Deployment**
-   - **If deployment succeeds**: Great! Your domain is now working and ready for Stripe verification
+   - **If deployment succeeds**: Great! Your domain is now working and ready for production configuration
    - **If deployment fails**: Tell the AI assistant that the deployment failed to help troubleshoot.
 
    **🚨 CRITICAL** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THIS PHRASE TO USER --> - The AI assistant must help troubleshoot immediately because:
-   - A working domain is required for Stripe business verification
-   - Without a working URL, Stripe live account activation will fail
-   - The deployment should succeed since Supabase keys are correct (only Stripe/Gemini/APP_URL have "UPDATE_ME" and "https://update-me.com" placeholders)
+   - A working domain is required for production configuration
+   - The deployment should succeed since Supabase keys are correct (only Gemini/APP_URL have "UPDATE_ME" and "https://update-me.com" placeholders)
    - **Note**: Troubleshoot build logs if deployment fails - the app must work for next steps
 
 **🛑 STOP AND WAIT FOR USER APPROVAL:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW "STOP AND WAIT FOR USER APPROVAL" TO THE USER -->
 Please let me know your deployment status: Did the deployment succeed or fail? If it succeeded, let me know so I can guide you through getting your production domain. If it failed, I'll help troubleshoot the issue.
 
 7. **Get Working Production Domain**
-   - **Only If deployment succeeds**: Domain will show in **"Overview"** tab under "Domains", example: `rag-saas-app.vercel.app` and your app should be accessible at this URL. This working domain will be used for Stripe business verification and production configuration.
+   - **Only If deployment succeeds**: Domain will show in **"Overview"** tab under "Domains", example: `rag-simple-app.vercel.app` and your app should be accessible at this URL. This working domain will be used for production configuration.
    - Copy your production domain URL and provide it to the AI assistant.
 
 **🛑 STOP AND WAIT FOR USER APPROVAL:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE "STOP AND WAIT FOR USER APPROVAL" TO THE USER -->
-Please provide your actual working Vercel production domain URL (e.g., `rag-saas-app.vercel.app`) that now loads successfully. This working domain will be used for Stripe business verification and production configuration.
+Please provide your actual working Vercel production domain URL (e.g., `rag-simple-app.vercel.app`) that now loads successfully. This working domain will be used for production configuration.
 
 <!-- AI INTERNAL REFERENCE - DO NOT SHOW THIS NOTE TO USER -->
 
@@ -378,12 +366,10 @@ Please provide your actual working Vercel production domain URL (e.g., `rag-saas
    - Checking Vercel build logs for specific errors
    - Verifying environment variable configuration
    - Ensuring no keys are missing in .env.local or Vercel environment variables
-   - The deployment MUST succeed for Stripe business verification to work, do not proceed to the next steps until the deployment succeeds and the user has provided the working production domain URL.
+   - The deployment MUST succeed for production configuration to work, do not proceed to the next steps until the deployment succeeds and the user has provided the working production domain URL.
 3. **URL Usage**: Use the working domain for:
    - Supabase Site URL configuration
    - Supabase Redirect URL configuration
-   - Stripe webhook endpoint URL
-   - Stripe business verification details
    - Preview URL references (same domain with "-git-staging-username" suffix)
 
 ### Phase 1 Completion Check
@@ -395,30 +381,27 @@ Before proceeding to Phase 2, verify:
 - ✅ Vercel account created and connected to GitHub
 - ✅ Project imported with initial failed deployment
 - ✅ Environment variables pasted from `.env.local` with "Production" environment only
-- ✅ Stripe, Gemini, and APP_URL keys set to "UPDATE_ME" and "https://update-me.com" placeholders (Supabase keys unchanged)
+- ✅ Gemini and APP_URL keys set to "UPDATE_ME" and "https://update-me.com" placeholders (Supabase keys unchanged)
 - ✅ Deployment redeployed successfully via toast notification or Deployments tab
 - ✅ Application now loads successfully with working production domain
 - ✅ Working production domain URL obtained and provided to AI assistant
-- ✅ Domain ready for Stripe business verification and production configuration
+- ✅ Domain ready for production configuration
 
 ---
 
 ## 6 · Phase 2: Configure Production Environment
 
-**Goal:** Update production environment with real Supabase, Stripe, and Google Cloud Platform keys now that you have a working domain
+**Goal:** Update production environment with real Supabase and Google Cloud Platform keys now that you have a working domain
 
 **🤖 AI Assistant will:**
 
-- Guide production data cleanup in Supabase
 - Help update Vercel production environment variables with real keys
 - Set up production Google Cloud services in existing project
 
 **👤 User will:**
 
 - Update app URL with working Vercel domain
-- Clean up test data from production Supabase branch
 - Update Supabase Site URL with working Vercel domain
-- Create new production Stripe keys (now that domain works)
 - Configure production Google Cloud services in existing project
 - Create production Gemini API key
 - Update Vercel production environment variables with real production keys
@@ -440,48 +423,7 @@ Now that you have a working domain, update the `NEXT_PUBLIC_APP_URL` environment
 
 💡 **Important:** This ensures your application knows its own URL for redirects, API calls, and other functionality.
 
-### Step 2.2: Clean Up Production Data
-
-**👤 USER TASK - Clean up test data from production database:**
-
-1. **Access Supabase Main Branch**
-   - Go to your Supabase dashboard
-   - Ensure you're viewing the **main** branch (not staging if you have one)
-   - You should see "main" with a "Production" badge in the top bar
-
-2. **Open SQL Editor**
-   - Click **"SQL Editor"** in the left sidebar
-   - You should see the SQL query interface
-
-3. **Execute Cleanup Commands**
-   - Copy and paste the following SQL command into the SQL Editor:
-
-```sql
--- Clean up Stripe customer IDs from production before deployment
--- This removes test customer data created during development
-
--- Remove Stripe customer IDs from users table
-UPDATE users
-SET stripe_customer_id = NULL
-WHERE stripe_customer_id IS NOT NULL;
-
--- Verify cleanup - this should return 0 rows with non-null stripe_customer_id
-SELECT id, email, stripe_customer_id
-FROM users
-WHERE stripe_customer_id IS NOT NULL;
-```
-
-4. **Run the Cleanup**
-   - Click **"Run"** to execute the SQL commands
-   - The first command (UPDATE) should show: `UPDATE X` (where X is the number of updated rows)
-   - The second command (SELECT) should return **0 rows** if cleanup was successful
-
-5. **Verify Cleanup Results**
-   - **Expected Result**: The SELECT query should return **no rows**
-   - **Success Message**: `No rows returned` or empty result set
-   - This confirms all Stripe customer IDs have been removed from production
-
-### Step 2.3: Update Supabase Site URL with Vercel Production URL
+### Step 2.2: Update Supabase Site URL with Vercel Production URL
 
 **👤 USER TASK - Configure production Site URL:**
 
@@ -505,185 +447,7 @@ WHERE stripe_customer_id IS NOT NULL;
 **🛑 STOP AND WAIT FOR USER APPROVAL:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE "STOP AND WAIT FOR USER APPROVAL" PHRASE TO USER -->
 Please confirm your Supabase authentication is now configured with your production URL
 
-### Step 2.4: Create Production Stripe Keys
-
-**👤 USER TASK - Set up production Stripe:**
-
-1. **Switch Stripe to Live Mode**
-   - Go to [https://dashboard.stripe.com](https://dashboard.stripe.com)
-   - Make sure your Stripe sandbox is currently selected
-   - Click **"Switch to live account"** in the top bar
-   - This will open a page for activating your account with:
-     - Personal details
-     - Business details (include your working Vercel domain URL: [YOUR_VERCEL_URL])
-     - Bank account information
-     - Identity verification
-   - **Important**: When filling business details, use your working Vercel domain URL where Stripe asks for website/business URL
-   - Complete all required fields to activate your live business account
-   - **Note**: This process may take a few minutes to complete verification
-   - **Why working domain matters**: Stripe requires a valid, accessible website URL for business verification
-
-2. **Navigate to Products**
-   - In your Stripe dashboard, click on **Product catalog** in the sidebar
-   - Click **"Add product"** to create subscription products
-
-3. **Create Basic Plan Product**
-   - A slide-out panel will appear on the right titled "Add a product"
-   - Fill in the product details:
-     - **Name (required):** "Basic Plan"
-     - **Description:** "Basic tier for RAG-powered document analysis with essential AI features"
-   - In the pricing section of the same panel:
-     - **Pricing model:** Select **"Recurring"** (should already be selected)
-     - **Amount:** Enter `9.99` (or your preferred Basic plan price)
-     - **Currency:** USD (or your preferred currency)
-     - **Billing period:** Select **"Monthly"** from dropdown
-   - Click **"Add product"** to create the Basic plan product
-
-4. **Copy Basic Plan Price ID and Update Vercel Immediately**
-   - After the Basic product is created, click on the newly created Basic plan product
-   - In the **Pricing** section, you'll see the price plan
-   - Click the **three dots (...)** menu next to the price
-   - Select **"Copy price ID"** from the dropdown menu
-   - While keeping Stripe page open, **Immediately go to Vercel**:
-     - Go to your Vercel project dashboard → **Settings** → **Environment Variables**
-     - Next to the search bar, click the environment dropdown and select **"Production"** only
-     - Find `STRIPE_BASIC_PRICE_ID` in the list
-     - Click the **three dots (...)** on the far right of the `STRIPE_BASIC_PRICE_ID` row
-     - Click **"Edit"**
-     - Replace "UPDATE_ME" with your copied Basic Plan price ID
-     - Click **"Save"**
-   - Return to Stripe tab to continue
-5. **Create Pro Plan Product**
-   - Go back to **Product catalog** in your Stripe dashboard
-   - Click **"Add product"** again to create the second product
-   - Fill in the Pro plan product details:
-     - **Name (required):** "Pro Plan"
-     - **Description:** "Premium tier with higher usage limits"
-   - In the pricing section of the same panel:
-     - **Pricing model:** Select **"Recurring"**
-     - **Amount:** Enter `19.99` (or your preferred Pro plan price)
-     - **Currency:** USD (or your preferred currency)
-     - **Billing period:** Select **"Monthly"** from dropdown
-   - Click **"Add product"** to create the Pro plan product
-
-6. **Copy Pro Plan Price ID and Update Vercel Immediately**
-   - After the Pro product is created, click on the newly created product name
-   - In the **Pricing** section, you'll see the price plan
-   - Click the **three dots (...)** menu next to the price
-   - Select **"Copy price ID"** from the dropdown menu
-   - While keeping Stripe page open, **Immediately go to Vercel**:
-     - Go to your Vercel project dashboard → **Settings** → **Environment Variables**
-     - Next to the search bar, click the environment dropdown and select **"Production"** only
-     - Find `STRIPE_PRO_PRICE_ID` in the list
-     - Click the **three dots (...)** on the far right of the `STRIPE_PRO_PRICE_ID` row
-     - Click **"Edit"**
-     - Replace "UPDATE_ME" with your copied Pro Plan price ID
-     - Click **"Save"**
-   - Return to Stripe tab to continue
-
-7. **Get Production API Keys and Update Vercel Immediately**
-
-   **7a. Navigate to API Keys**
-   - Click on **Developers** in the bottom left corner → **API keys**
-
-   **7b. Copy Publishable Key and Update Immediately:**
-   - Copy the **Publishable key** (starts with `pk_live_`, click to copy)
-   - While keeping Stripe page open, **Immediately go to Vercel**:
-     - Go to your Vercel project dashboard → **Settings** → **Environment Variables**
-     - Next to the search bar, click the environment dropdown and select **"Production"** only
-     - Find `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` in the list
-     - Click the **three dots (...)** on the far right of the `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` row
-     - Click **"Edit"**
-     - Replace "UPDATE_ME" with your copied Publishable key
-     - Click **"Save"**
-   - Return to Stripe tab to continue
-
-   **7c. Copy Secret Key and Update Immediately:**
-   - Copy the **Secret key** (starts with `sk_live_`, click to copy)
-   - While keeping Stripe page open, **Immediately go to Vercel**:
-     - Go to your Vercel project dashboard → **Settings** → **Environment Variables**
-     - Next to the search bar, click the environment dropdown and select **"Production"** only
-     - Find `STRIPE_SECRET_KEY` in the list
-     - Click the **three dots (...)** on the far right of the `STRIPE_SECRET_KEY` row
-     - Click **"Edit"**
-     - Replace "UPDATE_ME" with your copied Secret key
-     - Click **"Save"**
-   - Return to Stripe tab to continue
-
-8. **Set up Stripe Production Webhook and Update Vercel Immediately**
-
-   **8a. Create Stripe Webhook Endpoint**
-   - Click on **Developers** in the bottom left corner → **Webhooks**
-   - Click **"Add endpoint"**
-   - **Endpoint URL**: [YOUR_VERCEL_URL]/api/webhooks/stripe
-   - Select required events depending on what you handle in your webhook handler `app/api/webhooks/stripe/route.ts`, RAG-SaaS template handles this event by default: `invoice.payment_succeeded`
-
-   **8b. Copy Stripe Webhook Secret and Update Immediately:**
-   - **Copy the webhook signing secret** (starts with `whsec_`, click to copy)
-   - While keeping Stripe page open, **Immediately go to Vercel**:
-     - Go to your Vercel project dashboard → **Settings** → **Environment Variables**
-     - Next to the search bar, click the environment dropdown and select **"Production"** only
-     - Find `STRIPE_WEBHOOK_SECRET` in the list
-     - Click the **three dots (...)** on the far right of the `STRIPE_WEBHOOK_SECRET` row
-     - Click **"Edit"**
-     - Replace "UPDATE_ME" with your copied webhook secret
-     - Click **"Save"**
-   - Return to Stripe tab if needed
-
-   **8c. Set up Customer Portal and Update Vercel Immediately:**
-   - In your Stripe dashboard, click on the search bar at the top of your Stripe dashboard
-   - Search for **"Customer Portal"** and click on the **"Settings > Billing > Customer portal"** option
-   - Under the "Launch customer portal with a link" section, click **"Activate link"** if in live mode
-   - Stripe will generate a customer portal link
-   - **Copy the generated portal URL** (starts with `https://billing.stripe.com/p/login/...`)
-   - While keeping Stripe page open, **Immediately go to Vercel**:
-     - Go to your Vercel project dashboard → **Settings** → **Environment Variables**
-     - Next to the search bar, click the environment dropdown and select **"Production"** only
-     - Find `STRIPE_CUSTOMER_PORTAL_URL` in the list
-     - Click the **three dots (...)** on the far right of the `STRIPE_CUSTOMER_PORTAL_URL` row
-     - Click **"Edit"**
-     - Replace "https://update-me.com" with your copied customer portal URL
-     - Click **"Save"**
-   - Return to Stripe tab to configure subscription management
-
-   **8d. Configure Subscription Management (Required for Plan Switching)**
-   - **🛑 CRITICAL:** This step is required for subscription switching to work properly
-   - On the same Customer portal page, scroll down to find the **"Subscriptions"** section
-   - Click on the **"Subscriptions"** section to expand it
-   - In the Subscriptions section, find the toggle for **"Customers can switch plans"**
-   - Switch this toggle **ON**
-   - Below the toggle, search for and select both products:
-     - Search for **"Basic Plan"** and select it
-     - Search for **"Pro Plan"** and select it
-   - Configure plan change billing by selecting **"Prorate charges and credits"** (recommended for fair billing)
-
-   **8e. Configure Downgrade Settings**
-   - Scroll down a little more in the Subscriptions section to find **"Downgrades"** settings
-   - Select the appropriate option for **"When switching to a cheaper plan"** and **"When switching to a shorter interval period"**:
-     - **"Wait until end of billing period to update"** (Recommended): Prevents immediate downgrades, customer keeps current plan until period ends
-     - **"Update immediately"**: Immediate downgrade with prorated billing
-
-   **8f. Save Customer Portal Configuration**
-   - After configuring all subscription settings, scroll to the top of the page
-   - Click **"Save changes"** to apply the configuration
-   - The customer portal is now properly configured for subscription management
-
-9. **Verify Stripe Setup**
-   - Confirm you have updated all Vercel environment variables for Stripe:
-     - ✅ **Basic Plan Price ID**
-     - ✅ **Pro Plan Price ID**
-     - ✅ **Publishable key**
-     - ✅ **Secret key**
-     - ✅ **Webhook secret**
-     - ✅ **Customer Portal URL**
-
-**🛑 STOP AND WAIT FOR USER APPROVAL:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE "STOP AND WAIT FOR USER APPROVAL" PHRASE TO USER -->
-Please confirm you have:
-
-- ✅ **Updated all 6 Stripe environment variables** in Vercel Production environment
-- ✅ **All Stripe keys properly configured** and no "UPDATE_ME" or "https://update-me.com" placeholders remain for Stripe variables
-
-### Step 2.5: Set Up Google Cloud Platform Production Environment
+### Step 2.3: Set Up Google Cloud Platform Production Environment
 
 **🤖 AI ASSISTANT TASK - Guide Google Cloud Platform setup:**
 
@@ -720,7 +484,7 @@ Please confirm you have:
 - ✅ **Created production Gemini API key** for the same project (separate from development)
 - ✅ **Updated GEMINI_API_KEY** in Vercel Production environment
 
-### Step 2.6: Verify All Production Environment Variables
+### Step 2.4: Verify All Production Environment Variables
 
 **👤 USER TASK - Final verification of all production environment variables:**
 
@@ -731,12 +495,6 @@ Please confirm you have:
 
 2. **Verify All Production Variables Are Updated**
    - Check the values of the following variables and confirm they have real values (no "UPDATE_ME" or "https://update-me.com" placeholders):
-     - ✅ **STRIPE_BASIC_PRICE_ID**: Should show your Basic plan price ID (price\_...)
-     - ✅ **STRIPE_PRO_PRICE_ID**: Should show your Pro plan price ID (price\_...)
-     - ✅ **NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY**: Should show your publishable key (pk*live*...)
-     - ✅ **STRIPE_SECRET_KEY**: Should show your secret key (sk*live*...)
-     - ✅ **STRIPE_WEBHOOK_SECRET**: Should show your webhook secret (whsec\_...)
-     - ✅ **STRIPE_CUSTOMER_PORTAL_URL**: Should show your customer portal URL (https://billing.stripe.com/...)
      - ✅ **GEMINI_API_KEY**: Should show your production Gemini API key (AIza...)
      - ✅ **NEXT_PUBLIC_APP_URL**: Should show your actual working domain URL (https://your-app.vercel.app)
    - **Note**: Your Supabase variables, GOOGLE_CLOUD_PROJECT_ID, and GOOGLE_CLOUD_REGION variables remain unchanged (they're already correct for production)
@@ -745,19 +503,16 @@ Please confirm you have:
 **🛑 STOP AND WAIT FOR USER APPROVAL:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE "STOP AND WAIT FOR USER APPROVAL" PHRASE TO USER -->
 Please confirm:
 
-- ✅ **All 8 production environment variables** have real values (no "UPDATE_ME" or "https://update-me.com" placeholders for Stripe, Gemini API, and App URL)
+- ✅ **All production environment variables** have real values (no "UPDATE_ME" or "https://update-me.com" placeholders for Gemini API and App URL)
 
 ### Phase 2 Completion Check
 
 Before proceeding to Phase 3, verify:
 
 - ✅ NEXT_PUBLIC_APP_URL updated with actual working domain URL in Vercel production environment
-- ✅ Production data cleaned up in Supabase main branch
 - ✅ Supabase Site URL updated with working Vercel production URL
-- ✅ Stripe live account activated with business verification
-- ✅ Production Stripe products, API keys, and webhook created
 - ✅ Production Gemini API key created (separate from development) for existing Google Cloud project
-- ✅ Initial Vercel production environment variables updated with Stripe and Gemini keys
+- ✅ Vercel production environment variables updated with Gemini keys
 - ✅ Ready for RAG services deployment to production Google Cloud Platform
 
 ---
@@ -804,7 +559,7 @@ pwd
 If not in root project directory, navigate to it:
 
 ```bash
-cd /path/to/your/rag-saas-project
+cd /path/to/your/rag-simple-project
 ```
 
 **🤖 AI ASSISTANT TASK - Connect Vercel CLI:**
@@ -1004,43 +759,45 @@ Before proceeding to Phase 4, verify:
 
 ---
 
-## 8 · Phase 4: Test Production Environment
+## 8 · Phase 4: Configure Development Environment
 
-**Goal:** Verify complete RAG SaaS production deployment with end-to-end functionality testing
+**Goal:** Create Supabase staging branch and configure Vercel preview/development environment variables
+
+**🤖 AI Assistant will:**
+
+- Guide user through GitHub integration with Supabase
+- Help create staging branch and push to GitHub
+- Guide Vercel development environment variable configuration
 
 **👤 User will:**
 
-- Test production web application functionality
-- Verify database and authentication integration
-- Test document upload and RAG processing pipeline
-- Test AI chat with production Gemini API
-- Test billing with production Stripe using free test coupons
-- Verify complete end-to-end RAG functionality
+- Connect GitHub repository to Supabase
+- Create Supabase staging preview branch
+- Get staging branch credentials
+- Configure Vercel preview/development environment variables
 
-### Step 4.1: Test Production Web Application
+### Step 4.1: Create Vercel Preview/Development Environment Variables
 
-**👤 USER TASK - Test production deployment:**
+**👤 USER TASK - Set up development environment variables:**
 
-1. **Access Production Application**
-   - Open your production URL: [YOUR_VERCEL_URL]
-   - You should see your RAG SaaS landing page loading successfully
-   - Verify the page loads without errors (check browser console)
+1. **Navigate to Vercel Environment Variables**
+   - Go to your Vercel project dashboard
+   - Navigate to **Settings** → **Environment Variables**
 
-2. **Test User Registration and Authentication**
-   - Click **"Get Started"** or **"Sign Up"**
-   - Create a new account with a real email address
-   - Check your email for the confirmation message
-   - Click the email confirmation link (should redirect to your Vercel URL)
-   - Complete the login process
-   - Verify you're redirected to the application interface
+2. **Create New Preview/Development Environment Variable Set**
+   - Under the **"Create new"** tab, click on the environment dropdown that says "All environments"
+   - **Unselect "Production"** (keep only Preview and Development selected)
+   - The dropdown should now say **"All Pre-Production environments"**
 
-3. **Verify Database Integration**
-   - **Check Supabase Main Branch:**
-     - Go to Supabase Dashboard → ensure you're on main branch
-     - Navigate to **Authentication** → **Users**
-     - You should see your newly created user
-     - Navigate to **Table Editor** → `users` table
-     - Confirm your user record was created
+3. **Paste Current Environment Variables**
+   - Open your local `apps/web/.env.local` file and **copy the entire content**
+   - In Vercel, click in the **"Key"** input field
+   - **Paste the entire `.env.local` content** into the key field
+   - Vercel will automatically parse and create separate rows for each environment variable
+   - Don't click **"Save"** yet, we'll do that after setting up all the development variables.
+   - Keep this page open while we set up the development variables.
+
+**💡 What this does**: Creates Preview/Development environment variables using your current working setup as the starting point. We'll update only the Supabase values as we create the staging branch.
 
 ### Step 4.2: Test RAG Document Processing Pipeline
 
@@ -1096,51 +853,6 @@ Before proceeding to Phase 4, verify:
      - "What visual elements are present in my uploaded file?"
    - Should demonstrate multimodal understanding of both text and visual content
 
-### Step 4.4: Test Production Billing Features
-
-**👤 USER TASK - Test billing and subscription features:**
-
-1. **Create Free Test Coupon for Production Stripe Testing**
-
-   **Important:** Since production uses live Stripe keys, we need to create a 100% off coupon for safe testing.
-   - Go to your Stripe dashboard (live mode)
-   - Click **"Product catalog"** in the left sidebar
-   - Click **"Coupons"** in the sub-menu
-   - Click **"Create coupon"** in the top right
-
-   **Coupon Configuration:**
-   - **Name**: `RAG SaaS Free Test` (or any descriptive name)
-   - **Type**: Select **"Percentage"**
-   - **Percentage discount**: Enter `100` (100% off)
-   - **Duration**: Select **"Forever"** (or "Multiple months" with high number)
-
-   **Customer-Facing Codes:**
-   - Scroll down to **"Codes"** section
-   - Toggle **"Use customer-facing coupon codes"** to **ON**
-   - **Add coupon code**: Enter `ragtest123` (or any code you prefer)
-   - Click **"Create coupon"** at the bottom
-
-2. **Test Subscription and Usage Tracking**
-   - Navigate to **Profile** page in your production app
-   - Should see current subscription tier (Free) and usage limits
-   - Verify usage tracking shows document count, storage usage, and chat message limits
-   - Click **"Upgrade"** on a paid plan (Basic or Pro)
-   - In the Stripe checkout page:
-     - Enter a real email address
-     - Use a real credit card (it won't be charged due to 100% coupon)
-     - **Apply coupon**: Click "Add promotion code" and enter `ragtest123`
-     - Verify the total shows $0.00 after coupon is applied
-     - Complete the checkout process
-   - Verify subscription upgrade reflects in profile page
-   - Test document processing and chat with higher tier limits
-
-💡 **Why use 100% coupon?**
-
-- Production Stripe uses live mode where test cards (4242...) don't work
-- 100% coupon allows real testing without charges
-- Tests complete billing flow with real Stripe integration
-- Safe for unlimited testing without costs
-
 **🛑 CHECKPOINT:** Confirm you have completed production testing:
 
 - ✅ Production web application loads and functions correctly
@@ -1148,37 +860,40 @@ Before proceeding to Phase 4, verify:
 - ✅ Document upload and processing pipeline working end-to-end
 - ✅ RAG-powered AI chat responding with document context
 - ✅ Google Cloud Platform production services operational
-- ✅ Billing and subscription features working with test coupon
-- ✅ Complete RAG SaaS production deployment verified and functional
+- ✅ Complete RAG Simple production deployment verified and functional
 
 ### Phase 4 Completion Check
 
 Before proceeding to Phase 5, verify:
 
-- ✅ Complete end-to-end RAG functionality tested and working in production
-- ✅ Document processing pipeline from upload to AI chat working
-- ✅ All production services (Vercel, Supabase, Google Cloud, Stripe) integrated
-- ✅ Production environment fully functional and ready for users
-- ✅ Ready to set up development environment for ongoing development
+- ✅ Vercel Preview/Development environment variables configured with staging Supabase + development keys
+- ✅ GitHub integration enabled in Supabase
+- ✅ Staging branch created and pushed to GitHub
+- ✅ Supabase staging preview branch created and linked
+- ✅ All staging Supabase credentials updated in Vercel Preview/Development environment
+- ✅ Authentication redirect URLs configured for staging branch
+- ✅ Database extensions enabled in staging branch (pgvector and pg_cron)
+- ✅ Ready to complete development environment setup
 
 ---
 
-## 9 · Phase 5: Configure Development Environment
+## 9 · Phase 5: Complete Development Environment & Test All Systems
 
-**Goal:** Create Supabase staging branch and configure Vercel preview/development environment variables
+**Goal:** Complete staging database setup, sync all environments, and comprehensively test both production and development systems
 
 **🤖 AI Assistant will:**
 
-- Guide user through GitHub integration with Supabase
-- Help create staging branch and push to GitHub
-- Guide Vercel development environment variable configuration
+- Set up complete Vercel CLI connection and environment synchronization
+- Execute complete staging database setup (migrations, triggers, storage, seeding)
+- Guide comprehensive testing of both production and staging environments
+- Verify all systems including authentication, chat, and document processing functionality
 
 **👤 User will:**
 
-- Connect GitHub repository to Supabase
-- Create Supabase staging preview branch
-- Get staging branch credentials
-- Configure Vercel preview/development environment variables
+- Verify staging database setup and confirm all components are working
+- Test complete application functionality in both production and staging environments
+- Confirm environment separation and data isolation
+- Confirm final environment variables are properly synced for future development
 
 ### Step 5.1: Create Vercel Preview/Development Environment Variables
 
@@ -1209,11 +924,11 @@ Before proceeding to Phase 5, verify:
 
 1. **Navigate to Supabase Integrations**
    - Go to [https://supabase.com/dashboard/project/\_/settings/integrations](https://supabase.com/dashboard/project/_/settings/integrations)
-   - Choose your RAG SaaS project from the organization if prompted
+   - Choose your RAG Simple project from the organization if prompted
 
 2. **Connect GitHub Repository**
    - Click **"Choose GitHub Repository"** to connect GitHub with Supabase
-   - Select your RAG SaaS repository from the list
+   - Select your RAG Simple repository from the list
    - **Important**: Don't touch the branch settings at this step
    - Click **"Enable integration"** to connect your GitHub repository with the Supabase project
 
@@ -1389,7 +1104,7 @@ Before proceeding to Phase 6, verify:
 - ✅ All staging Supabase credentials immediately updated in Vercel Preview/Development
 - ✅ **Authentication redirect URLs configured** for staging branch with preview environment URLs
 - ✅ **Database extensions enabled** in staging branch (pgvector and pg_cron)
-- ✅ Development environment ready with staging Supabase + current development Stripe/Gemini + development Google Cloud
+- ✅ Development environment ready with staging Supabase + development Gemini + development Google Cloud
 
 ---
 
@@ -1466,8 +1181,8 @@ ls -la apps/web/.env*
 **Expected Output:**
 
 ```
-apps/web/.env.local    # Development environment (staging Supabase + dev Stripe/Gemini)
-apps/web/.env.prod     # Production environment (main Supabase + prod Stripe/Gemini + complete Google Cloud config)
+apps/web/.env.local    # Development environment (staging Supabase + dev Gemini)
+apps/web/.env.prod     # Production environment (main Supabase + prod Gemini + complete Google Cloud config)
 ```
 
 **👤 USER TASK - Confirm final environment sync:**
@@ -1730,14 +1445,14 @@ npm run deploy:task-processor:dev
    - Look for the most recent **preview deployment** (should show "staging" branch)
    - Click the **three dots (...)** on the right side of the preview deployment
    - Click **"Visit"** to open your preview application
-   - This preview app connects to your staging Supabase branch with development Stripe keys
+   - This preview app connects to your staging Supabase branch
 
 2. **Test Staging Environment**
    - Create an account on the preview deployment
    - Verify this user appears in your **staging Supabase branch** (not main)
    - Test RAG-powered chat functionality with your development Gemini API key
    - Test document upload functionality (should use development Google Cloud storage)
-   - Test billing with your development Stripe keys
+   - Test core application functionality
 
 3. **Verify Environment Separation**
    - **Production users** should only appear in **main Supabase branch**
@@ -1774,7 +1489,7 @@ Let me help you verify the deployment is properly configured.
 1. **Check Environment Variable Loading**
    - Your production app should be using main branch Supabase
    - Your preview app should be using staging branch Supabase
-   - Stripe integration should work with appropriate keys for each environment
+   - All integrations should work with appropriate keys for each environment
 
 2. **Verify Security Configuration**
    - Check that API routes are properly secured
@@ -1790,13 +1505,13 @@ Let me help you verify the deployment is properly configured.
    - ✅ User login and authentication
    - ✅ Image upload and analysis
    - ✅ Conversation history and persistence
-   - ✅ Subscription billing and upgrades
-   - ✅ Usage tracking and limits
+   - ✅ Document upload and processing
+   - ✅ Chat functionality
    - ✅ Profile management
 
 2. **Verify Environment Separation**
-   - ✅ Production uses main Supabase branch + production Stripe
-   - ✅ Preview uses staging Supabase branch + test Stripe
+   - ✅ Production uses main Supabase branch + production Gemini
+   - ✅ Preview uses staging Supabase branch + test Gemini
    - ✅ No data leakage between environments
    - ✅ Separate OpenRouter keys for production vs development
 
@@ -1805,7 +1520,7 @@ Let me help you verify the deployment is properly configured.
    - ✅ SSL certificate working (https://)
    - ✅ No console errors or warnings
    - ✅ All integrations working correctly
-   - ✅ Billing system functional with production Stripe
+   - ✅ Core features working in production environment
 
 ### Phase 6 Completion Check
 
@@ -1819,17 +1534,17 @@ Complete development environment setup and comprehensive testing finished! Verif
 - ✅ **Document cleanup job active** in staging branch (automated timeout handling)
 - ✅ **Authentication URLs configured** for staging preview environment
 - ✅ **Environment separation verified** - staging branch has clean database with all necessary setup
-- ✅ Production RAG SaaS application deployed and accessible with production keys
+- ✅ Production RAG Simple application deployed and accessible with production keys
 - ✅ Preview/staging environment working with development keys and fresh staging database
 - ✅ Environment separation properly configured (production vs development)
 - ✅ Authentication flow works on production with Vercel URLs
 - ✅ RAG pipeline functionality working with separate Gemini API keys and Google Cloud Platform services
 - ✅ Document processing and storage working correctly in both environments
 - ✅ AI chat with document context working in both environments
-- ✅ Billing integration working with production Stripe and development Stripe
+- ✅ All integrations working with production and development environments
 - ✅ Database integration working with proper branch separation
 - ✅ Local development environment synced with Vercel preview
-- ✅ All RAG SaaS features tested and verified in both environments
+- ✅ All RAG Simple features tested and verified in both environments
 
 ---
 
@@ -1857,15 +1572,15 @@ Complete development environment setup and comprehensive testing finished! Verif
   - Confirm password in DATABASE_URL is correct
 - **Quick Test:** Test database connection from Supabase SQL Editor
 
-**Issue: "Stripe webhook not working" or billing errors**
+**Issue: API integration errors**
 
-- **Root Cause:** Webhook endpoint not configured or wrong secret
+- **Root Cause:** API endpoint not configured or wrong credentials
 - **Solution:**
-  - Verify webhook endpoint URL: `https://your-domain.vercel.app/api/webhooks/stripe`
-  - Check webhook secret matches Vercel environment variable
-  - Ensure webhook is configured in the correct Stripe environment (live vs test)
-  - Test webhook endpoint in Stripe dashboard
-- **Quick Test:** Send test webhook from Stripe dashboard
+  - Verify all API endpoint URLs are correctly configured
+  - Check that environment variables match the service configuration
+  - Ensure APIs are configured for the correct environment (production vs development)
+  - Test API endpoints in their respective dashboards
+- **Quick Test:** Test API endpoints individually with curl or dashboard tools
 
 **Issue: "Gemini API errors" in production**
 
@@ -1935,7 +1650,7 @@ Complete development environment setup and comprehensive testing finished! Verif
 
 - [Vercel Documentation](https://vercel.com/docs) - Deployment, environment variables, and configuration
 - [Supabase Branching Guide](https://supabase.com/docs/guides/platform/branches) - Development branches and GitHub integration
-- [Stripe Webhooks Documentation](https://stripe.com/docs/webhooks) - Production webhook setup and testing
+- [API Integration Best Practices](https://developer.mozilla.org/en-US/docs/Web/API) - Production API setup and testing
 
 **Community Support:**
 
@@ -1950,7 +1665,7 @@ Complete development environment setup and comprehensive testing finished! Verif
 3. **Check Vercel build logs** - Look for specific error messages during deployment
 4. **Test both environments separately** - Isolate if issue is production vs preview specific
 5. **Compare working setup vs deployment** - Identify what changed between local and deployed
-6. **Check service status pages** - Verify Vercel, Supabase, and Stripe are operational
+6. **Check service status pages** - Verify Vercel, Supabase, and other APIs are operational
 
 ---
 
@@ -1968,11 +1683,9 @@ Complete development environment setup and comprehensive testing finished! Verif
 ### Phase 2: Configure Production Environment ✅
 
 - [ ] NEXT_PUBLIC_APP_URL updated with actual working domain URL in Vercel production environment
-- [ ] **Production data cleaned up** in Supabase main branch (Stripe customer IDs removed)
 - [ ] **Supabase Site URL updated** with Vercel production URL
-- [ ] **Production Stripe account** configured with live keys and webhook
 - [ ] **Production Gemini API key** created (separate from development) for existing Google Cloud project
-- [ ] **Vercel production environment variables** configured with Supabase, Stripe, and Gemini keys
+- [ ] **Vercel production environment variables** configured with Supabase and Gemini keys
 
 ### Phase 3: Deploy RAG Services to Production ✅
 
@@ -1983,31 +1696,24 @@ Complete development environment setup and comprehensive testing finished! Verif
 - [ ] **Vercel production environment** updated with Google Cloud credentials
 - [ ] **All production RAG services** operational and ready for testing
 
-### Phase 4: Test Production Environment ✅
+### Phase 4: Configure Development Environment ✅
 
-- [ ] **Production web application** loads and functions correctly
-- [ ] **User authentication and database integration** working
-- [ ] **Document upload and RAG processing pipeline** working end-to-end
-- [ ] **RAG-powered AI chat** responding with document context
-- [ ] **Google Cloud Platform production services** operational
-- [ ] **Billing and subscription features** working with test coupon
-- [ ] **Complete RAG SaaS production deployment** verified and functional
-
-### Phase 5: Configure Development Environment ✅
-
+- [ ] **Vercel Preview/Development environment variables** configured with staging Supabase + development keys
 - [ ] **GitHub integration** enabled in Supabase
 - [ ] **Staging branch created** and pushed to GitHub
 - [ ] **Supabase staging preview branch** created and linked
-- [ ] **Staging branch credentials** obtained from Supabase
-- [ ] **Vercel preview/development environment variables** configured with staging Supabase + current development keys
+- [ ] **All staging Supabase credentials** updated in Vercel Preview/Development environment
+- [ ] **Authentication redirect URLs** configured for staging branch
+- [ ] **Database extensions enabled** in staging branch (pgvector and pg_cron)
+- [ ] **Ready to complete development environment setup**
 
-### Phase 6: Complete Development Environment & Test All Systems ✅
+### Phase 5: Complete Development Environment & Test All Systems ✅
 
 - [ ] **Local `apps/web/.env.local` synced** with Vercel preview environment using `vercel env pull`
 - [ ] **Next.js configuration automatically updated** with staging hostname extracted from `apps/web/.env.local`
 - [ ] **Staging database schema fully set up** with fresh migrations, triggers, storage policies, and seed data
 - [ ] **Staging environment database verified** - all tables, storage bucket, and models visible in Supabase
-- [ ] **Production environment** tested with live Stripe and production Gemini API
+- [ ] **Production environment** tested with production Gemini API
 - [ ] **Preview environment** tested with staging Supabase and development keys
 - [ ] **Environment separation verified** - no data mixing between production and development
 - [ ] **Authentication flow** working on production with Vercel URLs
@@ -2016,18 +1722,17 @@ Complete development environment setup and comprehensive testing finished! Verif
 
 ---
 
-## 🎉 Congratulations! You've Successfully Deployed Your RAG SaaS Application
+## 🎉 Congratulations! You've Successfully Deployed Your RAG Simple Application
 
 ### What You've Accomplished
 
-✅ **Production-Ready RAG Deployment** - Your RAG SaaS application is live with complete document processing pipeline  
+✅ **Production-Ready RAG Deployment** - Your RAG Simple application is live with complete document processing pipeline  
 ✅ **Multi-Service Architecture** - Vercel web app + Google Cloud Platform RAG services working together  
 ✅ **Dual Environment Setup** - Complete separation between production and staging/preview environments  
 ✅ **GitHub Integration** - Automated deployments from your repository with proper branch management  
 ✅ **Supabase Branching** - Production and staging databases with proper environment isolation  
 ✅ **Google Cloud Platform** - Production-grade RAG processor (Cloud Run Jobs), GCS handler and task processor (Cloud Functions)  
 ✅ **Vercel Cloud Hosting** - Enterprise-grade hosting with global CDN and automatic scaling  
-✅ **Production Billing** - Live Stripe integration ready for real customer transactions  
 ✅ **Environment Security** - Proper separation of API keys, database credentials, and configuration  
 ✅ **Scalable RAG Pipeline** - Ready to handle real users with professional document processing
 
@@ -2036,15 +1741,13 @@ Complete development environment setup and comprehensive testing finished! Verif
 🌐 **Production Environment** (`your-app.vercel.app`):
 
 - Main Supabase database for live user data and document storage
-- Production Stripe billing for real transactions
 - Production Google Cloud Platform for document processing
 - Production Gemini API for AI-powered document analysis
-- Live customer support and billing management
+- Production environment ready for real users
 
 🧪 **Preview/Staging Environment** (`your-app-git-staging.vercel.app`):
 
 - Staging Supabase database for testing
-- Stripe sandbox for safe billing tests
 - Development Google Cloud Platform for testing document processing
 - Development Gemini API for cost-effective testing
 - Safe environment for testing new RAG features
@@ -2058,21 +1761,21 @@ Complete development environment setup and comprehensive testing finished! Verif
 📊 **Monitoring**: Built-in analytics and error tracking  
 💰 **Cost-Effective**: Pay-as-you-scale pricing model
 
-### Next Steps for Your SaaS Business
+### Next Steps for Your RAG Application
 
 **🎯 Launch Preparation:**
 
-- Set up a domain name
+- Set up a custom domain name
 - Configure production monitoring and analytics
-- Set up customer support system
-- Create marketing and onboarding materials
+- Set up user feedback system
+- Create user documentation and guides
 
 **📈 Growth & Scaling:**
 
 - Monitor usage patterns and optimize performance
 - Add new AI models and features through staging environment
 - Use A/B testing with preview deployments
-- Scale billing tiers based on customer feedback
+- Scale infrastructure based on user feedback
 
 **🛠️ Development Workflow:**
 
@@ -2098,8 +1801,8 @@ Complete development environment setup and comprehensive testing finished! Verif
 
 ---
 
-### 🚀 **Your RAG SaaS is Live and Ready for Customers!**
+### 🚀 **Your RAG Simple Application is Live and Ready for Users!**
 
-Your RAG SaaS application is now professionally deployed with production-grade infrastructure, complete document processing pipeline, proper environment separation, and real billing integration. You have everything needed to start acquiring customers and growing your document-analysis SaaS business.
+Your RAG Simple application is now professionally deployed with production-grade infrastructure, complete document processing pipeline, and proper environment separation. You have everything needed to start serving users with your document-analysis application.
 
 **Ready to launch! 🌟**

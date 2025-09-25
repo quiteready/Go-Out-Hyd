@@ -10,8 +10,6 @@ export interface StorageLimitError {
     remaining: number;
     required: number;
   };
-  subscriptionTier: string;
-  upgradeRequired: boolean;
 }
 
 /**
@@ -26,8 +24,6 @@ export interface UploadErrorResponse {
     remaining: number;
     required: number;
   };
-  subscriptionTier?: string;
-  upgradeRequired?: boolean;
   details?: unknown;
 }
 
@@ -46,7 +42,6 @@ export interface ParsedUploadError {
     limit: number;
     remaining: number;
     required: number;
-    subscriptionTier: string;
   };
   originalError?: unknown;
 }
@@ -55,7 +50,7 @@ export interface ParsedUploadError {
  * Type guard to check if error is a storage limit error
  */
 export function isStorageLimitError(
-  error: unknown,
+  error: unknown
 ): error is StorageLimitError {
   return (
     typeof error === "object" &&
@@ -69,7 +64,7 @@ export function isStorageLimitError(
  * Type guard to check if error is an upload error response
  */
 export function isUploadErrorResponse(
-  error: unknown,
+  error: unknown
 ): error is UploadErrorResponse {
   return (
     typeof error === "object" &&
