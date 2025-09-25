@@ -93,26 +93,26 @@ def is_placeholder_value(value: str) -> bool:
 
     value_lower = value.lower()
     placeholder_patterns = [
-        # Project/bucket placeholders (rag-saas specific)
+        # Project/bucket placeholders (rag-simple specific)
         "your-project-id",
         "your_project_id",
         "your-production-project-id",
         "your-bucket-name",
         "your-production-bucket-name",
-        # Database URL placeholders (rag-saas specific)
+        # Database URL placeholders (rag-simple specific)
         "your-database-url",
         "your-production-database-url",
         "[your-password]",
         "db.xxxxx.supabase.co",
         "your_password_here",
-        # Supabase placeholders (rag-saas web app)
+        # Supabase placeholders (rag-simple web app)
         "your-supabase-url",
         "your-production-supabase-url",
         "your-supabase-anon-key",
         "your-production-supabase-anon-key",
         "your-supabase-service-role-key",
         "your-production-supabase-service-role-key",
-        # API key placeholders (rag-saas specific)
+        # API key placeholders (rag-simple specific)
         "your_api_key_here",
         "your_development_api_key_here",
         "your_production_api_key_here",
@@ -120,24 +120,24 @@ def is_placeholder_value(value: str) -> bool:
         "rp_prod_your_production_api_key_here",
         "your-gemini-api-key",
         "your-production-gemini-api-key",
-        # Google Cloud Service Account placeholders (rag-saas web app)
+        # Google Cloud Service Account placeholders (rag-simple web app)
         "your-service-account-key",
         "your-production-service-account-key",
-        # Stripe placeholders (rag-saas web app)
+        # Stripe placeholders (rag-simple web app)
         "sk_test_your_stripe_test_secret_key",
         "sk_live_your_stripe_live_secret_key",
         "pk_test_your_stripe_test_publishable_key",
         "pk_live_your_stripe_live_publishable_key",
         "whsec_your_webhook_secret_for_local_testing",
         "whsec_your_production_webhook_secret",
-        # Stripe Price ID placeholders (rag-saas web app)
+        # Stripe Price ID placeholders (rag-simple web app)
         "price_test_free_tier_id",
         "price_test_basic_tier_id",
         "price_test_pro_tier_id",
         "price_live_free_tier_id",
         "price_live_basic_tier_id",
         "price_live_pro_tier_id",
-        # URL placeholders (rag-saas specific)
+        # URL placeholders (rag-simple specific)
         "https://your-domain.com",
         "https://billing.stripe.com/p/login/live_something",
         # Generic placeholders
