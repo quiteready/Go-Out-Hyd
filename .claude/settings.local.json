@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv:*)",
+      "mcp__repoprompt__get_file_tree",
+      "mcp__repoprompt__read_file",
+      "mcp__repoprompt__manage_workspaces",
+      "mcp__repoprompt__search",
+      "mcp__repoprompt__manage_selection",
+      "mcp__repoprompt__apply_edits",
+      "mcp__repoprompt__list_windows",
+      "mcp__repoprompt__select_window",
+      "mcp__repoprompt__chat_send",
+      "mcp__repoprompt__file_actions",
+      "WebSearch",
+      "WebFetch(domain:docs.astral.sh)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:supabase.com)",
+      "mcp__repoprompt__read_selected_files",
+      "Bash(gcloud functions deploy:*)"
+    ],
+    "deny": []
+  }
+}

@@ -1,0 +1,80 @@
+# Temporary ignore file for deployment - includes models directory
+# Virtual environments
+.venv/
+venv/
+# env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+
+# Git
+.git/
+.gitignore
+
+# Development files
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Linting and formatting cache (LARGE - exclude from build)
+.mypy_cache/
+.ruff_cache/
+
+# Development/deployment files not needed in container
+.dockerignore
+test-document.txt
+
+# Deployment scripts (not needed in container)
+scripts/deploy_*.py
+scripts/setup_*.py
+scripts/gcp_*.py
+scripts/deployment_config.py
+scripts/__pycache__/
+scripts/.mypy_cache/
+
+# Environment files (keep templates, ignore actual env files)
+.env
+.env.*
+
+# Test files and examples (not needed for build)
+Test-pdf-examples/
+test-*.pdf
+test-*.txt
+*-test.*
+*_test.*
+
+# Service account keys (CRITICAL - never upload to Cloud Build!)
+service-account-*.json
+*.json.enc
+*-key.json
+*-credentials.json
+
+# Build artifacts that shouldn't be uploaded
+.dockerignore
+Dockerfile.dev
+Dockerfile.test
+
+# Local development only
+.venv/
+uv.lock.local

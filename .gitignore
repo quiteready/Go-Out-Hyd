@@ -1,0 +1,140 @@
+# AI Documentation
+ai_docs/references/
+
+# Root-level dependencies (if any)
+node_modules/
+.pnp
+.pnp.*
+__pycache__/
+
+# Environment files
+.env
+.env*.local
+.env.prod
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs at root level
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Build outputs that might appear at root
+dist/
+build/
+out/
+
+# Package manager files
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Python virtual environments (if created at root)
+.venv/
+venv/
+env/
+__pycache__/
+
+# Coverage reports
+coverage/
+.coverage
+.nyc_output
+
+# Cache directories
+.cache/
+.parcel-cache/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Development tools
+.eslintcache
+*.tsbuildinfo
+
+# Deployment
+.vercel
+.netlify
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Service account keys and credentials (CRITICAL SECURITY)
+service-account*.json
+*-key.json
+*-credentials.json
+*.json.enc
+gcp-key*.json
+firebase-*.json
+google-services.json
+
+# Test files and examples
+Test-pdf-examples/
+test-*.pdf
+test-*.txt
+**/test-data/
+**/*-test-*
+
+# Python specific
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Model files (large binaries)
+*.pkl
+*.joblib
+*.bin
+*.safetensors
+*.h5
+*.onnx
+*.pt
+*.pth

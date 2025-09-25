@@ -1,0 +1,131 @@
+# Comprehensive .dockerignore to reduce context size
+# This reduces build time and layer sizes
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+*.md
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Temporary files
+tmp/
+temp/
+
+# Large model files that should be downloaded in container
+models/
+*.pkl
+*.joblib
+*.bin
+*.safetensors
+
+# Deployment and setup scripts (not needed in runtime image)
+scripts/
+cloudbuild*.yaml
+cloudbuild*.yml
+Makefile
+
+# Test files and examples (not needed in production)
+Test-pdf-examples/
+test-*.pdf
+test-*.txt
+*-test.*
+*_test.*
+
+# Service account keys (NEVER include in image!)
+service-account-*.json
+*.json.enc
+*-key.json
+*-credentials.json
