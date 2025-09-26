@@ -18,9 +18,6 @@ from typing import Any, TypedDict
 import google.genai as genai
 import structlog
 
-# Import MediaResolution enum for proper type safety
-from google.genai.types import MediaResolution
-
 from ..audio_transcription import AudioTranscriptionService
 from ..config import config
 from ..models.metadata_models import TranscriptMetadata, VideoChunkMetadata
@@ -139,7 +136,9 @@ class VideoProcessingService:
                 converted_path=str(converted_path),
             )
 
-            # Use ffmpeg to convert with optimized settings
+            # Use ffmpeg to convert with aggressive GenAI-compatible settings
+            # This conversion eliminates problematic MOV metadata and headers that cause
+            # GenAI file processing failures, especially in the first chunk (0-30s)
             subprocess.run(
                 [
                     "ffmpeg",
@@ -147,12 +146,32 @@ class VideoProcessingService:
                     video_path,
                     "-c:v",
                     "libx264",  # Standard H.264 video codec
+                    "-profile:v",
+                    "baseline",  # Use baseline profile for maximum compatibility
+                    "-level",
+                    "3.1",  # H.264 level for broad compatibility
                     "-c:a",
                     "aac",  # Standard AAC audio codec
+                    "-ar",
+                    "48000",  # Standard audio sample rate
+                    "-ac",
+                    "2",  # Stereo audio
                     "-map_metadata",
-                    "-1",  # Strip problematic metadata
+                    "-1",  # Strip ALL metadata including problematic MOV headers
+                    "-map_chapters",
+                    "-1",  # Remove chapter information
                     "-movflags",
                     "+faststart",  # Optimize for streaming
+                    "-avoid_negative_ts",
+                    "make_zero",  # Fix timestamp issues that cause GenAI processing problems
+                    "-fflags",
+                    "+genpts+flush_packets",  # Generate timestamps and flush packets for clean output
+                    "-force_key_frames",
+                    "expr:gte(t,n_forced*2)",  # Force keyframes every 2 seconds for clean chunking
+                    "-bsf:v",
+                    "h264_mp4toannexb,h264_metadata=aud=insert:sei=remove",  # Clean H.264 stream
+                    "-f",
+                    "mp4",  # Force MP4 container format
                     "-y",  # Overwrite output file if exists
                     str(converted_path),
                 ],
@@ -463,7 +482,11 @@ class VideoProcessingService:
                     "-c",
                     "copy",  # Copy streams without re-encoding
                     "-avoid_negative_ts",
-                    "make_zero",
+                    "make_zero",  # Fix timestamp issues for GenAI compatibility
+                    "-copyts",  # Copy input timestamps
+                    "-start_at_zero",  # Start timestamps at zero for consistent chunking
+                    "-fflags",
+                    "+genpts",  # Generate presentation timestamps
                     str(chunk_file),
                     "-y",
                 ],
@@ -504,6 +527,10 @@ class VideoProcessingService:
                     "aac",
                     "-b:a",
                     "64k",  # Lower audio bitrate for 30-second chunks
+                    "-avoid_negative_ts",
+                    "make_zero",  # Fix timestamp issues for GenAI compatibility
+                    "-fflags",
+                    "+genpts",  # Generate presentation timestamps
                     str(chunk_file),
                     "-y",
                 ],
@@ -558,6 +585,10 @@ class VideoProcessingService:
                     "aac",
                     "-b:a",
                     "48k",  # Very low audio bitrate for size reduction
+                    "-avoid_negative_ts",
+                    "make_zero",  # Fix timestamp issues for GenAI compatibility
+                    "-fflags",
+                    "+genpts",  # Generate presentation timestamps
                     str(chunk_file),
                     "-y",
                 ],
@@ -713,8 +744,8 @@ class VideoProcessingService:
             # All video chunks are created as MP4 files by create_video_chunk()
             mime_type = "video/mp4"
 
-            # Upload video chunk and wait for it to be ready using the file manager
-            uploaded_video = await self.file_manager.upload_and_wait(
+            # Upload video chunk and wait for it to be ready using the file manager with retry logic
+            uploaded_video = await self.file_manager.upload_and_wait_with_retry(
                 video_chunk_path, mime_type=mime_type
             )
 
@@ -726,29 +757,10 @@ class VideoProcessingService:
 
                 # Generate comprehensive video context analysis
                 contents: Any = [prompt, uploaded_video]
-                # Map our simple string values to the SDK's MediaResolution enum
-                resolution_mapping: dict[str, MediaResolution] = {
-                    "low": MediaResolution.MEDIA_RESOLUTION_LOW,
-                    "medium": MediaResolution.MEDIA_RESOLUTION_MEDIUM,
-                    "high": MediaResolution.MEDIA_RESOLUTION_HIGH,
-                    "default": MediaResolution.MEDIA_RESOLUTION_MEDIUM,  # Default to medium
-                }
-
-                # Get the enum value, with fallback and warning for unknown values
-                if media_resolution not in resolution_mapping:
-                    logger.warning(
-                        "Unknown media_resolution value, defaulting to medium",
-                        provided_resolution=media_resolution,
-                        valid_options=list(resolution_mapping.keys()),
-                    )
-                    sdk_resolution = MediaResolution.MEDIA_RESOLUTION_MEDIUM
-                else:
-                    sdk_resolution = resolution_mapping[media_resolution]
 
                 response = await self.genai_client.aio.models.generate_content(
                     model="gemini-2.5-flash",
-                    contents=contents,  # type: ignore[arg-type]
-                    config={"media_resolution": sdk_resolution},
+                    contents=contents,
                 )
 
                 # Extract context from response

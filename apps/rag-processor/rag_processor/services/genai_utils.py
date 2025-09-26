@@ -54,18 +54,26 @@ class GenAIFileManager:
             try:
                 # Use retry logic for GenAI API calls to handle 500 errors gracefully
 
-                async def _check_file_state():
+                async def _check_file_state() -> Any:
                     return await self.genai_client.aio.files.get(name=file_name)
 
                 file_info = await retry_genai_operation(
                     _check_file_state, operation_name=f"check_file_state({file_name})"
                 )
 
+                logger.debug(f"File {file_name} current state: {file_info.state}")
+
                 if file_info.state == types.FileState.ACTIVE:
-                    logger.debug(f"File {file_name} is now ACTIVE")
+                    elapsed_time = asyncio.get_event_loop().time() - start_time
+                    logger.info(
+                        f"File {file_name} reached ACTIVE state after {elapsed_time:.1f}s"
+                    )
                     return True
                 elif file_info.state == types.FileState.FAILED:
-                    logger.error(f"File {file_name} failed to process")
+                    elapsed_time = asyncio.get_event_loop().time() - start_time
+                    logger.error(
+                        f"File {file_name} failed to process after {elapsed_time:.1f}s (state: FAILED)"
+                    )
                     return False
 
                 # Check timeout
@@ -73,7 +81,7 @@ class GenAIFileManager:
                 if elapsed_time > max_wait_time:
                     logger.error(
                         f"Timeout waiting for file {file_name} to become active "
-                        f"after {elapsed_time:.1f} seconds"
+                        f"after {elapsed_time:.1f} seconds (current state: {file_info.state})"
                     )
                     return False
 
@@ -81,9 +89,9 @@ class GenAIFileManager:
                 await asyncio.sleep(2)
 
             except Exception as e:
-                # If retry logic exhausted all attempts, this is a genuine failure
+                elapsed_time = asyncio.get_event_loop().time() - start_time
                 logger.error(
-                    f"Error checking file state for {file_name} after retries: {e}"
+                    f"Error checking file state for {file_name} after retries and {elapsed_time:.1f}s: {e}"
                 )
                 return False
 
@@ -112,7 +120,7 @@ class GenAIFileManager:
 
         # Use retry logic for GenAI upload to handle 500 errors gracefully
 
-        async def _upload_file():
+        async def _upload_file() -> Any:
             with open(file_path, "rb") as f:
                 if mime_type:
                     return await self.genai_client.aio.files.upload(
@@ -142,11 +150,113 @@ class GenAIFileManager:
             # Clean up failed upload
             await self.cleanup_file(uploaded_file)
             raise NonRetryableError(
-                f"File {uploaded_file.name} did not reach ACTIVE state within "
-                f"{max_wait_time} seconds"
+                f"File {uploaded_file.name} failed to reach ACTIVE state "
+                f"(max wait time: {max_wait_time}s). This may indicate a Google GenAI API processing issue."
             )
 
         return uploaded_file
+
+    async def upload_and_wait_with_retry(
+        self,
+        file_path: str,
+        mime_type: str | None = None,
+        max_wait_time: int = 180,
+        max_retries: int = 3,
+        base_delay: float = 5.0,
+    ) -> Any:
+        """
+        Upload a file and wait for it to reach ACTIVE state with retry logic.
+
+        This method handles temporary GenAI API processing issues by retrying
+        uploads that fail due to files not reaching ACTIVE state quickly.
+        Uses exponential backoff to avoid overwhelming the API during issues.
+
+        Args:
+            file_path: Path to the file to upload
+            mime_type: MIME type of the file (e.g., 'video/mp4', 'audio/wav')
+            max_wait_time: Maximum time to wait for file to become active per attempt
+            max_retries: Maximum number of retry attempts (default: 3)
+            base_delay: Base delay in seconds for exponential backoff (default: 5.0)
+
+        Returns:
+            The uploaded GenAI file object
+
+        Raises:
+            Exception: If upload fails after all retry attempts or encounters non-retryable error
+        """
+        last_error = None
+
+        for attempt in range(max_retries):
+            try:
+                logger.debug(
+                    f"Upload attempt {attempt + 1}/{max_retries} for file: {file_path}"
+                )
+
+                # Attempt the upload using existing logic
+                result = await self.upload_and_wait(file_path, mime_type, max_wait_time)
+
+                # Success - log and return
+                if attempt > 0:
+                    logger.info(
+                        f"Upload succeeded on attempt {attempt + 1}/{max_retries} for file: {file_path}"
+                    )
+
+                return result
+
+            except Exception as error:
+                last_error = error
+
+                # Check if this failure should be retried
+                if not self._is_retryable_failure(error):
+                    logger.error(
+                        f"Non-retryable error on attempt {attempt + 1}/{max_retries} for {file_path}: {error}"
+                    )
+                    raise error
+
+                # Check if we have more attempts remaining
+                if attempt == max_retries - 1:
+                    logger.error(
+                        f"Upload failed after {max_retries} attempts for {file_path}. Final error: {error}"
+                    )
+                    break
+
+                # Calculate delay with exponential backoff: 5s, 10s, 20s
+                delay = base_delay * (2**attempt)
+
+                logger.warning(
+                    f"Retryable error on attempt {attempt + 1}/{max_retries} for {file_path}: {error}. "
+                    f"Retrying in {delay}s..."
+                )
+
+                # Wait before retry
+                await asyncio.sleep(delay)
+
+        # All retry attempts exhausted
+        if last_error is not None:
+            raise last_error
+        else:
+            raise RuntimeError(
+                "Upload failed after all retry attempts with no recorded error"
+            )
+
+    def _is_retryable_failure(self, error: Exception) -> bool:
+        """
+        Determine if a file upload failure should be retried.
+
+        Retryable failures are typically temporary GenAI API processing issues
+        where files upload successfully but fail to reach ACTIVE state quickly.
+
+        Args:
+            error: The exception that occurred during upload
+
+        Returns:
+            True if the failure should be retried, False otherwise
+        """
+        if isinstance(error, NonRetryableError):
+            error_message = str(error).lower()
+            # Check for the specific failure pattern indicating GenAI API processing issues
+            return "failed to reach active state" in error_message
+        return False
 
     async def cleanup_file(self, uploaded_file: Any) -> None:
         """
@@ -158,7 +268,7 @@ class GenAIFileManager:
         if uploaded_file and uploaded_file.name:
             try:
                 # Use retry logic for GenAI delete to handle 500 errors gracefully
-                async def _delete_file():
+                async def _delete_file() -> Any:
                     return await self.genai_client.aio.files.delete(
                         name=uploaded_file.name
                     )

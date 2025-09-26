@@ -140,8 +140,8 @@ class ImageProcessingService:
             # Determine mime type based on file extension
             mime_type = self._get_image_mime_type(image_path)
 
-            # Upload image and wait for it to be ready using the file manager
-            genai_file = await self.file_manager.upload_and_wait(
+            # Upload image and wait for it to be ready using the file manager with retry logic
+            genai_file = await self.file_manager.upload_and_wait_with_retry(
                 image_path, mime_type=mime_type
             )
 

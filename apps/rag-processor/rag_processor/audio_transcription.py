@@ -85,7 +85,7 @@ class AudioTranscriptionService:
                     self.temp_dir / f"audio_{unique_suffix}.{output_format}"
                 )
 
-            # Build ffmpeg command for audio extraction
+            # Build ffmpeg command for audio extraction with timestamp compatibility
             ffmpeg_cmd = [
                 "ffmpeg",
                 "-i",
@@ -97,15 +97,20 @@ class AudioTranscriptionService:
                 "16000",  # 16kHz sample rate for compatibility
                 "-ac",
                 "1",  # Mono channel
+                "-avoid_negative_ts",
+                "make_zero",  # Fix timestamp issues for consistency with video processing
+                "-fflags",
+                "+genpts",  # Generate presentation timestamps
                 "-y",  # Overwrite output file
                 str(temp_audio_file),
             ]
 
-            logger.debug(
-                "Extracting audio from video: video_path=%s, output_file=%s, format=%s",
+            logger.info(
+                "Extracting audio from video: video_path=%s, output_file=%s, format=%s, unique_id=%s",
                 video_path,
                 str(temp_audio_file),
                 output_format,
+                unique_id or "generated",
             )
 
             # Run ffmpeg
@@ -384,6 +389,7 @@ class AudioTranscriptionService:
             )
 
             # Step 1: Extract audio from video chunk with unique ID to prevent batch processing collisions
+            # Use chunk-specific unique ID that includes actual time boundaries
             unique_id = f"chunk_{chunk_index}_{start_time:.1f}_{end_time:.1f}"
             audio_file_path, audio_metadata = await self.extract_audio_from_video(
                 video_chunk_path, unique_id=unique_id
@@ -407,9 +413,12 @@ class AudioTranscriptionService:
             }
 
             logger.info(
-                "Video chunk transcription completed: chunk_index=%d, transcript_length=%d",
+                "Video chunk transcription completed: video_chunk=%s, chunk_index=%d, transcript_length=%d, unique_id=%s, transcript_preview=%s",
+                video_chunk_path,
                 chunk_index,
                 len(transcript_data.get("text", "")),
+                unique_id,
+                (transcript_data.get("text", "") or "")[:100].replace("\n", " "),
             )
 
             return result
