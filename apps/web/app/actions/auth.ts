@@ -47,7 +47,7 @@ export async function signUpAction(
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/confirm`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/chat`,
       data: {
         full_name: fullName,
       },
