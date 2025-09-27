@@ -12,7 +12,7 @@ import os
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import TypedDict
 
 import google.genai as genai
 from google.genai import types
@@ -22,6 +22,42 @@ from .utils.content_router import get_content_router
 from .utils.retry_utils import NonRetryableError
 
 logger = logging.getLogger(__name__)
+
+
+class AudioMetadata(TypedDict):
+    """Metadata for extracted audio files."""
+
+    duration_seconds: float
+    file_size_bytes: int
+    format: str
+
+
+class TranscriptData(TypedDict):
+    """Structured transcript data from audio transcription."""
+
+    text: str
+    language: str
+    model: str
+    transcript_timestamp: str
+    words: list[dict[str, str | float]]
+    error: str | None
+
+
+class ChunkMetadata(TypedDict):
+    """Metadata for video chunk processing."""
+
+    chunk_index: int
+    start_time: float
+    end_time: float
+    duration: float
+    audio_metadata: AudioMetadata | None
+
+
+class VideoChunkTranscriptResult(TypedDict):
+    """Complete result structure for video chunk transcription."""
+
+    chunk_metadata: ChunkMetadata
+    transcript: TranscriptData
 
 
 class AudioTranscriptionError(NonRetryableError):
@@ -54,7 +90,7 @@ class AudioTranscriptionService:
 
     async def extract_audio_from_video(
         self, video_path: str, output_format: str = "mp3", unique_id: str | None = None
-    ) -> tuple[str, dict[str, Any]]:
+    ) -> tuple[str, AudioMetadata]:
         """
         Extract audio from video file using ffmpeg.
 
@@ -141,7 +177,7 @@ class AudioTranscriptionService:
                 )
 
             # Get basic metadata
-            metadata = {
+            metadata: AudioMetadata = {
                 "duration_seconds": await self._get_audio_duration(
                     str(temp_audio_file)
                 ),
@@ -221,7 +257,7 @@ class AudioTranscriptionService:
 
     async def transcribe_audio_with_genai(
         self, audio_path: str, language_hint: str | None = None
-    ) -> dict[str, Any]:
+    ) -> TranscriptData:
         """
         Transcribe audio using Google GenAI Gemini models.
 
@@ -306,12 +342,13 @@ class AudioTranscriptionService:
                 transcript_text = ""
 
             # Create response structure
-            transcript_data: dict[str, Any] = {
+            transcript_data: TranscriptData = {
                 "text": transcript_text,
                 "language": language_hint or "auto-detected",
                 "model": config.TRANSCRIPTION_MODEL,
                 "transcript_timestamp": datetime.now(timezone.utc).isoformat(),
                 "words": [],  # GenAI doesn't provide word-level timing
+                "error": None,
             }
 
             logger.info(
@@ -363,7 +400,7 @@ class AudioTranscriptionService:
         start_time: float,
         end_time: float,
         language_hint: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> VideoChunkTranscriptResult:
         """
         Extract audio from video chunk and transcribe it.
 
@@ -401,14 +438,15 @@ class AudioTranscriptionService:
             )
 
             # Step 3: Combine results
-            result = {
-                "chunk_metadata": {
-                    "chunk_index": chunk_index,
-                    "start_time": start_time,
-                    "end_time": end_time,
-                    "duration": end_time - start_time,
-                    "audio_metadata": audio_metadata,
-                },
+            chunk_metadata: ChunkMetadata = {
+                "chunk_index": chunk_index,
+                "start_time": start_time,
+                "end_time": end_time,
+                "duration": end_time - start_time,
+                "audio_metadata": audio_metadata,
+            }
+            result: VideoChunkTranscriptResult = {
+                "chunk_metadata": chunk_metadata,
                 "transcript": transcript_data,
             }
 
@@ -430,21 +468,24 @@ class AudioTranscriptionService:
                 chunk_index,
             )
 
+            no_audio_metadata: ChunkMetadata = {
+                "chunk_index": chunk_index,
+                "start_time": start_time,
+                "end_time": end_time,
+                "duration": end_time - start_time,
+                "audio_metadata": None,
+            }
+            no_audio_transcript: TranscriptData = {
+                "text": "",
+                "language": language_hint or "unknown",
+                "model": config.TRANSCRIPTION_MODEL,
+                "transcript_timestamp": datetime.now(timezone.utc).isoformat(),
+                "words": [],
+                "error": "No audio track found",
+            }
             return {
-                "chunk_metadata": {
-                    "chunk_index": chunk_index,
-                    "start_time": start_time,
-                    "end_time": end_time,
-                    "duration": end_time - start_time,
-                },
-                "transcript": {
-                    "text": "",
-                    "language": language_hint or "unknown",
-                    "model": config.TRANSCRIPTION_MODEL,
-                    "transcript_timestamp": datetime.now(timezone.utc).isoformat(),
-                    "words": [],
-                    "error": "No audio track found",
-                },
+                "chunk_metadata": no_audio_metadata,
+                "transcript": no_audio_transcript,
             }
 
         except Exception as e:
@@ -456,21 +497,24 @@ class AudioTranscriptionService:
                 type(e).__name__,
             )
 
+            error_metadata: ChunkMetadata = {
+                "chunk_index": chunk_index,
+                "start_time": start_time,
+                "end_time": end_time,
+                "duration": end_time - start_time,
+                "audio_metadata": None,
+            }
+            error_transcript: TranscriptData = {
+                "text": "",
+                "language": language_hint or "unknown",
+                "model": config.TRANSCRIPTION_MODEL,
+                "transcript_timestamp": datetime.now(timezone.utc).isoformat(),
+                "words": [],
+                "error": str(e),
+            }
             return {
-                "chunk_metadata": {
-                    "chunk_index": chunk_index,
-                    "start_time": start_time,
-                    "end_time": end_time,
-                    "duration": end_time - start_time,
-                },
-                "transcript": {
-                    "text": "",
-                    "language": language_hint or "unknown",
-                    "model": config.TRANSCRIPTION_MODEL,
-                    "transcript_timestamp": datetime.now(timezone.utc).isoformat(),
-                    "words": [],
-                    "error": str(e),
-                },
+                "chunk_metadata": error_metadata,
+                "transcript": error_transcript,
             }
 
         finally:

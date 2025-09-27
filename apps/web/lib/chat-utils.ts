@@ -10,10 +10,8 @@ import { eq, asc } from "drizzle-orm";
 
 // Re-export client-safe utilities from constants file
 export {
-  validateImageFile,
   validateImageFiles,
   createImagePreview,
-  formatFileSize,
   type ImageValidationResult,
   type ImagePreview,
   type AISDKAttachment,
@@ -47,7 +45,7 @@ export interface ExtendedMessage extends UIMessage {
  */
 export async function fetchAndFormatConversationMessages(
   conversationId: string,
-  userId: string,
+  userId: string
 ): Promise<{
   success: boolean;
   messages?: ExtendedMessage[];
@@ -72,12 +70,12 @@ export async function fetchAndFormatConversationMessages(
       .orderBy(asc(dbMessages.created_at));
 
     console.log(
-      `📋 Processing ${dbMessagesResult.length} messages from conversation`,
+      `📋 Processing ${dbMessagesResult.length} messages from conversation`
     );
 
     const hasAttachments = dbMessagesResult.some(
       (msg) =>
-        msg.attachments && (msg.attachments as MessageAttachment[]).length > 0,
+        msg.attachments && (msg.attachments as MessageAttachment[]).length > 0
     );
 
     let finalMessages: Message[] = dbMessagesResult;
@@ -88,18 +86,18 @@ export async function fetchAndFormatConversationMessages(
 
       const refreshResult = await refreshConversationAttachments(
         dbMessagesResult,
-        userId,
+        userId
       );
 
       if (refreshResult.success && refreshResult.refreshedCount > 0) {
         console.log(
-          `✅ Refreshed ${refreshResult.refreshedCount} expired attachment URLs`,
+          `✅ Refreshed ${refreshResult.refreshedCount} expired attachment URLs`
         );
         // Use the updated messages from the refresh result
         finalMessages = refreshResult.updatedMessages as Message[];
       } else if (refreshResult.failedCount > 0) {
         console.error(
-          `❌ Failed to refresh ${refreshResult.failedCount} attachment URLs`,
+          `❌ Failed to refresh ${refreshResult.failedCount} attachment URLs`
         );
       } else {
         console.log("✅ All attachment URLs are still valid");
@@ -134,7 +132,7 @@ export async function fetchAndFormatConversationMessages(
               url: attachment.signedUrl,
               filename: attachment.name,
             });
-          },
+          }
         );
       }
 
@@ -167,7 +165,7 @@ export async function fetchAndFormatConversationMessages(
   } catch (error) {
     console.error(
       "❌ Error fetching and formatting conversation messages:",
-      error,
+      error
     );
     return {
       success: false,

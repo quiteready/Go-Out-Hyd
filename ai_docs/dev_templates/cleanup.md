@@ -56,58 +56,41 @@ AI Agent: Analyze the project to fill this out.
 
 ## 🛠️ PHASE 2: Analysis Tool Installation
 
-### Required Analysis Tools
+### ⚠️ CRITICAL: Do NOT Modify Configuration Files
 
-<!-- AI Agent: Install these tools if not already present -->
+<!-- AI Agent: NEVER modify tsconfig.json or eslint.config.mjs during cleanup -->
 
-**Install comprehensive analysis tools:**
+**🚨 FORBIDDEN ACTIONS:**
 
 ```bash
-# Core dependency analysis
+# NEVER modify these files during cleanup:
+# ❌ tsconfig.json - DO NOT change TypeScript configuration
+# ❌ eslint.config.mjs - DO NOT change ESLint configuration
+# ❌ package.json scripts - DO NOT modify existing linting/type-check scripts
+```
+
+**🛡️ SAFETY RULE: Work With Existing Configuration**
+The project already has working TypeScript and ESLint configurations. **Any modifications to these files can break a working codebase and introduce dozens of false positive errors.**
+
+**✅ ALLOWED: Use Existing Analysis Tools**
+Many projects already have analysis tools installed. Check `package.json` devDependencies for:
+
+```bash
+# Check if these tools are already available:
+npx depcheck --version          # Dependency analysis
+npx npm-check-updates --version # Update checking
+npm run lint                   # Use existing ESLint config
+npm run type-check            # Use existing TypeScript config
+```
+
+**✅ ONLY INSTALL MISSING CORE TOOLS:**
+
+```bash
+# Only install if truly missing (check package.json first):
 npm install --save-dev depcheck npm-check-updates
 
-# Enhanced ESLint plugins for unused code detection
-npm install --save-dev eslint-plugin-unused-imports eslint-plugin-import
-
-# TypeScript analysis tools
-npm install --save-dev @typescript-eslint/eslint-plugin @typescript-eslint/parser
-
-# Bundle analysis (for dead code detection)
-npm install --save-dev @next/bundle-analyzer
-
-# Additional code quality tools
-npm install --save-dev eslint-plugin-react-hooks eslint-plugin-jsx-a11y
-```
-
-**Configure ESLint for comprehensive analysis:**
-
-```javascript
-// eslint.config.mjs additions for cleanup analysis
-{
-  plugins: ['unused-imports', 'import'],
-  rules: {
-    'unused-imports/no-unused-imports': 'error',
-    'unused-imports/no-unused-vars': 'error',
-    '@typescript-eslint/no-unused-vars': 'error',
-    'import/no-unused-modules': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
-  }
-}
-```
-
-**Enable TypeScript strict mode analysis:**
-
-```json
-// tsconfig.json strict settings for analysis
-{
-  "strict": true,
-  "noUnusedLocals": true,
-  "noUnusedParameters": true,
-  "exactOptionalPropertyTypes": true,
-  "noImplicitReturns": true,
-  "noFallthroughCasesInSwitch": true,
-  "noUncheckedIndexedAccess": true
-}
+# NEVER install or configure additional ESLint plugins during cleanup
+# NEVER modify TypeScript compiler options during cleanup
 ```
 
 ---
@@ -154,24 +137,26 @@ npx npm-check-updates --format group
 **2. Unused Code Analysis:**
 
 ```bash
-# Run ESLint with unused imports/vars detection (use project's npm script)
-npm run lint -- --no-fix
+# Run ESLint using EXISTING configuration (never modify config)
+npm run lint
 
-# TypeScript unused code detection
-npx tsc --noEmit --noUnusedLocals --noUnusedParameters
+# TypeScript type checking using EXISTING configuration
+npm run type-check
 
-# Alternative type checking using project script if available
-npm run type-check 2>&1 || echo "No type-check script found, using tsc directly"
+# ⚠️ NEVER run with additional flags that aren't in the project's scripts:
+# ❌ npx tsc --noEmit --noUnusedLocals --noUnusedParameters
+# ❌ npx tsc --noEmit --strict
+# These can introduce false positives and break working code
 ```
 
-**3. Type Issues Analysis:**
+**3. Type Issues Analysis (Conservative Approach):**
 
 ```bash
-# Full TypeScript strict mode check
-npx tsc --noEmit --strict
+# Only check for explicit 'any' types (safe check)
+grep -r ": any\|as any" app/ components/ lib/ hooks/ --include="*.ts" --include="*.tsx" || echo "No explicit any types found"
 
-# Check for any types and type assertions
-grep -r "any\|as " app/ components/ lib/ hooks/ --include="*.ts" --include="*.tsx"
+# Check for @ts-ignore or @ts-expect-error (problematic suppressions)
+grep -r "@ts-ignore\|@ts-expect-error" app/ components/ lib/ hooks/ --include="*.ts" --include="*.tsx" || echo "No TypeScript suppressions found"
 ```
 
 **4. Import/Export Analysis:**
@@ -223,6 +208,25 @@ grep -r "console\." app/ components/ lib/ --include="*.ts" --include="*.tsx"
 ---
 
 ## 📊 PHASE 4: Findings Report Generation
+
+### ⚠️ IMPORTANT: Configuration Files Are NOT Issues
+
+<!-- AI Agent: DO NOT categorize working configuration as problems to fix -->
+
+**🚨 NEVER Report These As Issues:**
+
+- ❌ TypeScript configuration that passes `npm run type-check`
+- ❌ ESLint configuration that passes `npm run lint` (warnings are OK)
+- ❌ Working package.json scripts and dependencies
+- ❌ "Missing" strict mode settings in tsconfig.json
+- ❌ "Basic" ESLint rules that aren't causing errors
+
+**✅ ONLY Report Actual Code Issues:**
+
+- Genuine unused exports from utility functions
+- Console.log statements in production code
+- Actually missing dependencies that break scripts
+- Dead code that serves no purpose
 
 ### 🚨 Critical Issues (Fix Immediately)
 
@@ -312,11 +316,14 @@ grep -r "console\." app/ components/ lib/ --include="*.ts" --include="*.tsx"
 
 ### Estimated Cleanup Impact
 
-- **Lines of Code Reducible:** ~[number] lines
-- **Files Deletable:** ~[number] unused files
-- **Dependencies Removable:** ~[number] packages
-- **Type Safety Improvement:** [percentage] of any types can be typed
-- **Performance Gains:** [estimate] components can be optimized
+**🎯 REALISTIC IMPACT ASSESSMENT:**
+
+- **Lines of Code Reducible:** ~50-150 lines (mostly from unused utility functions and console statements)
+- **Files Deletable:** ~0-2 files (most files serve a purpose even if exports aren't used)
+- **Dependencies Removable:** ~0 packages (most "unused" deps are actually build tools)
+- **Dependencies Updatable:** ~3-5 patch updates (safe, backwards-compatible updates only)
+- **Time Investment:** 30-60 minutes for actual improvements
+- **Risk Level:** Very low (no configuration changes, only obvious dead code removal)
 
 ### Recommended Cleanup Order
 
@@ -338,15 +345,30 @@ grep -r "console\." app/ components/ lib/ --include="*.ts" --include="*.tsx"
 **Task Title:** "Comprehensive Codebase Cleanup - [Template Name]"
 
 **Goal Statement:**
-Clean up [template-name] codebase by removing [X] unused imports, fixing [Y] type issues, optimizing [Z] performance patterns, and removing [N] unnecessary dependencies to improve maintainability, type safety, and bundle size.
+Clean up [template-name] codebase by removing genuinely unused utility functions, cleaning console.log statements from production code, and applying safe patch updates to dependencies. Focus on actual improvements without breaking working configurations.
+
+**⚠️ REALISTIC EXPECTATIONS:**
+
+- Most "unused exports" will be intentional (UI libraries, type definitions, template completeness)
+- Most dependencies marked as "unused" by depcheck are actually used by build tools
+- Configuration files (tsconfig.json, eslint.config.mjs) should remain untouched
+- Target: 30-60 minutes of actual cleanup work, not hours of configuration changes
 
 **High-Level Changes Required:**
 
-- Remove unused code ([specific count] imports, [count] functions, [count] variables)
-- Fix type issues ([count] any types, [count] missing annotations)
-- Optimize performance ([count] missing memoizations, [count] hook improvements)
-- Clean dependencies ([count] unused packages, [count] outdated versions)
-- Reorganize files ([count] misplaced files, [count] naming issues)
+**✅ REALISTIC SCOPE:**
+
+- Remove genuinely unused utility functions (typically 5-10 functions from lib/ files)
+- Clean console.log statements from production code (typically 5-15 statements)
+- Apply safe patch updates to dependencies (no major version bumps without evaluation)
+- Keep intentional template features (comprehensive type definitions, UI component variants)
+
+**❌ AVOID OVER-CLEANUP:**
+
+- Don't remove "unused" exports that are part of library patterns
+- Don't modify working TypeScript/ESLint configurations
+- Don't treat comprehensive type definitions as "bloat"
+- Don't remove build tool dependencies marked as "unused" by depcheck
 
 **Files to Modify:** [List of all files needing changes]
 
@@ -354,14 +376,14 @@ Clean up [template-name] codebase by removing [X] unused imports, fixing [Y] typ
 
 **Validation Checklist:**
 
-- [ ] `npm run lint` passes with 0 warnings
+- [ ] `npm run lint` passes (warnings are acceptable, 0 errors required)
 - [ ] `npm run type-check` passes with 0 errors
 - [ ] All imports resolve correctly (verified through type-check)
-- [ ] No unused dependencies remain (verified through depcheck)
-- [ ] All files follow naming conventions
-- [ ] Performance patterns implemented
+- [ ] No actually missing dependencies (scripts run without errors)
 - [ ] No console.log statements remain in production code
-- [ ] **🚨 NOTE:** Build validation only during actual deployment - use lint/type-check for development
+- [ ] Unused exports removed only from utility files (not configuration or UI libraries)
+- [ ] **🚨 NEVER:** Modify tsconfig.json, eslint.config.mjs, or package.json scripts
+- [ ] **🚨 NEVER:** Run build commands during development cleanup
 
 ### User Review & Feedback Section
 
@@ -404,7 +426,3 @@ Clean up [template-name] codebase by removing [X] unused imports, fixing [Y] typ
 2. **Analysis will be fed to task_template.md** to create implementation task
 3. **Implementation task will execute** the approved cleanup changes
 4. **Validation will confirm** all changes work correctly
-
----
-
-_This cleanup analysis template ensures comprehensive codebase health assessment and provides structured data for automated cleanup implementation via task_template.md._
