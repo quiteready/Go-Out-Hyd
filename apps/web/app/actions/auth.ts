@@ -56,6 +56,11 @@ export async function signUpAction(
 
   console.log("Signup data:", data);
 
+  console.log(
+    "Identities object:",
+    JSON.stringify(data.user?.identities, null, 2)
+  );
+
   if (error) {
     console.error("Signup error:", error);
     // Provide helpful error messages for common signup issues
@@ -70,16 +75,31 @@ export async function signUpAction(
     return { success: false, error: error.message };
   }
 
-  // If we get user data back, it means the user already exists
-  if (data.user) {
-    console.log("User already exists for this email");
+  // Check if user already exists and is verified
+  if (data.user && data.user.identities && data.user.identities.length > 0) {
+    const identity = data.user.identities[0];
+    const emailVerified = identity.identity_data?.email_verified;
+
+    console.log("User exists, email verified:", emailVerified);
+
+    if (emailVerified === true) {
+      // User exists and email is already verified - they should log in instead
+      return {
+        success: false,
+        error: "Account already exists and is verified. Please log in instead.",
+      };
+    }
+
+    // If emailVerified is false, this means user exists but hasn't verified email yet
+    // This is fine - they can receive another confirmation email
+  } else {
     return {
       success: false,
-      error:
-        "An account with this email already exists. Try logging in or reset your password if you forgot it.",
+      error: "Account already exists. Please log in instead.",
     };
   }
 
+  // If no error, signup was successful - user needs to check email for verification
   return { success: true };
 }
 
