@@ -40,7 +40,7 @@ export function getBaseStageInfo(stage: string): ParsedStageInfo {
  */
 export function calculateMonotonicProgress(
   stage: string,
-  fileType: FileTypeWorkflow,
+  fileType: FileTypeWorkflow
 ): number {
   // Handle stage mapping first
   const mappedStage =
@@ -86,7 +86,7 @@ export function parseProcessingStage(
   stage: string,
   retryCount: number,
   isRetry: boolean,
-  fileType: FileTypeWorkflow = "video",
+  fileType: FileTypeWorkflow = "video"
 ): ParsedStageInfo {
   // Handle retry states first
   if (isRetry && retryCount > 0) {
@@ -114,7 +114,7 @@ export function parseProcessingStage(
     const stageStart = 20;
     const stageEnd = 95;
     const totalProgress = Math.round(
-      stageStart + (stageEnd - stageStart) * chunkProgress,
+      stageStart + (stageEnd - stageStart) * chunkProgress
     );
 
     return {
@@ -155,21 +155,56 @@ export function estimateTimeRemaining(
   currentStage: string,
   fileSize: number,
   fileType: FileTypeWorkflow = "document",
-  startTime?: string,
+  startTime?: string
 ): string | null {
   if (!startTime) return null;
 
   const start = new Date(startTime);
   const now = new Date();
   const elapsedMinutes = (now.getTime() - start.getTime()) / (1000 * 60);
-
-  // Get media-specific estimates
-  const typeEstimates = TIME_ESTIMATES_BY_TYPE[fileType];
   const fileSizeMB = fileSize / (1024 * 1024);
-  const stageEstimate =
-    typeEstimates[currentStage as keyof typeof typeEstimates] || 0.5;
-  const estimatedTotal = fileSizeMB * stageEstimate;
 
+  // Handle video chunk processing stages specially
+  const chunkMatch = currentStage.match(/^processing_chunk_(\d+)_of_(\d+)$/);
+  if (chunkMatch && fileType === "video") {
+    const [, current, total] = chunkMatch;
+    const currentChunk = parseInt(current);
+    const totalChunks = parseInt(total);
+
+    // Estimate based on real video processing data: ~0.025 min/MB total
+    // Chunk processing is ~80% of total time
+    const totalEstimatedMinutes = fileSizeMB * 0.025;
+    const chunkProcessingTime = totalEstimatedMinutes * 0.8;
+
+    // Calculate progress through chunks and estimate remaining chunk time
+    const chunkProgress = currentChunk / totalChunks;
+    const remainingChunkTime = chunkProcessingTime * (1 - chunkProgress);
+
+    // Add small buffer for final storing stage
+    const remaining = Math.max(0, remainingChunkTime + fileSizeMB * 0.002);
+
+    if (remaining < 1) return "a few minutes";
+    if (remaining < 60) return `~${Math.round(remaining)} minutes`;
+
+    const hours = Math.floor(remaining / 60);
+    const minutes = Math.round(remaining % 60);
+    return `~${hours}h ${minutes}m`;
+  }
+
+  // Handle regular stages with lookup table
+  const typeEstimates = TIME_ESTIMATES_BY_TYPE[fileType];
+  const stageEstimate =
+    typeEstimates[currentStage as keyof typeof typeEstimates] ||
+    // Fallback estimates based on file type
+    (fileType === "video"
+      ? 0.01
+      : fileType === "audio"
+        ? 0.1
+        : fileType === "document"
+          ? 0.05
+          : 0.1);
+
+  const estimatedTotal = fileSizeMB * stageEstimate;
   const remaining = Math.max(0, estimatedTotal - elapsedMinutes);
 
   if (remaining < 1) return "a few minutes";

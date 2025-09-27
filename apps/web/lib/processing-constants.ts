@@ -226,7 +226,7 @@ export const STAGE_MAPPING = {
   generating_embeddings: "storing",
 } as const;
 
-// ✅ Media-specific time estimates - Updated for new backend stages
+// ✅ Media-specific time estimates - Updated based on real processing data
 export const TIME_ESTIMATES_BY_TYPE = {
   document: {
     downloading: 0.05,
@@ -241,10 +241,11 @@ export const TIME_ESTIMATES_BY_TYPE = {
     storing: 0.05,
   },
   video: {
-    downloading: 0.1,
-    processing_video: 0.1,
-    storing: 0.05,
-    // Note: video chunk processing time is dynamic based on duration
+    downloading: 0.005, // Much faster than expected: ~2 seconds per 100MB
+    processing_video: 0.01, // Setup phase: ~4 seconds per 100MB
+    storing: 0.002, // Very fast save: ~1 second per 100MB
+    // Note: Most video processing time is in dynamic chunk processing (0.02-0.03 min/MB total)
+    // Based on real data: 382MB video processed in ~9.5 minutes
   },
   image: {
     downloading: 0.05,
