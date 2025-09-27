@@ -52,14 +52,8 @@ class GenAIFileManager:
 
         while True:
             try:
-                # Use retry logic for GenAI API calls to handle 500 errors gracefully
-
-                async def _check_file_state() -> Any:
-                    return await self.genai_client.aio.files.get(name=file_name)
-
-                file_info = await retry_genai_operation(
-                    _check_file_state, operation_name=f"check_file_state({file_name})"
-                )
+                # Direct file state check (no retry wrapper to avoid missing rapid state transitions)
+                file_info = await self.genai_client.aio.files.get(name=file_name)
 
                 logger.debug(f"File {file_name} current state: {file_info.state}")
 
@@ -71,8 +65,23 @@ class GenAIFileManager:
                     return True
                 elif file_info.state == types.FileState.FAILED:
                     elapsed_time = asyncio.get_event_loop().time() - start_time
+
+                    # Capture all available attributes from the file_info object
+                    file_attrs = {}
+                    for attr in dir(file_info):
+                        if not attr.startswith("_"):
+                            try:
+                                value = getattr(file_info, attr)
+                                # Only include non-callable attributes
+                                if not callable(value):
+                                    file_attrs[attr] = str(value)
+                            except Exception:
+                                pass
+
                     logger.error(
-                        f"File {file_name} failed to process after {elapsed_time:.1f}s (state: FAILED)"
+                        f"File {file_name} failed to process after {elapsed_time:.1f}s - Google GenAI file details",
+                        state="FAILED",
+                        file_attributes=file_attrs,
                     )
                     return False
 
@@ -143,25 +152,84 @@ class GenAIFileManager:
         if not uploaded_file.name:
             raise NonRetryableError("Uploaded file name is None")
 
-        # Wait for file to be ready
-        is_active = await self.wait_for_file_active(uploaded_file.name, max_wait_time)
+        # Wait for file to be ready using simple direct polling
+        start_time = asyncio.get_event_loop().time()
+        logger.debug(f"Waiting for file {uploaded_file.name} to reach ACTIVE state...")
 
-        if not is_active:
-            # Clean up failed upload
-            await self.cleanup_file(uploaded_file)
-            raise NonRetryableError(
-                f"File {uploaded_file.name} failed to reach ACTIVE state "
-                f"(max wait time: {max_wait_time}s). This may indicate a Google GenAI API processing issue."
-            )
+        while True:
+            try:
+                # Direct file state check (same as working local test)
+                file_info = await self.genai_client.aio.files.get(
+                    name=uploaded_file.name
+                )
+                elapsed_time = asyncio.get_event_loop().time() - start_time
 
-        return uploaded_file
+                logger.debug(
+                    f"File {uploaded_file.name} current state: {file_info.state} after {elapsed_time:.1f}s"
+                )
+
+                if file_info.state == types.FileState.ACTIVE:
+                    logger.info(
+                        f"File {uploaded_file.name} reached ACTIVE state after {elapsed_time:.1f}s"
+                    )
+                    return uploaded_file
+
+                elif file_info.state == types.FileState.FAILED:
+                    # Capture all available attributes from the file_info object
+                    file_attrs = {}
+                    for attr in dir(file_info):
+                        if not attr.startswith("_"):
+                            try:
+                                value = getattr(file_info, attr)
+                                if not callable(value):
+                                    file_attrs[attr] = str(value)
+                            except Exception:
+                                pass
+
+                    logger.error(
+                        f"File {uploaded_file.name} failed to process after {elapsed_time:.1f}s - Google GenAI file details",
+                        state="FAILED",
+                        file_attributes=file_attrs,
+                    )
+
+                    # Clean up failed upload
+                    await self.cleanup_file(uploaded_file)
+                    raise NonRetryableError(
+                        f"File {uploaded_file.name} failed to reach ACTIVE state after {elapsed_time:.1f}s. "
+                        f"This may indicate a Google GenAI API processing issue."
+                    )
+
+                # Check timeout
+                if elapsed_time > max_wait_time:
+                    logger.error(
+                        f"Timeout waiting for file {uploaded_file.name} to become active "
+                        f"after {elapsed_time:.1f} seconds (current state: {file_info.state})"
+                    )
+                    await self.cleanup_file(uploaded_file)
+                    raise NonRetryableError(
+                        f"File {uploaded_file.name} timed out after {max_wait_time}s (state: {file_info.state})"
+                    )
+
+                # Wait 2 seconds before checking again
+                await asyncio.sleep(2)
+
+            except NonRetryableError:
+                # Re-raise our own errors
+                raise
+            except Exception as e:
+                elapsed_time = asyncio.get_event_loop().time() - start_time
+                logger.error(
+                    f"Error checking file state for {uploaded_file.name} after {elapsed_time:.1f}s: {e}"
+                )
+                await self.cleanup_file(uploaded_file)
+                raise NonRetryableError(f"File state check failed: {e}") from e
 
     async def upload_and_wait_with_retry(
         self,
         file_path: str,
         mime_type: str | None = None,
         max_wait_time: int = 180,
-        max_retries: int = 3,
+        max_retries: int = 5,
         base_delay: float = 5.0,
     ) -> Any:
         """
@@ -175,7 +243,7 @@ class GenAIFileManager:
             file_path: Path to the file to upload
             mime_type: MIME type of the file (e.g., 'video/mp4', 'audio/wav')
             max_wait_time: Maximum time to wait for file to become active per attempt
-            max_retries: Maximum number of retry attempts (default: 3)
+            max_retries: Maximum number of retry attempts (default: 5)
             base_delay: Base delay in seconds for exponential backoff (default: 5.0)
 
         Returns:
@@ -220,7 +288,7 @@ class GenAIFileManager:
                     )
                     break
 
-                # Calculate delay with exponential backoff: 5s, 10s, 20s
+                # Calculate delay with exponential backoff: 5s, 10s, 20s, 40s, 80s
                 delay = base_delay * (2**attempt)
 
                 logger.warning(

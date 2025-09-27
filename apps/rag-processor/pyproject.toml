@@ -10,7 +10,7 @@ dependencies = [
     # Google Cloud services - optimized for API usage
     "google-cloud-storage>=2.10.0,<3.0.0",
     "vertexai>=1.38.0", # For embeddings via API
-    "google-genai>=1.24.0",
+    "google-genai>=1.38.0",
     "pydub==0.25.1",
     "google-cloud-secret-manager>=2.18.1",
     # Database
