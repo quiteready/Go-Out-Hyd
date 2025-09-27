@@ -210,6 +210,9 @@ git fetch upstream
 # - "rag-simple" → https://github.com/shipkitai/rag-simple.git
 # - "adk-agent-saas" → https://github.com/shipkitai/adk-agent-saas.git
 # - "adk-agent-simple" → https://github.com/shipkitai/adk-agent-simple.git
+# - "adk-walkthrough-youtube" → https://github.com/shipkitai/adk-walkthrough-youtube.git
+# - "chat-llm-arena-walkthrough" → https://github.com/shipkitai/chat-llm-arena-walkthrough.git
+# - "rag-ai-course-walkthrough" → https://github.com/shipkitai/rag-ai-course-walkthrough.git
 ```
 
 ### Change Analysis (AI Handles Automatically)
