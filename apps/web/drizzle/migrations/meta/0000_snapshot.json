@@ -1,5 +1,5 @@
 {
-  "id": "d4d47f4f-70a5-4101-bffc-409a121b4c1e",
+  "id": "bc0bced3-f2a1-479c-a39d-55b33d2660c9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -48,8 +48,12 @@
           "name": "conversations_user_id_users_id_fk",
           "tableFrom": "conversations",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -196,8 +200,12 @@
           "name": "document_chunks_user_id_users_id_fk",
           "tableFrom": "document_chunks",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -205,8 +213,12 @@
           "name": "document_chunks_document_id_documents_id_fk",
           "tableFrom": "document_chunks",
           "tableTo": "documents",
-          "columnsFrom": ["document_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "document_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -380,14 +392,26 @@
           "name": "document_processing_jobs_document_id_documents_id_fk",
           "tableFrom": "document_processing_jobs",
           "tableTo": "documents",
-          "columnsFrom": ["document_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "document_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "document_processing_jobs_file_path_unique": {
+          "name": "document_processing_jobs_file_path_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "file_path"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -567,14 +591,26 @@
           "name": "documents_user_id_users_id_fk",
           "tableFrom": "documents",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "documents_gcs_path_unique": {
+          "name": "documents_gcs_path_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "gcs_path"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -684,8 +720,12 @@
           "name": "messages_conversation_id_conversations_id_fk",
           "tableFrom": "messages",
           "tableTo": "conversations",
-          "columnsFrom": ["conversation_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "conversation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -769,7 +809,9 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -834,36 +876,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "idx_user_usage_events_created_at": {
-          "name": "idx_user_usage_events_created_at",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_user_usage_events_user_id": {
-          "name": "idx_user_usage_events_user_id",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -871,8 +883,12 @@
           "name": "user_usage_events_user_id_users_id_fk",
           "tableFrom": "user_usage_events",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -901,22 +917,38 @@
     "public.document_status": {
       "name": "document_status",
       "schema": "public",
-      "values": ["uploading", "processing", "completed", "error"]
+      "values": [
+        "uploading",
+        "processing",
+        "completed",
+        "error"
+      ]
     },
     "public.file_category": {
       "name": "file_category",
       "schema": "public",
-      "values": ["documents", "images", "videos", "audio"]
+      "values": [
+        "documents",
+        "images",
+        "videos",
+        "audio"
+      ]
     },
     "public.message_sender": {
       "name": "message_sender",
       "schema": "public",
-      "values": ["user", "assistant"]
+      "values": [
+        "user",
+        "assistant"
+      ]
     },
     "public.message_status": {
       "name": "message_status",
       "schema": "public",
-      "values": ["success", "error"]
+      "values": [
+        "success",
+        "error"
+      ]
     }
   },
   "schemas": {},

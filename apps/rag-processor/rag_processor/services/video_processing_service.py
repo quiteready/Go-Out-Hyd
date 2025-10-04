@@ -18,7 +18,6 @@ from typing import Any, TypedDict
 import google.genai as genai
 import structlog
 
-from ..audio_transcription import AudioTranscriptionService
 from ..config import config
 from ..models.metadata_models import TranscriptMetadata, VideoChunkMetadata
 from ..utils.gcs_utils import cleanup_temp_file
@@ -29,6 +28,7 @@ from ..utils.retry_utils import (
     retry_genai_operation,
 )
 from ..utils.token_utils import create_google_tokenizer, truncate_text_to_tokens
+from .audio_transcription import AudioTranscriptionService
 from .database_service import ChunkData, get_database_service
 from .embedding_service import get_embedding_service
 from .genai_utils import create_file_manager
@@ -103,53 +103,50 @@ class VideoProcessingService:
             retry_max_attempts=self.retry_config.max_attempts,
         )
 
-    def convert_mov_to_mp4(self, video_path: str) -> str:
+    def clean_and_normalize_video(self, video_path: str) -> str:
         """
-        Convert MOV files to MP4 for better compatibility.
+        Clean and normalize video file to ensure Vertex AI multimodal embedding compatibility.
 
-        MOV files from professional editing software (like DaVinci Resolve) can contain
-        complex metadata, timecode tracks, and large file sizes that cause processing issues.
-        Converting to MP4 with optimized settings resolves these compatibility problems.
+        Applies error detection, timestamp fixing, and re-encoding to eliminate corruption
+        or codec issues that might cause Vertex AI embedding API failures. Processes ALL
+        video formats (not just MOV) to ensure consistent quality.
 
         Args:
             video_path: Path to the original video file
 
         Returns:
-            Path to the converted MP4 file.
-            If input isn't MOV or conversion fails, returns the original path (no exception).
+            Path to the cleaned video file.
+            If cleaning fails, returns the original path (no exception).
         """
-        if not video_path.lower().endswith(".mov"):
-            logger.debug(
-                "File is not MOV format, skipping conversion", video_path=video_path
-            )
-            return video_path
-
         try:
-            # Create output in a dedicated temp directory
             video_stem = Path(video_path).stem
-            temp_dir = Path(tempfile.mkdtemp(prefix="tmp_video_conv_"))
-            converted_path = temp_dir / f"{video_stem}_converted.mp4"
+            temp_dir = Path(tempfile.mkdtemp(prefix="tmp_video_clean_"))
+            cleaned_path = temp_dir / f"{video_stem}_cleaned.mp4"
 
             logger.info(
-                "Converting MOV to MP4 for compatibility",
+                "Cleaning and normalizing video for Vertex AI compatibility",
                 original_path=video_path,
-                converted_path=str(converted_path),
+                cleaned_path=str(cleaned_path),
             )
 
-            # Use ffmpeg to convert with aggressive GenAI-compatible settings
-            # This conversion eliminates problematic MOV metadata and headers that cause
-            # GenAI file processing failures, especially in the first chunk (0-30s)
+            # Force re-encoding with aggressive error detection and repair
             subprocess.run(
                 [
                     "ffmpeg",
+                    "-err_detect",
+                    "ignore_err",  # Ignore errors and salvage corrupted data
                     "-i",
                     video_path,
                     "-c:v",
-                    "libx264",  # Standard H.264 video codec
+                    "libx264",  # Force H.264 re-encoding
                     "-profile:v",
                     "baseline",  # Use baseline profile for maximum compatibility
                     "-level",
                     "3.1",  # H.264 level for broad compatibility
+                    "-r",
+                    "30",  # Standardize to 30fps
+                    "-vsync",
+                    "cfr",  # Force constant frame rate (deprecated but works in 5.1.7)
                     "-c:a",
                     "aac",  # Standard AAC audio codec
                     "-ar",
@@ -157,23 +154,21 @@ class VideoProcessingService:
                     "-ac",
                     "2",  # Stereo audio
                     "-map_metadata",
-                    "-1",  # Strip ALL metadata including problematic MOV headers
+                    "-1",  # Strip ALL metadata
                     "-map_chapters",
                     "-1",  # Remove chapter information
                     "-movflags",
                     "+faststart",  # Optimize for streaming
                     "-avoid_negative_ts",
-                    "make_zero",  # Fix timestamp issues that cause GenAI processing problems
+                    "make_zero",  # Fix timestamp issues
                     "-fflags",
-                    "+genpts+flush_packets",  # Generate timestamps and flush packets for clean output
+                    "+genpts+igndts+flush_packets",  # Generate PTS, ignore DTS issues, flush packets
                     "-force_key_frames",
-                    "expr:gte(t,n_forced*2)",  # Force keyframes every 2 seconds for clean chunking
-                    "-bsf:v",
-                    "h264_mp4toannexb,h264_metadata=aud=insert:sei=remove",  # Clean H.264 stream
+                    "expr:gte(t,n_forced*2)",  # Force keyframes every 2 seconds
                     "-f",
                     "mp4",  # Force MP4 container format
                     "-y",  # Overwrite output file if exists
-                    str(converted_path),
+                    str(cleaned_path),
                 ],
                 capture_output=True,
                 text=True,
@@ -181,39 +176,37 @@ class VideoProcessingService:
                 timeout=600,
             )
 
-            # Log the size reduction achieved
             original_size = Path(video_path).stat().st_size
-            converted_size = converted_path.stat().st_size
-            size_reduction = ((original_size - converted_size) / original_size) * 100
+            cleaned_size = cleaned_path.stat().st_size
+            size_change = ((cleaned_size - original_size) / original_size) * 100
 
             logger.info(
-                "MOV to MP4 conversion completed",
+                "Video cleaning completed",
+                original_path=video_path,
+                cleaned_path=str(cleaned_path),
                 original_size_mb=round(original_size / (1024 * 1024), 1),
-                converted_size_mb=round(converted_size / (1024 * 1024), 1),
-                size_reduction_percent=round(size_reduction, 1),
-                converted_path=str(converted_path),
+                cleaned_size_mb=round(cleaned_size / (1024 * 1024), 1),
+                size_change_percent=round(size_change, 1),
             )
 
-            return str(converted_path)
+            return str(cleaned_path)
 
         except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
             logger.error(
-                "MOV to MP4 conversion failed",
+                "Video cleaning failed",
                 video_path=video_path,
                 error=str(e),
                 stderr=getattr(e, "stderr", None),
             )
-            # Fall back to original file rather than failing completely
-            logger.warning("Falling back to original MOV file")
+            logger.warning("Falling back to original video file")
             return video_path
         except Exception as e:
             logger.error(
-                "Unexpected error during MOV conversion",
+                "Unexpected error during video cleaning",
                 video_path=video_path,
                 error=str(e),
                 error_type=type(e).__name__,
             )
-            # Fall back to original file
             return video_path
 
     def get_video_duration(self, video_path: str) -> float:
@@ -389,20 +382,7 @@ class VideoProcessingService:
             chunk_file = video_dir / f"{video_name}_chunk_{chunk_index:03d}.mp4"
             duration = end_sec - start_sec
 
-            # First try: Copy streams without re-encoding (fastest, best quality)
-            success = self._create_chunk_with_copy(
-                video_path, start_sec, duration, chunk_file
-            )
-            if success:
-                return str(chunk_file)
-
-            logger.info(
-                "Chunk too large with copy mode, trying compression",
-                chunk_index=chunk_index,
-                max_size_mb=config.MAX_VIDEO_CHUNK_SIZE_MB,
-            )
-
-            # Try progressive compression levels - aggressive for 30-second chunks
+            # Try progressive compression levels with error detection
             compression_levels = [
                 {"crf": "28", "preset": "medium", "description": "light compression"},
                 {"crf": "32", "preset": "fast", "description": "medium compression"},
@@ -465,39 +445,6 @@ class VideoProcessingService:
                 f"Video chunk creation failed: {e}"
             ) from e
 
-    def _create_chunk_with_copy(
-        self, video_path: str, start_sec: float, duration: float, chunk_file: Path
-    ) -> bool:
-        """Try creating chunk with stream copying (fastest, no compression)."""
-        try:
-            subprocess.run(
-                [
-                    "ffmpeg",
-                    "-i",
-                    video_path,
-                    "-ss",
-                    str(start_sec),
-                    "-t",
-                    str(duration),
-                    "-c",
-                    "copy",  # Copy streams without re-encoding
-                    "-avoid_negative_ts",
-                    "make_zero",  # Fix timestamp issues for GenAI compatibility
-                    "-copyts",  # Copy input timestamps
-                    "-start_at_zero",  # Start timestamps at zero for consistent chunking
-                    "-fflags",
-                    "+genpts",  # Generate presentation timestamps
-                    str(chunk_file),
-                    "-y",
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            return self._is_chunk_size_acceptable(chunk_file)
-        except subprocess.CalledProcessError:
-            return False
-
     def _create_chunk_with_compression(
         self,
         video_path: str,
@@ -506,11 +453,13 @@ class VideoProcessingService:
         chunk_file: Path,
         compression_settings: dict[str, str],
     ) -> bool:
-        """Try creating chunk with specific compression settings."""
+        """Try creating chunk with specific compression settings and error detection."""
         try:
             subprocess.run(
                 [
                     "ffmpeg",
+                    "-err_detect",
+                    "ignore_err",  # Ignore errors and salvage corrupted segments
                     "-i",
                     video_path,
                     "-ss",
@@ -559,7 +508,7 @@ class VideoProcessingService:
         chunk_file: Path,
         scaling_settings: dict[str, str],
     ) -> bool:
-        """Create chunk with aggressive resolution scaling and compression."""
+        """Create chunk with aggressive resolution scaling, compression, and error detection."""
         try:
             width, height = scaling_settings["resolution"].split(":")
             scale_filter = f"scale=min({width}\\,iw):min({height}\\,ih):force_original_aspect_ratio=decrease"
@@ -567,6 +516,8 @@ class VideoProcessingService:
             subprocess.run(
                 [
                     "ffmpeg",
+                    "-err_detect",
+                    "ignore_err",  # Ignore errors and salvage corrupted segments
                     "-i",
                     video_path,
                     "-ss",
@@ -939,21 +890,27 @@ class VideoProcessingService:
             media_resolution=media_resolution,
         )
 
-        # Variables to track original vs converted paths for cleanup
+        # Variables to track original vs cleaned paths for cleanup
         original_video_path = video_path
-        converted_video_path = None
+        cleaned_video_path = None
 
         try:
-            # Convert MOV files to MP4 for better compatibility
-            video_path = self.convert_mov_to_mp4(video_path)
+            # Update stage: cleaning video
+            if job_id:
+                await self.database_service.update_processing_stage(
+                    job_id, "cleaning_video"
+                )
 
-            # Track if we created a converted file for cleanup
+            # Clean and normalize video for Vertex AI compatibility
+            video_path = self.clean_and_normalize_video(video_path)
+
+            # Track if we created a cleaned file for cleanup
             if video_path != original_video_path:
-                converted_video_path = video_path
+                cleaned_video_path = video_path
                 logger.info(
-                    "Using converted MP4 file for processing",
+                    "Using cleaned video file for processing",
                     original_path=original_video_path,
-                    converted_path=video_path,
+                    cleaned_path=video_path,
                 )
 
             # Update stage: analyzing video
@@ -971,8 +928,8 @@ class VideoProcessingService:
                     job_id, "processing_video"
                 )
 
-            # Always process video in 30-second chunks
-            chunks = await self._process_chunks(
+            # Process video in batches for improved performance
+            chunks = await self._process_chunks_in_batches(
                 video_path=video_path,
                 duration=duration,
                 contextual_text=contextual_text,
@@ -1018,12 +975,12 @@ class VideoProcessingService:
                     "Cleaned up original video file", video_path=original_video_path
                 )
 
-                # Clean up converted MP4 file if we created one
-                if converted_video_path and converted_video_path != original_video_path:
-                    cleanup_temp_file(converted_video_path)
+                # Clean up cleaned MP4 file if we created one
+                if cleaned_video_path and cleaned_video_path != original_video_path:
+                    cleanup_temp_file(cleaned_video_path)
                     logger.debug(
-                        "Cleaned up converted video file",
-                        video_path=converted_video_path,
+                        "Cleaned up cleaned video file",
+                        video_path=cleaned_video_path,
                     )
 
                 # Clean up any additional temporary files created by the transcription service
@@ -1032,154 +989,9 @@ class VideoProcessingService:
                 logger.warning(
                     "Failed to cleanup video processing temp files",
                     original_path=original_video_path,
-                    converted_path=converted_video_path,
+                    cleaned_path=cleaned_video_path,
                     error=str(cleanup_error),
                 )
-
-    async def _process_single_chunk(
-        self,
-        video_path: str,
-        start_sec: float,
-        end_sec: float,
-        chunk_index: int,
-        total_chunks: int,
-        contextual_text: str,
-        job_id: str | None = None,
-        media_resolution: str = "low",
-    ) -> ChunkData:
-        """
-        Process a single video chunk completely with transcript truncation for token limits.
-
-        Args:
-            video_path: Path to the original video
-            start_sec: Start time of chunk in seconds
-            end_sec: End time of chunk in seconds
-            chunk_index: Index of this chunk
-            total_chunks: Total number of chunks
-            contextual_text: Contextual text for embedding
-            job_id: Optional job ID for progress tracking
-            media_resolution: The resolution setting to use for video analysis ('low' or 'default')
-
-        Returns:
-            Single ChunkData object with truncated transcript if needed
-
-        Raises:
-            VideoProcessingServiceError: If chunk processing fails
-        """
-        # Update stage with progress
-        if job_id:
-            await self.database_service.update_processing_stage(
-                job_id, f"processing_chunk_{chunk_index + 1}_of_{total_chunks}"
-            )
-
-        # Create physical chunk file
-        chunk_file = self.create_video_chunk(
-            video_path, start_sec, end_sec, chunk_index
-        )
-
-        try:
-            # Start transcription and visual analysis in parallel
-            logger.debug(
-                "Starting parallel transcription and visual analysis",
-                chunk_file=chunk_file,
-                start_sec=start_sec,
-                end_sec=end_sec,
-            )
-
-            # Create parallel tasks for transcription and visual analysis
-            transcript_task = asyncio.create_task(
-                self._transcribe_video_segment_with_retry(
-                    chunk_file, start_sec, end_sec, chunk_index
-                )
-            )
-
-            context_task = asyncio.create_task(
-                self._generate_context_with_retry(
-                    video_chunk_path=chunk_file,
-                    start_sec=start_sec,
-                    end_sec=end_sec,
-                    transcript_text="",  # Will be updated after transcription
-                    media_resolution=media_resolution,  # Pass the resolution setting
-                )
-            )
-
-            # Wait for both transcription and context generation to complete
-            transcript_data, context = await asyncio.gather(
-                transcript_task, context_task
-            )
-
-            # Extract transcript text for text embedding
-            transcript_text = transcript_data.get("text", "").strip()
-
-            # Generate multimodal embedding (no text context needed - video content is sufficient)
-            multimodal_embedding = await self.embedding_service.generate_multimodal_embedding(
-                media_file_path=chunk_file,
-                contextual_text="",  # Empty context - video content speaks for itself
-            )
-
-            # Handle silent video segments (no transcript text)
-            if not transcript_text:
-                logger.info(
-                    "Silent video segment - skipping text embedding",
-                    video_segment=f"{start_sec:.1f}s-{end_sec:.1f}s",
-                    has_multimodal=True,
-                )
-                truncated_transcript = ""  # Empty text for silent segment
-                text_embedding = None  # No text embedding for silent segment
-            else:
-                # Truncate transcript text if it exceeds token limits (simple approach)
-                truncated_transcript = truncate_text_to_tokens(
-                    text=transcript_text, tokenizer=self.tokenizer, max_tokens=2047
-                )
-
-                logger.info(
-                    "Processing video transcript with truncation",
-                    video_segment=f"{start_sec:.1f}s-{end_sec:.1f}s",
-                    original_transcript_tokens=self.tokenizer.count_tokens(
-                        transcript_text
-                    ),
-                    truncated_transcript_tokens=self.tokenizer.count_tokens(
-                        truncated_transcript
-                    ),
-                    original_char_length=len(transcript_text),
-                    truncated_char_length=len(truncated_transcript),
-                )
-
-                # Generate text embedding for truncated transcript
-                text_embedding = await self.embedding_service.generate_text_embedding(
-                    truncated_transcript
-                )
-
-            # Create chunk metadata
-            metadata = self._create_chunk_metadata(
-                video_path=video_path,
-                contextual_text=contextual_text,
-                chunk_index=chunk_index,
-                start_sec=start_sec,
-                end_sec=end_sec,
-                total_chunks=total_chunks,
-                transcript_data=transcript_data,
-            )
-
-            # Create single ChunkData for this video segment
-            # Use appropriate text: truncated transcript or empty string for silent segments
-            chunk_text = (
-                truncated_transcript
-                if transcript_text
-                else f"Silent video segment {start_sec:.1f}s-{end_sec:.1f}s"
-            )
-
-            return ChunkData(
-                text=chunk_text,
-                metadata=metadata,
-                context=context,
-                text_embedding=text_embedding,  # None for silent segments
-                multimodal_embedding=multimodal_embedding,  # Always present (visual content)
-            )
-
-        finally:
-            # Always clean up temporary chunk file
-            cleanup_temp_file(Path(chunk_file))
 
     def _create_chunk_metadata(
         self,
@@ -1223,7 +1035,7 @@ class VideoProcessingService:
             ),
         )
 
-    async def _process_chunks(
+    async def _process_chunks_in_batches(
         self,
         video_path: str,
         duration: float,
@@ -1232,17 +1044,17 @@ class VideoProcessingService:
         media_resolution: str = "low",
     ) -> list[ChunkData]:
         """
-        Process video into chunks sequentially.
+        Process video chunks in batches for improved performance.
 
-        Sequential processing prevents ffmpeg file locking conflicts and reduces
-        peak memory usage by processing one chunk completely before starting the next.
+        Uses hybrid approach: sequential chunk file creation followed by
+        parallel batch processing of transcription/AI operations.
 
         Args:
             video_path: Path to the video file
             duration: Video duration in seconds
             contextual_text: Contextual text for embedding
             job_id: Optional job ID for progress tracking
-            media_resolution: The resolution setting to use for video analysis ('low' or 'default')
+            media_resolution: The resolution setting to use for video analysis
 
         Returns:
             List of processed chunks ready for storage
@@ -1250,31 +1062,28 @@ class VideoProcessingService:
         Raises:
             VideoProcessingServiceError: If no chunks are successfully processed
         """
-        chunks = []
         total_chunks = math.ceil(duration / config.VIDEO_CHUNK_DURATION_SECONDS)
+        batch_size = config.VIDEO_PROCESSING_BATCH_SIZE
+        total_batches = math.ceil(total_chunks / batch_size)
 
-        # Update stage: creating video chunks
+        logger.info(
+            "Starting batch video processing",
+            video_path=video_path,
+            total_chunks=total_chunks,
+            batch_size=batch_size,
+            total_batches=total_batches,
+            media_resolution=media_resolution,
+        )
+
+        # Phase 1: Create all chunk files sequentially (preserves stability)
         if job_id:
             await self.database_service.update_processing_stage(
                 job_id, "creating_video_chunks"
             )
 
-        logger.info(
-            "Starting sequential video chunk processing",
-            video_path=video_path,
-            total_chunks=total_chunks,
-            duration_seconds=duration,
-            media_resolution=media_resolution,
-        )
-
-        # Process chunks sequentially with timeout protection and fail-fast logic
-        chunk_index = 0
-        failed_chunks = 0
-        max_failed_chunks = int(
-            total_chunks * config.VIDEO_SUCCESS_THRESHOLD
-        )  # Configurable success threshold (0.0 = fail-fast)
-
-        for start_sec in range(0, int(duration), config.VIDEO_CHUNK_DURATION_SECONDS):
+        chunk_files: list[ChunkFileData] = []
+        for chunk_index in range(total_chunks):
+            start_sec = chunk_index * config.VIDEO_CHUNK_DURATION_SECONDS
             end_sec = min(start_sec + config.VIDEO_CHUNK_DURATION_SECONDS, duration)
 
             # Skip chunks shorter than minimum duration (prevents micro-chunk processing issues)
@@ -1282,92 +1091,266 @@ class VideoProcessingService:
             if chunk_duration < 5.0:
                 logger.info(
                     "Skipping short video chunk (< 5 seconds)",
-                    chunk_index=chunk_index + 1,
+                    chunk_index=chunk_index,
                     start_sec=start_sec,
                     end_sec=end_sec,
                     duration=chunk_duration,
                     reason="below_minimum_duration",
                 )
-                chunk_index += 1
                 continue
 
-            try:
-                logger.debug(
-                    "Processing video chunk sequentially",
-                    chunk_index=chunk_index + 1,
-                    total_chunks=total_chunks,
-                    start_sec=start_sec,
-                    end_sec=end_sec,
-                )
-
-                # Process single chunk with timeout protection (2 minutes per chunk)
-                chunk_data = await asyncio.wait_for(
-                    self._process_single_chunk(
-                        video_path=video_path,
-                        start_sec=float(start_sec),
-                        end_sec=end_sec,
-                        chunk_index=chunk_index,
-                        total_chunks=total_chunks,
-                        contextual_text=contextual_text,
-                        job_id=job_id,
-                        media_resolution=media_resolution,
-                    ),
-                    timeout=120.0,  # 2 minute timeout per chunk
-                )
-
-                chunks.append(chunk_data)
-
-                logger.debug(
-                    "Successfully processed video segment",
-                    segment_index=chunk_index + 1,
-                    total_segments=total_chunks,
-                    total_chunks_completed=len(chunks),
-                )
-
-            except (asyncio.TimeoutError, Exception) as e:
-                failed_chunks += 1
-                error_type = (
-                    "timeout"
-                    if isinstance(e, asyncio.TimeoutError)
-                    else "processing error"
-                )
-
-                logger.error(
-                    f"Failed to process video chunk ({error_type})",
-                    video_path=video_path,
+            chunk_file = self.create_video_chunk(
+                video_path, start_sec, end_sec, chunk_index
+            )
+            chunk_files.append(
+                ChunkFileData(
+                    chunk_file=chunk_file,
                     start_sec=start_sec,
                     end_sec=end_sec,
                     chunk_index=chunk_index,
-                    job_id=job_id,
-                    failed_chunks=failed_chunks,
-                    max_allowed_failures=max_failed_chunks,
-                    error=str(e),
+                )
+            )
+
+        # Phase 2: Process chunks in batches
+        # Recalculate batch counts based on actual chunks after filtering
+        actual_chunk_count = len(chunk_files)
+        if actual_chunk_count == 0:
+            logger.warning("No chunks to process after filtering short segments")
+            return []
+
+        actual_batches = math.ceil(actual_chunk_count / batch_size)
+        all_chunks: list[ChunkData] = []
+        failed_chunks = 0
+        max_failed_chunks = int(
+            actual_chunk_count * config.VIDEO_SUCCESS_THRESHOLD
+        )  # Use actual chunk count for threshold
+
+        logger.info(
+            "Processing filtered chunks in batches",
+            original_chunks=total_chunks,
+            actual_chunks=actual_chunk_count,
+            skipped_chunks=total_chunks - actual_chunk_count,
+            actual_batches=actual_batches,
+        )
+
+        for batch_num in range(actual_batches):
+            if job_id:
+                await self.database_service.update_processing_stage(
+                    job_id, f"processing_batch_{batch_num + 1}_of_{actual_batches}"
                 )
 
-                # Fail-fast logic: fail entire video if too many chunks fail
-                if failed_chunks > max_failed_chunks:
-                    raise NonRetryableError(
-                        f"Too many video chunks failed: {failed_chunks}/{total_chunks}. "
-                        f"Video processing cannot continue."
-                    ) from e
+            # Get batch of chunk files
+            batch_start = batch_num * batch_size
+            batch_end = min(batch_start + batch_size, actual_chunk_count)
+            batch = chunk_files[batch_start:batch_end]
 
-                # Continue with other chunks if still within failure threshold
-                continue
+            # Create parallel tasks for this batch
+            batch_tasks = []
+            for chunk_data in batch:
+                task = self._process_single_chunk_content(
+                    chunk_file=chunk_data["chunk_file"],
+                    video_path=video_path,
+                    start_sec=chunk_data["start_sec"],
+                    end_sec=chunk_data["end_sec"],
+                    chunk_index=chunk_data["chunk_index"],
+                    total_chunks=actual_chunk_count,
+                    contextual_text=contextual_text,
+                    media_resolution=media_resolution,
+                )
+                batch_tasks.append(task)
 
-            chunk_index += 1
+            # Process batch in parallel with timeout
+            try:
+                batch_results = await asyncio.gather(
+                    *batch_tasks, return_exceptions=True
+                )
+
+                # Handle batch results - separate successful results from exceptions
+                for i, result in enumerate(batch_results):
+                    if isinstance(result, Exception):
+                        failed_chunks += 1
+                        chunk_info = batch[i]
+                        logger.error(
+                            "Batch chunk processing failed",
+                            chunk_index=chunk_info["chunk_index"],
+                            batch_num=batch_num + 1,
+                            error=str(result),
+                        )
+
+                        # Fail-fast logic: fail entire video if too many chunks fail
+                        if failed_chunks > max_failed_chunks:
+                            raise NonRetryableError(
+                                f"Too many video chunks failed: {failed_chunks}/{actual_chunk_count}. "
+                                f"Video processing cannot continue."
+                            ) from result
+                    elif isinstance(result, ChunkData):
+                        # Only add successful ChunkData results
+                        all_chunks.append(result)
+                    else:
+                        # This should not happen, but handle unexpected types
+                        logger.error(
+                            "Unexpected result type in batch processing",
+                            result_type=type(result),
+                            batch_num=batch_num + 1,
+                        )
+
+            except asyncio.TimeoutError as e:
+                logger.error(
+                    f"Batch {batch_num + 1} timed out",
+                    batch_size=len(batch),
+                    total_batches=total_batches,
+                )
+                raise VideoProcessingServiceError(
+                    f"Batch processing timeout: {e}"
+                ) from e
+
+            # Clean up chunk files for this batch
+            for chunk_data in batch:
+                cleanup_temp_file(Path(chunk_data["chunk_file"]))
 
         # Ensure we processed at least some chunks
-        if not chunks:
+        if not all_chunks:
             raise VideoProcessingServiceError("No chunks were successfully processed")
 
         logger.info(
-            "Sequential video chunk processing completed",
+            "Batch video processing completed",
             video_path=video_path,
-            chunks_processed=len(chunks),
-            total_chunks=total_chunks,
+            original_chunks=total_chunks,
+            actual_chunks=actual_chunk_count,
+            successful_chunks=len(all_chunks),
+            failed_chunks=failed_chunks,
+            actual_batches=actual_batches,
         )
 
-        return chunks
+        return all_chunks
+
+    async def _process_single_chunk_content(
+        self,
+        chunk_file: str,
+        video_path: str,
+        start_sec: float,
+        end_sec: float,
+        chunk_index: int,
+        total_chunks: int,
+        contextual_text: str,
+        media_resolution: str = "low",
+    ) -> ChunkData:
+        """
+        Process the content of a single video chunk (no progress tracking).
+
+        This is the core chunk processing logic extracted from _process_single_chunk
+        for use in batch processing where progress is tracked at batch level.
+
+        Args:
+            chunk_file: Path to the chunk file (already created)
+            video_path: Path to the original video file
+            start_sec: Start time of chunk in seconds
+            end_sec: End time of chunk in seconds
+            chunk_index: Index of this chunk
+            total_chunks: Total number of chunks
+            contextual_text: Contextual text for embedding
+            media_resolution: The resolution setting to use for video analysis
+
+        Returns:
+            Single ChunkData object with processed content
+
+        Raises:
+            VideoProcessingServiceError: If chunk processing fails
+        """
+        try:
+            # Start transcription and visual analysis in parallel
+            transcript_task = asyncio.create_task(
+                self._transcribe_video_segment_with_retry(
+                    chunk_file, start_sec, end_sec, chunk_index
+                )
+            )
+
+            context_task = asyncio.create_task(
+                self._generate_context_with_retry(
+                    video_chunk_path=chunk_file,
+                    start_sec=start_sec,
+                    end_sec=end_sec,
+                    transcript_text="",
+                    media_resolution=media_resolution,
+                )
+            )
+
+            # Wait for both to complete
+            transcript_data, context = await asyncio.gather(
+                transcript_task, context_task
+            )
+
+            # Extract transcript text
+            transcript_text = transcript_data.get("text", "").strip()
+            logger.info(
+                "Extracted transcript from batch chunk processing",
+                chunk_index=chunk_index,
+                chunk_file=Path(chunk_file).name,
+                start_sec=start_sec,
+                end_sec=end_sec,
+                transcript_length=len(transcript_text),
+                transcript_preview=(
+                    transcript_text[:100].replace("\n", " ")
+                    if transcript_text
+                    else "EMPTY"
+                ),
+                has_audio=transcript_data.get("has_audio", False),
+            )
+
+            # Generate multimodal embedding (no text context needed - video content is sufficient)
+            multimodal_embedding = (
+                await self.embedding_service.generate_multimodal_embedding(
+                    media_file_path=chunk_file,
+                )
+            )
+
+            # Handle silent vs non-silent segments
+            if not transcript_text:
+                truncated_transcript = ""
+                text_embedding = None
+                chunk_text = f"Silent video segment {start_sec:.1f}s-{end_sec:.1f}s"
+            else:
+                # Truncate transcript if needed
+                truncated_transcript = truncate_text_to_tokens(
+                    text=transcript_text, tokenizer=self.tokenizer, max_tokens=2047
+                )
+
+                # Generate text embedding
+                text_embedding = await self.embedding_service.generate_text_embedding(
+                    truncated_transcript
+                )
+                chunk_text = truncated_transcript
+
+            # Create chunk metadata
+            metadata = self._create_chunk_metadata(
+                video_path=video_path,
+                contextual_text=contextual_text,
+                chunk_index=chunk_index,
+                start_sec=start_sec,
+                end_sec=end_sec,
+                total_chunks=total_chunks,
+                transcript_data=transcript_data,
+            )
+
+            return ChunkData(
+                text=chunk_text,
+                metadata=metadata,
+                context=context,
+                text_embedding=text_embedding,
+                multimodal_embedding=multimodal_embedding,
+            )
+
+        except Exception as e:
+            logger.error(
+                "Chunk content processing failed",
+                chunk_index=chunk_index,
+                start_sec=start_sec,
+                end_sec=end_sec,
+                error=str(e),
+            )
+            raise VideoProcessingServiceError(
+                f"Chunk processing failed for segment {start_sec:.1f}s-{end_sec:.1f}s: {str(e)}"
+            ) from e
 
 
 # Global service instance

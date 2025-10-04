@@ -25,7 +25,7 @@ export function getFileCategory(mimeType: string): FileCategory | null {
 
 export function validateFileMetadata(
   mimeType: string,
-  fileSize: number,
+  fileSize: number
 ): FileValidationResult {
   // Check if file type is supported
   const category = getFileCategory(mimeType);
@@ -97,7 +97,7 @@ export function getSupportedExtensions(): string[] {
 
 export function getFileTypeDescription(category: FileCategory): string {
   const descriptions = {
-    documents: "Documents (PDF, DOCX, DOC, PPTX, PPT, TXT)",
+    documents: "Documents (PDF, DOCX, DOC, PPTX, PPT, TXT, MD)",
     images: "Images (PNG, JPEG, WebP, GIF, BMP, TIFF)",
     videos: "Videos (MP4, AVI, MOV, WebM, WMV, 3GP)",
     audio: "Audio (MP3, WAV, FLAC, AAC, OGG, M4A, 3GP)",

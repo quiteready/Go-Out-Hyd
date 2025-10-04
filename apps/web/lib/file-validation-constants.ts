@@ -12,6 +12,7 @@ export const SUPPORTED_FILE_TYPES = {
     "application/vnd.ms-powerpoint": [".ppt"],
     "application/msword": [".doc"],
     "text/plain": [".txt"],
+    "text/markdown": [".md", ".markdown"],
   },
   // Images (processed by multimodal embeddings)
   images: {

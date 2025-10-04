@@ -55,6 +55,9 @@ class Config:
     VIDEO_CHUNK_DURATION_SECONDS: int = 15  # Duration of each video chunk
     VIDEO_CONTEXT_MAX_BYTES: int = 1023  # Maximum bytes for context field
     VIDEO_DEFAULT_LANGUAGE: str = "en-US"  # Default language for transcription
+    VIDEO_PROCESSING_BATCH_SIZE: int = int(
+        os.getenv("VIDEO_PROCESSING_BATCH_SIZE", "10")
+    )
 
     # Video compression and validation settings
     MAX_VIDEO_CHUNK_SIZE_MB: int = int(
@@ -62,17 +65,6 @@ class Config:
     )  # Maximum chunk size in MB (stay under 27MB API limit)
     VIDEO_SUCCESS_THRESHOLD: float = float(
         os.getenv("VIDEO_SUCCESS_THRESHOLD", "0.0")
-    )  # Chunk failure tolerance (0.0 = fail-fast on any chunk failure)
-
-    # Audio processing settings
-    AUDIO_CHUNK_DURATION_SECONDS: int = int(
-        os.getenv("AUDIO_CHUNK_DURATION_SECONDS", "30")
-    )  # Duration of each audio chunk (30 seconds)
-    AUDIO_DEFAULT_LANGUAGE: str = os.getenv(
-        "AUDIO_DEFAULT_LANGUAGE", "en-US"
-    )  # Default language for transcription
-    AUDIO_SUCCESS_THRESHOLD: float = float(
-        os.getenv("AUDIO_SUCCESS_THRESHOLD", "0.0")
     )  # Chunk failure tolerance (0.0 = fail-fast on any chunk failure)
 
     # API retry settings for rate limiting
@@ -145,7 +137,7 @@ class Config:
                 - models (dict): Human-readable descriptions of configured models and related settings.
 
         Raises:
-            NonRetryableError: If any numeric constraint is violated (e.g., CHUNK_SIZE <= 0, CHUNK_OVERLAP < 0 or >= CHUNK_SIZE, VIDEO_CHUNK_DURATION_SECONDS <= 0, VIDEO_CONTEXT_MAX_BYTES <= 0, AUDIO_CHUNK_DURATION_SECONDS <= 0).
+            NonRetryableError: If any numeric constraint is violated (e.g., CHUNK_SIZE <= 0, CHUNK_OVERLAP < 0 or >= CHUNK_SIZE, VIDEO_CHUNK_DURATION_SECONDS <= 0, VIDEO_CONTEXT_MAX_BYTES <= 0).
         """
         missing: list[str] = []
         warnings: list[str] = []
@@ -193,17 +185,6 @@ class Config:
                 "VIDEO_SUCCESS_THRESHOLD must be between 0.0 and 1.0"
             )
 
-        # Audio processing validation
-        if cls.AUDIO_CHUNK_DURATION_SECONDS <= 0:
-            raise NonRetryableError(
-                "AUDIO_CHUNK_DURATION_SECONDS must be greater than 0"
-            )
-
-        if cls.AUDIO_SUCCESS_THRESHOLD < 0.0 or cls.AUDIO_SUCCESS_THRESHOLD > 1.0:
-            raise NonRetryableError(
-                "AUDIO_SUCCESS_THRESHOLD must be between 0.0 and 1.0"
-            )
-
         if cls.API_RETRY_MAX_ATTEMPTS <= 0:
             raise NonRetryableError("API_RETRY_MAX_ATTEMPTS must be greater than 0")
 
@@ -221,7 +202,6 @@ class Config:
                 "text": f"{cls.TEXT_EMBEDDING_MODEL} ({cls.TEXT_EMBEDDING_DIMENSIONS}d)",
                 "multimodal": f"{cls.MULTIMODAL_EMBEDDING_MODEL} ({cls.MULTIMODAL_EMBEDDING_DIMENSIONS}d)",
                 "video": f"{cls.VIDEO_CHUNK_DURATION_SECONDS}s chunks, unlimited duration",
-                "audio": f"{cls.AUDIO_CHUNK_DURATION_SECONDS}s chunks, {cls.AUDIO_DEFAULT_LANGUAGE} transcription",
             },
         }
 

@@ -46,19 +46,20 @@ export function calculateMonotonicProgress(
   const mappedStage =
     STAGE_MAPPING[stage as keyof typeof STAGE_MAPPING] || stage;
 
-  // Handle dynamic chunk processing stages (video only)
-  const chunkMatch = stage.match(/^processing_chunk_(\d+)_of_(\d+)$/);
-  if (chunkMatch && fileType === "video") {
-    const [, current, total] = chunkMatch;
-    const currentChunk = parseInt(current);
-    const totalChunks = parseInt(total);
+  // Handle dynamic batch processing stages (video only)
+  const batchMatch = stage.match(/^processing_batch_(\d+)_of_(\d+)$/);
+  if (batchMatch && fileType === "video") {
+    const [, current, total] = batchMatch;
+    const currentBatch = parseInt(current);
+    const totalBatches = parseInt(total);
 
-    // Interpolate between processing_video (20%) and storing (95%)
-    const chunkProgress = currentChunk / totalChunks; // 0 to 1
+    // Interpolate between creating_video_chunks (20%) and storing (90%)
+    // Batch processing spans 20% to 90% of total progress
+    const batchProgress = (currentBatch - 1) / totalBatches; // 0 to 1 (batch 1 = 0%, batch N = 100%)
     const stageStart = 20;
-    const stageEnd = 95;
+    const stageEnd = 90;
     const interpolatedProgress =
-      stageStart + (stageEnd - stageStart) * chunkProgress;
+      stageStart + (stageEnd - stageStart) * batchProgress;
 
     return Math.round(interpolatedProgress); // Always round to avoid fractions
   }
@@ -102,30 +103,30 @@ export function parseProcessingStage(
     };
   }
 
-  // Handle dynamic chunk processing stages
-  const chunkMatch = stage.match(/^processing_chunk_(\d+)_of_(\d+)$/);
-  if (chunkMatch) {
-    const [, current, total] = chunkMatch;
-    const currentChunk = parseInt(current);
-    const totalChunks = parseInt(total);
+  // Handle dynamic batch processing stages
+  const batchMatch = stage.match(/^processing_batch_(\d+)_of_(\d+)$/);
+  if (batchMatch) {
+    const [, current, total] = batchMatch;
+    const currentBatch = parseInt(current);
+    const totalBatches = parseInt(total);
 
-    // Use same range as calculateMonotonicProgress: 20% to 95%
-    const chunkProgress = currentChunk / totalChunks;
+    // Use same range as calculateMonotonicProgress: 20% to 90%
+    const batchProgress = (currentBatch - 1) / totalBatches; // 0 to 1
     const stageStart = 20;
-    const stageEnd = 95;
+    const stageEnd = 90;
     const totalProgress = Math.round(
-      stageStart + (stageEnd - stageStart) * chunkProgress
+      stageStart + (stageEnd - stageStart) * batchProgress
     );
 
     return {
-      label: `Processing Chunk ${current}/${total}`,
+      label: `Processing Batch ${current} Of ${total}`,
       icon: Scissors,
       color: "text-orange-500",
       bgColor: "bg-orange-100/50 dark:bg-orange-900/20",
       progress: totalProgress,
-      description: `Processing video chunk ${current} of ${total}`,
+      description: `Processing video batch ${current} of ${total}`,
       isDynamic: true,
-      chunkInfo: { current: currentChunk, total: totalChunks },
+      chunkInfo: { current: currentBatch, total: totalBatches },
     };
   }
 
@@ -164,24 +165,24 @@ export function estimateTimeRemaining(
   const elapsedMinutes = (now.getTime() - start.getTime()) / (1000 * 60);
   const fileSizeMB = fileSize / (1024 * 1024);
 
-  // Handle video chunk processing stages specially
-  const chunkMatch = currentStage.match(/^processing_chunk_(\d+)_of_(\d+)$/);
-  if (chunkMatch && fileType === "video") {
-    const [, current, total] = chunkMatch;
-    const currentChunk = parseInt(current);
-    const totalChunks = parseInt(total);
+  // Handle video batch processing stages specially
+  const batchMatch = currentStage.match(/^processing_batch_(\d+)_of_(\d+)$/);
+  if (batchMatch && fileType === "video") {
+    const [, current, total] = batchMatch;
+    const currentBatch = parseInt(current);
+    const totalBatches = parseInt(total);
 
     // Estimate based on real video processing data: ~0.025 min/MB total
-    // Chunk processing is ~80% of total time
+    // Batch processing is ~80% of total time
     const totalEstimatedMinutes = fileSizeMB * 0.025;
-    const chunkProcessingTime = totalEstimatedMinutes * 0.8;
+    const batchProcessingTime = totalEstimatedMinutes * 0.8;
 
-    // Calculate progress through chunks and estimate remaining chunk time
-    const chunkProgress = currentChunk / totalChunks;
-    const remainingChunkTime = chunkProcessingTime * (1 - chunkProgress);
+    // Calculate progress through batches and estimate remaining batch time
+    const batchProgress = (currentBatch - 1) / totalBatches;
+    const remainingBatchTime = batchProcessingTime * (1 - batchProgress);
 
     // Add small buffer for final storing stage
-    const remaining = Math.max(0, remainingChunkTime + fileSizeMB * 0.002);
+    const remaining = Math.max(0, remainingBatchTime + fileSizeMB * 0.002);
 
     if (remaining < 1) return "a few minutes";
     if (remaining < 60) return `~${Math.round(remaining)} minutes`;

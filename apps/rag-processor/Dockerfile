@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     libgomp1 \
     curl \
-    ffmpeg \
+    ffmpeg=7:5.1.* \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && rm -rf /tmp/* /var/tmp/*

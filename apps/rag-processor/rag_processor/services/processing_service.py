@@ -29,6 +29,7 @@ from ..utils.retry_utils import (
 from .audio_processing_service import get_audio_processing_service
 from .database_service import ChunkData, get_database_service
 from .document_processing_service import get_document_processing_service
+from .embedding_service import get_embedding_service
 from .video_processing_service import get_video_processing_service
 
 logger = structlog.get_logger(__name__)
@@ -233,51 +234,58 @@ class ProcessingService:
     async def _process_image(
         self, file_path: str, job: ProcessingJob
     ) -> list[ChunkData]:
-        """Process image file and generate embeddings with comprehensive AI analysis."""
+        """Process image file and generate embeddings with AI-powered analysis."""
+        # Initialize basic content and context as fallback
+        basic_content = f"Image file: {job.file_name}"
+        content = basic_content
+        context = None
+
+        # Declare analysis metadata type once at the top
+        analysis_metadata: dict[str, bool | str] = {}
+
+        # Try to perform AI-powered dual image analysis
         try:
             await self.database_service.update_processing_stage(
                 job.job_id, "analyzing_image"
             )
 
-            # Import and use the image processing service
+            # Import and use the dual image analysis service
             from ..services.image_processing_service import get_image_processing_service
 
             image_processing_service = get_image_processing_service(
                 project_id=self.project_id
             )
 
-            # Get complete chunk data with both embeddings from image processing service
-            chunk_data = await image_processing_service.analyze_image(
-                image_path=file_path,
-                filename=job.file_name,
-                gcs_path=job.gcs_path,
-                contextual_text=f"File: {job.file_name}",
+            # Analyze the image to get comprehensive content, concept-focused context, and text embedding
+            (
+                content,
+                context,
+                text_embedding,
+            ) = await image_processing_service.analyze_image(
+                image_path=file_path, contextual_text=f"File: {job.file_name}"
             )
+
+            # Set success metadata
+            analysis_metadata = {
+                "ai_analysis_performed": True,
+                "fallback_used": False,
+            }
 
             logger.info(
-                "Image processing completed successfully",
+                "Dual image analysis with text embeddings completed successfully",
                 job_id=job.job_id,
                 filename=job.file_name,
-                content_bytes=len(chunk_data.text.encode("utf-8")),
-                content_chars=len(chunk_data.text),
-                has_text_embedding=chunk_data.text_embedding is not None,
-                has_multimodal_embedding=chunk_data.multimodal_embedding is not None,
-                text_embedding_dimension=(
-                    len(chunk_data.text_embedding) if chunk_data.text_embedding else 0
-                ),
-                multimodal_embedding_dimension=(
-                    len(chunk_data.multimodal_embedding)
-                    if chunk_data.multimodal_embedding
-                    else 0
-                ),
+                content_bytes=len(content.encode("utf-8")),
+                context_bytes=len(context.encode("utf-8")) if context else 0,
+                content_chars=len(content),
+                context_chars=len(context) if context else 0,
+                text_embedding_dimension=len(text_embedding) if text_embedding else 0,
             )
-
-            return [chunk_data]
 
         except Exception as e:
             # Log the error and propagate as NonRetryableError to mark the job as error
             logger.error(
-                "Image processing failed",
+                "Image analysis failed",
                 job_id=job.job_id,
                 filename=job.file_name,
                 error=str(e),
@@ -286,8 +294,76 @@ class ProcessingService:
 
             # Raise NonRetryableError so callers record failure without infinite retries
             raise NonRetryableError(
-                f"Image processing failed for {job.file_name}: {str(e)}"
+                f"Image analysis failed for {job.file_name}: {str(e)}"
             ) from e
+
+        # Create chunk metadata with concept-focused contextual text
+        from ..models.metadata_models import create_image_metadata
+
+        # Use the context field for contextual text (optimized for embeddings)
+        # Fall back to content if context is unavailable
+        enhanced_contextual_text = context if context else content
+
+        metadata = create_image_metadata(
+            filename=job.file_name,
+            media_path=job.gcs_path,
+            contextual_text=enhanced_contextual_text,
+        )
+
+        # Log simple analysis metadata for monitoring
+        if analysis_metadata:
+            logger.info(
+                "Image processing completed with analysis metadata",
+                job_id=job.job_id,
+                filename=job.file_name,
+                analysis_performed=analysis_metadata.get(
+                    "ai_analysis_performed", False
+                ),
+                fallback_used=analysis_metadata.get("fallback_used", False),
+            )
+
+        # Generate multimodal embedding using the concept-focused context for optimal embedding quality
+        embedding_service = get_embedding_service(self.project_id)
+        embedding_text = (
+            context if context else content
+        )  # Fallback to content if context unavailable
+        multimodal_embedding = await embedding_service.generate_multimodal_embedding(
+            media_file_path=file_path,
+            contextual_text=embedding_text,
+        )
+
+        logger.debug(
+            "Generated multimodal embedding",
+            job_id=job.job_id,
+            embedding_text_source="context" if context else "content",
+            embedding_text_bytes=len(embedding_text.encode("utf-8")),
+            embedding_text_chars=len(embedding_text),
+        )
+
+        # Create a single chunk with both text and multimodal embeddings
+        chunk_data = ChunkData(
+            text=content,  # Full content for the chunk
+            metadata=metadata,
+            context=context,  # Concept-focused analysis for multimodal embedding
+            text_embedding=text_embedding,  # ✅ Single text embedding
+            multimodal_embedding=multimodal_embedding,  # Keep existing multimodal embedding
+        )
+
+        logger.debug(
+            "Created image chunk with both embedding types",
+            job_id=job.job_id,
+            text_embedding_dimension=len(text_embedding) if text_embedding else 0,
+            multimodal_embedding_dimension=len(multimodal_embedding),
+        )
+
+        logger.info(
+            "Image processing completed with dual embeddings",
+            job_id=job.job_id,
+            has_text_embedding=text_embedding is not None,
+            has_multimodal_embedding=True,
+        )
+
+        return [chunk_data]
 
     async def get_processing_status(self, job_id: str) -> ProcessingJob | None:
         """

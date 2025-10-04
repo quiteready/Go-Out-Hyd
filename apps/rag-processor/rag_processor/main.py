@@ -9,6 +9,7 @@ Environment variables provide job parameters.
 import asyncio
 import os
 import sys
+from typing import cast
 
 import structlog
 
@@ -25,18 +26,21 @@ async def main() -> None:
     setup_logging()
 
     # Get job parameters from environment variables
-    try:
-        job_id = os.environ["PROCESSING_JOB_ID"]
-        gcs_path = os.environ["GCS_FILE_PATH"]
-        user_id = os.environ["USER_ID"]
-    except KeyError as e:
-        logger.error(f"Missing required environment variable: {e}")
-        logger.error("Required: PROCESSING_JOB_ID, GCS_FILE_PATH, USER_ID")
-        sys.exit(1)
-
-    # Optional environment variables
+    job_id = os.environ.get("PROCESSING_JOB_ID")
+    gcs_path = os.environ.get("GCS_FILE_PATH")
+    user_id = os.environ.get("USER_ID")
     organization_id = os.environ.get("ORGANIZATION_ID")
     document_id = os.environ.get("DOCUMENT_ID")
+
+    if not all([job_id, gcs_path, user_id]):
+        logger.error("Missing required environment variables")
+        logger.error("Required: PROCESSING_JOB_ID, GCS_FILE_PATH, USER_ID")
+        logger.error(f"Got: job_id={job_id}, gcs_path={gcs_path}, user_id={user_id}")
+        sys.exit(1)
+
+    job_id = cast(str, job_id)
+    gcs_path = cast(str, gcs_path)
+    user_id = cast(str, user_id)
 
     logger.info(
         "Starting Cloud Run Job processing",

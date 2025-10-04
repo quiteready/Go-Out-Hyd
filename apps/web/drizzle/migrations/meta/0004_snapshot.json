@@ -1,6 +1,6 @@
 {
-  "id": "985830b1-bc42-455c-8670-161178566dda",
-  "prevId": "57052f8d-b31a-4ac7-97ba-4bc6aebca190",
+  "id": "ecfb6f5c-f0a1-4d59-a5e7-3928857c056a",
+  "prevId": "c7d28f73-401f-4274-893e-89a427f22a7c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -47,11 +47,15 @@
         "conversations_user_id_users_id_fk": {
           "name": "conversations_user_id_users_id_fk",
           "tableFrom": "conversations",
+          "columnsFrom": [
+            "user_id"
+          ],
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -139,9 +143,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "document_chunks_document_id_idx": {
           "name": "document_chunks_document_id_idx",
@@ -154,9 +158,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "document_chunks_text_embedding_idx": {
           "name": "document_chunks_text_embedding_idx",
@@ -170,9 +174,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "hnsw",
-          "with": {}
+          "concurrently": false
         },
         "document_chunks_multimodal_embedding_idx": {
           "name": "document_chunks_multimodal_embedding_idx",
@@ -186,29 +190,37 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "hnsw",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "document_chunks_user_id_users_id_fk": {
           "name": "document_chunks_user_id_users_id_fk",
           "tableFrom": "document_chunks",
+          "columnsFrom": [
+            "user_id"
+          ],
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "document_chunks_document_id_documents_id_fk": {
           "name": "document_chunks_document_id_documents_id_fk",
           "tableFrom": "document_chunks",
+          "columnsFrom": [
+            "document_id"
+          ],
           "tableTo": "documents",
-          "columnsFrom": ["document_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -319,9 +331,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "document_processing_jobs_status_idx": {
           "name": "document_processing_jobs_status_idx",
@@ -334,9 +346,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "document_processing_jobs_updated_at_idx": {
           "name": "document_processing_jobs_updated_at_idx",
@@ -349,9 +361,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "document_processing_jobs_status_updated_at_idx": {
           "name": "document_processing_jobs_status_updated_at_idx",
@@ -370,28 +382,34 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "document_processing_jobs_document_id_documents_id_fk": {
           "name": "document_processing_jobs_document_id_documents_id_fk",
           "tableFrom": "document_processing_jobs",
+          "columnsFrom": [
+            "document_id"
+          ],
           "tableTo": "documents",
-          "columnsFrom": ["document_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "document_processing_jobs_file_path_unique": {
           "name": "document_processing_jobs_file_path_unique",
-          "nullsNotDistinct": false,
-          "columns": ["file_path"]
+          "columns": [
+            "file_path"
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -518,9 +536,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "documents_status_idx": {
           "name": "documents_status_idx",
@@ -533,9 +551,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "documents_file_category_idx": {
           "name": "documents_file_category_idx",
@@ -548,9 +566,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "documents_created_at_idx": {
           "name": "documents_created_at_idx",
@@ -563,28 +581,34 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "documents_user_id_users_id_fk": {
           "name": "documents_user_id_users_id_fk",
           "tableFrom": "documents",
+          "columnsFrom": [
+            "user_id"
+          ],
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "documents_gcs_path_unique": {
           "name": "documents_gcs_path_unique",
-          "nullsNotDistinct": false,
-          "columns": ["gcs_path"]
+          "columns": [
+            "gcs_path"
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -628,6 +652,14 @@
           "notNull": false,
           "default": "'[]'::jsonb"
         },
+        "status": {
+          "name": "status",
+          "type": "message_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'success'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -648,9 +680,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "messages_attachments_gin_idx": {
           "name": "messages_attachments_gin_idx",
@@ -663,20 +695,39 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "gin",
-          "with": {}
+          "concurrently": false
+        },
+        "messages_status_idx": {
+          "name": "messages_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "messages_conversation_id_conversations_id_fk": {
           "name": "messages_conversation_id_conversations_id_fk",
           "tableFrom": "messages",
+          "columnsFrom": [
+            "conversation_id"
+          ],
           "tableTo": "conversations",
-          "columnsFrom": ["conversation_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -721,49 +772,11 @@
           "notNull": true,
           "default": "now()"
         },
-        "subscription_tier": {
-          "name": "subscription_tier",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'free'"
-        },
         "stripe_customer_id": {
           "name": "stripe_customer_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
-        },
-        "stripe_subscription_id": {
-          "name": "stripe_subscription_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "subscription_status": {
-          "name": "subscription_status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "current_period_start": {
-          "name": "current_period_start",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "current_period_end": {
-          "name": "current_period_end",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cancel_at_period_end": {
-          "name": "cancel_at_period_end",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "role": {
           "name": "role",
@@ -785,9 +798,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {},
@@ -795,8 +808,10 @@
       "uniqueConstraints": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -858,121 +873,28 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
-        },
-        "idx_user_usage_events_created_at": {
-          "name": "idx_user_usage_events_created_at",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_user_usage_events_user_id": {
-          "name": "idx_user_usage_events_user_id",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "user_usage_events_user_id_users_id_fk": {
           "name": "user_usage_events_user_id_users_id_fk",
           "tableFrom": "user_usage_events",
+          "columnsFrom": [
+            "user_id"
+          ],
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.stripe_webhook_events": {
-      "name": "stripe_webhook_events",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "stripe_event_id": {
-          "name": "stripe_event_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "event_type": {
-          "name": "event_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "processed_at": {
-          "name": "processed_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "stripe_webhook_events_stripe_event_id_idx": {
-          "name": "stripe_webhook_events_stripe_event_id_idx",
-          "columns": [
-            {
-              "expression": "stripe_event_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "stripe_webhook_events_stripe_event_id_unique": {
-          "name": "stripe_webhook_events_stripe_event_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["stripe_event_id"]
-        }
-      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -995,24 +917,45 @@
     "public.document_status": {
       "name": "document_status",
       "schema": "public",
-      "values": ["uploading", "processing", "completed", "error"]
+      "values": [
+        "uploading",
+        "processing",
+        "completed",
+        "error"
+      ]
     },
     "public.file_category": {
       "name": "file_category",
       "schema": "public",
-      "values": ["documents", "images", "videos", "audio"]
+      "values": [
+        "documents",
+        "images",
+        "videos",
+        "audio"
+      ]
     },
     "public.message_sender": {
       "name": "message_sender",
       "schema": "public",
-      "values": ["user", "assistant"]
+      "values": [
+        "user",
+        "assistant"
+      ]
+    },
+    "public.message_status": {
+      "name": "message_status",
+      "schema": "public",
+      "values": [
+        "success",
+        "error"
+      ]
     }
   },
   "schemas": {},
+  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

@@ -198,9 +198,10 @@ export const WORKFLOWS = {
 
   video: [
     { stage: "pending", progress: 0 },
-    { stage: "downloading", progress: 10 },
-    { stage: "processing_video", progress: 20 },
-    // Dynamic chunk processing: processing_chunk_X_of_Y (20-90%)
+    { stage: "downloading", progress: 5 },
+    { stage: "analyzing_video", progress: 10 },
+    { stage: "creating_video_chunks", progress: 20 },
+    // Dynamic batch processing: processing_batch_X_of_Y (20-90%)
     { stage: "storing", progress: 95 },
     { stage: "completed", progress: 100 },
   ],

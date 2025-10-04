@@ -5,6 +5,8 @@ Handles both text and multimodal embeddings with proper error handling,
 logging, and retry logic.
 """
 
+from pathlib import Path
+
 import google.genai as genai
 import structlog
 import vertexai
@@ -243,6 +245,21 @@ class EmbeddingService:
                             "vertexai Video class is not available"
                         )
                     media_obj = Video.load_from_file(media_file_path)
+
+                    # Log file size before calling API to debug 27MB limit issues
+                    file_size_bytes = Path(media_file_path).stat().st_size
+                    file_size_mb = round(file_size_bytes / (1024 * 1024), 2)
+
+                    logger.info(
+                        "Calling multimodal embedding API",
+                        media_file=media_file_path,
+                        file_size_mb=file_size_mb,
+                        file_size_bytes=file_size_bytes,
+                        contextual_text_length=len(truncated_contextual_text),
+                        contextual_text_chars=len(truncated_contextual_text),
+                        model=self.multimodal_model,
+                        file_extension=file_ext,
+                    )
 
                     # Handle video files (do NOT pass dimension for video - fixed at 1408)
                     if truncated_contextual_text.strip():

@@ -37,7 +37,8 @@ CREATE TABLE "document_processing_jobs" (
 	"processing_started_at" timestamp with time zone,
 	"completed_at" timestamp with time zone,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "document_processing_jobs_file_path_unique" UNIQUE("file_path")
 );
 --> statement-breakpoint
 CREATE TABLE "documents" (
@@ -56,7 +57,8 @@ CREATE TABLE "documents" (
 	"processing_metadata" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"processed_at" timestamp with time zone
+	"processed_at" timestamp with time zone,
+	CONSTRAINT "documents_gcs_path_unique" UNIQUE("gcs_path")
 );
 --> statement-breakpoint
 CREATE TABLE "messages" (
@@ -110,6 +112,4 @@ CREATE INDEX "conversation_id_idx" ON "messages" USING btree ("conversation_id")
 CREATE INDEX "messages_attachments_gin_idx" ON "messages" USING gin ("attachments");--> statement-breakpoint
 CREATE INDEX "messages_status_idx" ON "messages" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "role_idx" ON "users" USING btree ("role");--> statement-breakpoint
-CREATE INDEX "idx_user_usage_events_user_id_type_time" ON "user_usage_events" USING btree ("user_id","event_type","created_at");--> statement-breakpoint
-CREATE INDEX "idx_user_usage_events_created_at" ON "user_usage_events" USING btree ("created_at");--> statement-breakpoint
-CREATE INDEX "idx_user_usage_events_user_id" ON "user_usage_events" USING btree ("user_id");
+CREATE INDEX "idx_user_usage_events_user_id_type_time" ON "user_usage_events" USING btree ("user_id","event_type","created_at");
