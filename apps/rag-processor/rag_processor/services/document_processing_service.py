@@ -119,6 +119,9 @@ class DocumentProcessingService:
         Uses pre-downloaded standard Docling models included in Docker image for reliable operation
         without VLM pipeline overhead or OCR dependencies for improved performance and reliability.
 
+        Configuration expects DOCLING_ARTIFACTS_PATH environment variable to be set at container level.
+        Falls back to default container path (/app/models/docling) if environment variable not set.
+
         Returns:
             Configured DocumentConverter instance with offline models, basic processing, no OCR
 
@@ -127,7 +130,7 @@ class DocumentProcessingService:
         """
         import os
 
-        # Check for models in Docker image location or environment variable
+        # Check for models - environment variable takes precedence, then default container path
         container_artifacts_path = Path("/app/models/docling")
         env_artifacts_path = os.getenv("DOCLING_ARTIFACTS_PATH")
 
@@ -150,17 +153,14 @@ class DocumentProcessingService:
                     model_files_count=len(list(artifacts_path.rglob("*"))),
                 )
 
-                # Set environment variable for Docling to use offline models
-                os.environ["DOCLING_ARTIFACTS_PATH"] = str(artifacts_path)
-
                 # Configure PDF pipeline with offline models but without VLM
-                # This uses PdfPipelineOptions instead of VlmPipelineOptions for better performance
-                # Disable all AI-powered features to avoid model conflicts
+                # Docling will use DOCLING_ARTIFACTS_PATH environment variable automatically
+                # Also pass artifacts_path explicitly as redundant safety measure
                 pipeline_options = PdfPipelineOptions(
                     artifacts_path=artifacts_path,
                     # Disable all AI-powered features to avoid model conflicts
                     do_ocr=False,  # No OCR (avoids EasyOCR)
-                    do_table_structure=False,  # No table detection (avoids object detection models)
+                    do_table_structure=True,
                     do_code_enrichment=False,  # No code OCR
                     do_formula_enrichment=False,  # No formula OCR
                     do_picture_classification=False,  # No picture classification
@@ -181,7 +181,7 @@ class DocumentProcessingService:
                 return converter
             else:
                 logger.warning(
-                    "Offline standard Docling models not found, falling back would require online models",
+                    "Offline standard Docling models not found",
                     container_path=str(container_artifacts_path),
                     env_path=env_artifacts_path,
                     container_exists=container_artifacts_path.exists(),

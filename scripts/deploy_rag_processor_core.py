@@ -216,82 +216,186 @@ def ensure_artifact_registry(project_id: str, region: str) -> None:
         )
 
 
+def check_local_cache_age() -> tuple[bool, float]:
+    """
+    Check if local Docling cache is older than 24 hours.
+
+    Returns:
+        Tuple of (exists, age_hours) where age_hours is the age of newest file
+    """
+    cache_dir = Path.home() / ".cache" / "docling" / "models"
+
+    if not cache_dir.exists() or not any(cache_dir.iterdir()):
+        return False, 0.0
+
+    try:
+        import time
+
+        # Find newest file in cache
+        all_files = [f for f in cache_dir.rglob("*") if f.is_file()]
+        if not all_files:
+            return False, 0.0
+
+        newest_file = max(all_files, key=lambda f: f.stat().st_mtime)
+        age_hours = (time.time() - newest_file.stat().st_mtime) / 3600
+        return True, age_hours
+    except Exception as e:
+        log_warning(f"Could not check local cache age: {e}")
+        return False, 0.0
+
+
+def check_gcs_cache_age(bucket_name: str) -> tuple[bool, float]:
+    """
+    Check if GCS model cache is older than 24 hours.
+
+    Returns:
+        Tuple of (exists, age_hours) where age_hours is the age of newest file
+    """
+    gcs_path = f"gs://{bucket_name}/models/docling/"
+
+    try:
+        # List files with detailed info including timestamps
+        result = subprocess.run(
+            ["gcloud", "storage", "ls", "-L", "--recursive", gcs_path],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        if result.returncode != 0:
+            return False, 0.0
+
+        # Parse creation times from output
+        import re
+        from datetime import datetime, timezone
+
+        creation_times = []
+        for line in result.stdout.split("\n"):
+            if "Creation time:" in line:
+                # Format: "Creation time:          Thu, 04 Oct 2025 17:25:50 GMT"
+                match = re.search(r"Creation time:\s+(.+)", line)
+                if match:
+                    try:
+                        time_str = match.group(1).strip()
+                        # Parse RFC 2822 format
+                        dt = datetime.strptime(time_str, "%a, %d %b %Y %H:%M:%S %Z")
+                        creation_times.append(dt.replace(tzinfo=timezone.utc))
+                    except ValueError:
+                        continue
+
+        if not creation_times:
+            return False, 0.0
+
+        # Get newest file time
+        newest_time = max(creation_times)
+        now = datetime.now(timezone.utc)
+        age_hours = (now - newest_time).total_seconds() / 3600
+
+        return True, age_hours
+    except Exception as e:
+        log_warning(f"Could not check GCS cache age: {e}")
+        return False, 0.0
+
+
+def clear_local_cache() -> None:
+    """Clear local Docling model cache."""
+    cache_dir = Path.home() / ".cache" / "docling" / "models"
+
+    if cache_dir.exists():
+        log("  🗑️  Clearing local model cache...", Colors.YELLOW)
+        try:
+            import shutil
+
+            shutil.rmtree(cache_dir)
+            log("  ✅ Local cache cleared", Colors.GREEN)
+        except Exception as e:
+            log_warning(f"Could not clear local cache: {e}")
+
+
+def clear_gcs_cache(bucket_name: str) -> None:
+    """Clear GCS model cache."""
+    gcs_path = f"gs://{bucket_name}/models/docling/"
+
+    log("  🗑️  Clearing GCS model cache...", Colors.YELLOW)
+    try:
+        subprocess.run(
+            ["gcloud", "storage", "rm", "-r", gcs_path],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        log("  ✅ GCS cache cleared", Colors.GREEN)
+    except subprocess.CalledProcessError as e:
+        log_warning(f"Could not clear GCS cache: {e}")
+
+
 def download_standard_docling_models(bucket_name: str) -> None:
-    """Download standard Docling models and upload to GCS."""
+    """Download standard Docling models using official docling-tools CLI and upload to GCS."""
     log("  📥 Downloading standard Docling model suite...", Colors.CYAN)
     log("  ⏳ This will take a few minutes on first run")
-    log("  📦 Includes: layout, tableformer, picture classifier, code formula, easyocr")
+    log("  📦 Using official docling-tools CLI for correct model structure")
 
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_dir_path = Path(temp_dir)
         model_dir = temp_dir_path / "docling"
 
-        # Download standard Docling models using official downloader
-        download_script = f"""
-import os
-import shutil
-from pathlib import Path
-
-print("🚀 Starting standard Docling models download...")
-
-# Download all standard Docling models to default cache
-import docling.utils.model_downloader
-docling.utils.model_downloader.download_models()
-print("✅ Standard Docling models downloaded to cache")
-
-# Organize models for container structure
-cache_dir = Path.home() / ".cache" / "docling" / "models"
-target_dir = Path("{model_dir}")
-target_dir.mkdir(parents=True, exist_ok=True)
-
-if cache_dir.exists():
-    print("📦 Organizing models for container...")
-    # Copy all model directories to target
-    for model_type_dir in cache_dir.iterdir():
-        if model_type_dir.is_dir():
-            dest_dir = target_dir / model_type_dir.name
-            if dest_dir.exists():
-                shutil.rmtree(dest_dir)
-            shutil.copytree(model_type_dir, dest_dir)
-            file_count = len([f for f in dest_dir.rglob("*") if f.is_file()])
-            print(f"   ✅ {{model_type_dir.name}}: {{file_count}} files")
-
-    total_files = len([f for f in target_dir.rglob("*") if f.is_file()])
-    print(f"📊 Total standard model files: {{total_files}}")
-else:
-    print("❌ Docling cache not found")
-    raise Exception("Failed to find downloaded models")
-
-print("✅ Standard models organized successfully")
-"""
-
-        script_path = temp_dir_path / "download.py"
-        script_path.write_text(download_script)
-
-        log("  📦 Downloading standard Docling model suite...")
+        # Download standard Docling models using official docling-tools CLI
+        log("  🔧 Running: docling-tools models download")
         try:
-            subprocess.run(
-                [sys.executable, str(script_path)],
+            result = subprocess.run(
+                ["docling-tools", "models", "download"],
                 check=True,
                 capture_output=True,
                 text=True,
             )
-            log("  ✅ Model downloaded successfully", Colors.GREEN)
+            log("  ✅ Models downloaded successfully to cache", Colors.GREEN)
+            if result.stdout:
+                for line in result.stdout.strip().split("\n"):
+                    if line.strip():
+                        log(f"     {line}")
+        except FileNotFoundError:
+            log_error("docling-tools CLI not found")
+            log("  Ensure docling package is installed with: uv sync")
+            sys.exit(1)
         except subprocess.CalledProcessError as e:
-            log_error(
-                f"Failed to download model: {e.stderr if hasattr(e, 'stderr') else str(e)}"
-            )
+            log_error(f"Failed to download models: {e.stderr if e.stderr else str(e)}")
             sys.exit(1)
 
-        if not model_dir.exists():
-            log_error(f"Model directory not found after download: {model_dir}")
+        # Copy models from cache to temp directory, preserving exact structure
+        cache_dir = Path.home() / ".cache" / "docling" / "models"
+        if not cache_dir.exists():
+            log_error(f"Docling cache directory not found: {cache_dir}")
+            log("  Models should be downloaded to ~/.cache/docling/models")
             sys.exit(1)
 
-        files = list(model_dir.rglob("*"))
-        log(f"  📁 Standard model suite contains {len(files)} files")
+        log("  📦 Copying models from cache to upload directory...")
+        model_dir.mkdir(parents=True, exist_ok=True)
+
+        try:
+            # Copy entire models directory preserving structure
+            import shutil
+
+            for item in cache_dir.iterdir():
+                if item.is_dir():
+                    dest = model_dir / item.name
+                    shutil.copytree(item, dest, dirs_exist_ok=True)
+                    file_count = len([f for f in dest.rglob("*") if f.is_file()])
+                    log(f"     ✅ {item.name}: {file_count} files")
+                elif item.is_file():
+                    shutil.copy2(item, model_dir / item.name)
+
+            total_files = len([f for f in model_dir.rglob("*") if f.is_file()])
+            log(f"  📊 Total model files: {total_files}", Colors.GREEN)
+        except Exception as e:
+            log_error(f"Failed to copy models from cache: {e}")
+            sys.exit(1)
+
+        if not model_dir.exists() or not any(model_dir.iterdir()):
+            log_error("Model directory is empty after copy")
+            sys.exit(1)
 
         # Upload standard model suite to GCS
-        log("  📤 Uploading standard model suite to GCS...")
+        log("  📤 Uploading model suite to GCS...")
         gcs_path = f"gs://{bucket_name}/models/docling/"
 
         try:
@@ -301,7 +405,7 @@ print("✅ Standard models organized successfully")
                 capture_output=True,
                 text=True,
             )
-            log("  ✅ Standard model suite uploaded successfully to GCS!", Colors.GREEN)
+            log("  ✅ Model suite uploaded successfully to GCS!", Colors.GREEN)
             log(f"  📍 Available at: {gcs_path}")
             log(
                 "  📦 Includes: layout, tableformer, picture classifier, code formula, easyocr models"
@@ -350,10 +454,41 @@ def setup_model_storage(env_vars: dict[str, str], environment: str) -> None:
     if check_result.returncode == 0:
         log("  ✅ Standard Docling model suite already exists in GCS", Colors.GREEN)
         log(f"  📍 Path: {gcs_models_path}")
-        log(
-            "  📦 Includes: layout, tableformer, picture classifier, code formula, easyocr models"
-        )
-        return
+
+        # Check cache age (both local and GCS)
+        log("  ⏰ Checking cache age (24-hour refresh policy)...", Colors.CYAN)
+
+        local_exists, local_age = check_local_cache_age()
+        gcs_exists, gcs_age = check_gcs_cache_age(bucket_name)
+
+        needs_refresh = False
+        if local_exists and local_age > 24:
+            log(f"  ⚠️  Local cache is {local_age:.1f} hours old (>24h)", Colors.YELLOW)
+            needs_refresh = True
+        elif local_exists:
+            log(f"  ✅ Local cache is {local_age:.1f} hours old (<24h)", Colors.GREEN)
+
+        if gcs_exists and gcs_age > 24:
+            log(f"  ⚠️  GCS cache is {gcs_age:.1f} hours old (>24h)", Colors.YELLOW)
+            needs_refresh = True
+        elif gcs_exists:
+            log(f"  ✅ GCS cache is {gcs_age:.1f} hours old (<24h)", Colors.GREEN)
+
+        if needs_refresh:
+            log("  🔄 Cache refresh required - clearing both caches", Colors.YELLOW)
+            clear_local_cache()
+            clear_gcs_cache(bucket_name)
+            log("  📥 Re-downloading models with new structure...", Colors.CYAN)
+            # Fall through to download logic below
+        else:
+            log(
+                "  ✅ Models are fresh - no download needed",
+                Colors.GREEN,
+            )
+            log(
+                "  📦 Includes: layout, tableformer, picture classifier, code formula, easyocr models"
+            )
+            return
 
     # Model doesn't exist at configured bucket. Auto-detect common dev bucket suffix.
     try:
@@ -966,7 +1101,10 @@ def deploy_processor_complete_pipeline(environment: str) -> None:
             f"3. Deploy the GCS handler: npm run deploy:task-processor:{env_suffix}",
             Colors.YELLOW,
         )
-        log("4. Test by uploading a file in your documents page in the web app", Colors.YELLOW)
+        log(
+            "4. Test by uploading a file in your documents page in the web app",
+            Colors.YELLOW,
+        )
         log(
             "5. Monitor processing logs in Cloud Run jobs console: https://console.cloud.google.com/run/jobs",
             Colors.YELLOW,
