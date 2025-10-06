@@ -18,8 +18,8 @@ dependencies = [
     "pgvector>=0.2.4",
     # Document processing - lighter alternatives
     "opencv-python-headless>=4.8.0", # Headless wheel for servers (no GUI/GLX deps)
-    "docling>=2.41.0",
-    "docling-core>=2.42.0", # For HybridChunker
+    "docling==2.55.1",
+    "docling-core==2.48.4", # For HybridChunker
     "huggingface-hub>=0.20.0", # For model downloads
     "requests>=2.32.0", # HTTP requests for model downloads
     # Web framework
