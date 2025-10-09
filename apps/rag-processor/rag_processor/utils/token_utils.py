@@ -5,6 +5,8 @@ Provides shared tokenizer functionality and text chunking for token-aware proces
 Ensures all text embeddings stay within model token limits (2047 tokens for text-embedding-004).
 """
 
+from collections.abc import Callable
+
 import structlog
 from docling_core.transforms.chunker.tokenizer.base import BaseTokenizer
 from google.genai import Client
@@ -74,10 +76,9 @@ class GoogleTokenizer(BaseTokenizer):
         """Get maximum token limit."""
         return self._max_tokens
 
-    def get_tokenizer(self) -> "GoogleTokenizer":
-        """Return the underlying tokenizer (required by BaseTokenizer interface)."""
-        # Since we're wrapping Google's embedding service, return self as the tokenizer
-        return self
+    def get_tokenizer(self) -> Callable[[str], int]:
+        """Return callable tokenizer function for use with semchunk."""
+        return self.count_tokens
 
 
 def chunk_text_by_tokens(
