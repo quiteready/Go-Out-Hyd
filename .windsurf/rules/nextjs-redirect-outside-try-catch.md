@@ -1,7 +1,8 @@
 ---
+trigger: glob
 globs: *.tsx
-alwaysApply: false
 ---
+
 # Next.js 15 App Router - Redirect Outside Try/Catch
 
 ## Rule: Never use redirect() inside try/catch blocks

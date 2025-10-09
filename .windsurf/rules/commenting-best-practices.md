@@ -1,6 +1,7 @@
 ---
+trigger: glob
+description:
 globs: *.py,*.ts,*.tsx
-alwaysApply: false
 ---
 
 # Commenting Best Practices - Write Meaningful, Not Noisy Comments
