@@ -1,6 +1,7 @@
 ---
+trigger: glob
+description:
 globs: *.ts,*.tsx
-alwaysApply: false
 ---
 
 # Never Use `void` to Suppress Unused Variable Warnings
