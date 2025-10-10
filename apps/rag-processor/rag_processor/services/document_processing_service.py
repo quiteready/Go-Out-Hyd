@@ -9,11 +9,13 @@ import threading
 from pathlib import Path
 from typing import TypedDict
 
+import chardet
 import structlog
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from ..models.metadata_models import DocumentChunkMetadata
 from ..utils.retry_utils import NonRetryableError
@@ -198,11 +200,147 @@ class DocumentProcessingService:
             )
             raise DocumentProcessingServiceError(error_msg) from e
 
+    async def _split_text_file_with_langchain(
+        self, document_path: str
+    ) -> list[ChunkWithPages]:
+        """
+        Split plain text file using LangChain's RecursiveCharacterTextSplitter.
+
+        Handles encoding detection and semantic chunking without Docling overhead.
+        Designed for .txt, .md, and other plain text files.
+
+        Args:
+            document_path: Path to the text file
+
+        Returns:
+            List of chunk dictionaries with text content and page numbers
+
+        Raises:
+            DocumentProcessingServiceError: If text file processing fails
+        """
+        import time
+
+        start_time = time.time()
+
+        try:
+            # Step 1: Detect file encoding
+            logger.info(
+                "Starting text file encoding detection",
+                document_path=document_path,
+            )
+
+            with open(document_path, "rb") as f:
+                raw_data = f.read()
+                detected = chardet.detect(raw_data)
+                encoding = detected["encoding"] or "utf-8"
+                confidence = detected.get("confidence", 0.0)
+
+            logger.info(
+                "Text file encoding detected",
+                document_path=document_path,
+                detected_encoding=encoding,
+                confidence=round(confidence, 2),
+            )
+
+            # Step 2: Read file with detected encoding
+            try:
+                with open(document_path, encoding=encoding, errors="replace") as f:
+                    text = f.read()
+
+                logger.info(
+                    "Text file read successfully",
+                    document_path=document_path,
+                    text_length=len(text),
+                    encoding=encoding,
+                )
+            except Exception as read_error:
+                logger.error(
+                    "Failed to read text file with detected encoding",
+                    document_path=document_path,
+                    encoding=encoding,
+                    error=str(read_error),
+                    error_type=type(read_error).__name__,
+                )
+                raise DocumentProcessingServiceError(
+                    f"Failed to read text file '{document_path}' with encoding {encoding}: {read_error}"
+                ) from read_error
+
+            # Step 3: Initialize LangChain text splitter
+            logger.info(
+                "Initializing LangChain RecursiveCharacterTextSplitter",
+                document_path=document_path,
+                max_tokens=self.max_tokens,
+            )
+
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=self.max_tokens,
+                chunk_overlap=200,  # Maintain context between chunks
+                length_function=self.tokenizer.count_tokens,
+                separators=[
+                    "\n\n",  # Paragraphs
+                    "\n",  # Lines
+                    ". ",  # Sentences ending with period
+                    "? ",  # Sentences ending with question mark
+                    "! ",  # Sentences ending with exclamation
+                    " ",  # Words
+                    "",  # Characters (last resort)
+                ],
+                is_separator_regex=False,
+            )
+
+            # Step 4: Split text into chunks
+            logger.info(
+                "Splitting text with LangChain",
+                document_path=document_path,
+            )
+
+            chunks = text_splitter.split_text(text)
+
+            total_time = time.time() - start_time
+
+            logger.info(
+                "Text file split successfully with LangChain",
+                document_path=document_path,
+                chunk_count=len(chunks),
+                encoding=encoding,
+                total_time_seconds=round(total_time, 2),
+                average_chunk_length=(
+                    sum(len(c) for c in chunks) // len(chunks) if chunks else 0
+                ),
+            )
+
+            # Step 5: Return in ChunkWithPages format (text files have no pages)
+            return [
+                ChunkWithPages(text=chunk, page_numbers=[1])
+                for chunk in chunks
+                if chunk.strip()
+            ]
+
+        except DocumentProcessingServiceError:
+            # Re-raise our own errors
+            raise
+        except Exception as e:
+            total_time = time.time() - start_time
+            logger.error(
+                "Text file processing failed",
+                document_path=document_path,
+                error=str(e),
+                error_type=type(e).__name__,
+                total_time_seconds=round(total_time, 2),
+            )
+            raise DocumentProcessingServiceError(
+                f"Text file processing failed for {document_path}: {e}"
+            ) from e
+
     async def split_document_into_chunks(
         self, document_path: str
     ) -> list[ChunkWithPages]:
         """
-        Split document into chunks using Docling's HybridChunker.
+        Split document into chunks using appropriate method.
+
+        Routes plain text files to LangChain's RecursiveCharacterTextSplitter
+        for fast, encoding-aware processing. Routes structured documents to
+        Docling's HybridChunker for semantic document understanding.
 
         Args:
             document_path: Path to the document file
@@ -218,6 +356,15 @@ class DocumentProcessingService:
         start_time = time.time()
 
         try:
+            # Route plain text files to specialized handler
+            if document_path.lower().endswith((".txt", ".md", ".markdown")):
+                logger.info(
+                    "Routing plain text file to LangChain handler",
+                    document_path=document_path,
+                    file_extension=Path(document_path).suffix.lower(),
+                )
+                return await self._split_text_file_with_langchain(document_path)
+
             # Pre-validate PDFs to surface actionable errors early
             if document_path.lower().endswith(".pdf"):
                 try:

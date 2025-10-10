@@ -97,8 +97,8 @@ export function getSupportedExtensions(): string[] {
 
 export function getFileTypeDescription(category: FileCategory): string {
   const descriptions = {
-    documents: "Documents (PDF, DOCX, DOC, PPTX, PPT, TXT, MD)",
-    images: "Images (PNG, JPEG, WebP, GIF, BMP, TIFF)",
+    documents: "Documents (PDF, DOCX, PPTX, TXT, MD)",
+    images: "Images (PNG, JPEG, WebP)",
     videos: "Videos (MP4, AVI, MOV, WebM, WMV, 3GP)",
     audio: "Audio (MP3, WAV, FLAC, AAC, OGG, M4A, 3GP)",
   };

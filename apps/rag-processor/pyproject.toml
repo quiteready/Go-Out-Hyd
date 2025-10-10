@@ -32,6 +32,8 @@ dependencies = [
     "httpx>=0.25.0", # HTTP client
     "hf-transfer>=0.1.9",
     "psutil>=5.9.0", # System and process utilities for memory monitoring
+    "chardet>=5.2.0", # Encoding detection for text files
+    "langchain-text-splitters>=0.3.0", # Semantic text chunking
 ]
 
 [project.scripts]
