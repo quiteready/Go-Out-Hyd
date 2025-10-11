@@ -1,6 +1,6 @@
 {
   "templateName": "rag-simple",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "generatedAt": "2025-09-27T19:30:00Z",
   "cliVersion": "1.1.22",
   "description": "Simple AI RAG app with document Q&A - no billing complexity",
@@ -18,6 +18,7 @@
     "2.0.2": "Fix docling offline model support issue.",
     "2.0.3": "Fix document chunking tokenizer issue on large pdfs.",
     "2.0.4": "Add Windsurf and Claude Code rule variants.",
-    "2.0.5": "Enhanced text file processing with LangChain semantic chunking and encoding detection."
+    "2.0.5": "Enhanced text file processing with LangChain semantic chunking and encoding detection.",
+    "2.0.6": "Add MCP support for context7 and time in mcp.json for Claude Code."
   }
 }
