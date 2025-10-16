@@ -121,7 +121,7 @@ Deployment is complete when all 5 phases are finished and user can successfully 
 
 **Why Claude Sonnet 4 - Thinking?**
 
-- ✅ **Maximum Accuracy** - Provides the most reliable guidance throughout all 6 phases
+- ✅ **Maximum Accuracy** - Provides the most reliable guidance throughout all 5 phases
 - ✅ **Complete Memory** - Remembers all previous deployment steps and configurations
 - ✅ **Best Results** - Optimized for complex, multi-step technical processes
 
@@ -159,7 +159,7 @@ After each phase, verify completion with the user:
 <!-- AI INTERNAL REFERENCE: DO NOT SHOW TO USER -- Use the Communication Format template defined in the "AI Instructions" above for consistent phase presentation. -->
 
 **🛑 STOP AND WAIT FOR USER APPROVAL BEFORE PHASE 1:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE "STOP AND WAIT FOR USER APPROVAL" PHRASE TO USER -->
-Ask the user: "Are you ready to begin Phase 1: Initial Vercel Web App Deployment? Please confirm you understand the 6-phase deployment process and are ready to start."
+Ask the user: "Are you ready to begin Phase 1: Initial Vercel Web App Deployment? Please confirm you understand the 5-phase deployment process and are ready to start."
 
 ---
 
@@ -1334,7 +1334,7 @@ npm run db:status
 1. **Check Supabase Staging Branch**
    - Go to your Supabase dashboard
    - Ensure you're on the **staging** branch (should show "Staging" with green "Preview" badge)
-   - Navigate to **Table Editor** → you should see all 8 tables: `users`, `documents`, `document_chunks`, `document_processing_jobs`, `conversations`, `messages`, `user_usage`, `webhook_events`
+   - Navigate to **Table Editor** → you should see all 6 tables: `users`, `documents`, `document_chunks`, `document_processing_jobs`, `conversations`, `messages`
    - Click on tables to verify they are properly created and empty (ready for development)
 
 2. **Check Storage Setup**
@@ -1363,7 +1363,7 @@ npm run db:status
 **🛑 STOP AND WAIT FOR USER APPROVAL:** <!-- AI INTERNAL REFERENCE - DO NOT SHOW THE "STOP AND WAIT FOR USER APPROVAL" PHRASE TO USER -->
 Please confirm you can see:
 
-- ✅ All 8 database tables in the staging branch Table Editor (users, documents, document_chunks, etc.)
+- ✅ All 6 database tables in the staging branch Table Editor (users, documents, document_chunks, etc.)
 - ✅ Database tables properly created and empty (ready for development)
 - ✅ `chat-images` storage bucket created and visible
 - ✅ **Both RPC functions** (`match_text_chunks`, `match_multimodal_chunks`) visible in Database → Functions
@@ -1527,7 +1527,7 @@ Complete development environment setup and comprehensive testing finished! Verif
 
 - ✅ Local `apps/web/.env.local` synced with Vercel preview environment using `vercel env pull`
 - ✅ **Next.js configuration automatically updated** with staging hostname extracted from `apps/web/.env.local`
-- ✅ **Staging database schema fully set up** with tables, triggers, storage policies, and extensions
+- ✅ **Staging database schema fully set up** with 6 tables, triggers, storage policies, and extensions
 - ✅ **Database extensions enabled** in staging branch (pgvector for embeddings, pg_cron for cleanup)
 - ✅ **RPC functions verified** in staging branch (match_text_chunks, match_multimodal_chunks)
 - ✅ **Document cleanup job active** in staging branch (automated timeout handling)
@@ -1711,7 +1711,7 @@ Complete development environment setup and comprehensive testing finished! Verif
 - [ ] **Local `apps/web/.env.local` synced** with Vercel preview environment using `vercel env pull`
 - [ ] **Next.js configuration automatically updated** with staging hostname extracted from `apps/web/.env.local`
 - [ ] **Staging database schema fully set up** with fresh migrations, triggers, storage policies, and seed data
-- [ ] **Staging environment database verified** - all tables, storage bucket, and models visible in Supabase
+- [ ] **Staging environment database verified** - all tables, storage bucket visible in Supabase
 - [ ] **Production environment** tested with production Gemini API
 - [ ] **Preview environment** tested with staging Supabase and development keys
 - [ ] **Environment separation verified** - no data mixing between production and development
