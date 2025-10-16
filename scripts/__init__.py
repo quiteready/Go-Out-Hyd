@@ -1,1 +1,1 @@
-"""RAG SaaS deployment and setup scripts package."""
+"""RAG Simple deployment and setup scripts package."""

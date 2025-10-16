@@ -11,14 +11,42 @@ This module provides shared utilities for:
 - Consistent logging and colors
 """
 
+import shlex
 import subprocess
 import time
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import TypedDict
+from shutil import which
+from typing import Any, TypedDict
 
 # Import lightweight utility modules from scripts directory
 from .error_handling import ErrorContext, ServiceError
+
+# =============================================================================
+# CROSS-PLATFORM COMMAND HELPERS
+# =============================================================================
+
+
+def get_gcloud_path() -> str:
+    """Get the full path to gcloud command for cross-platform compatibility.
+
+    On Windows, gcloud is a .CMD file which subprocess can't find without
+    the full path. This helper ensures gcloud works on Windows, Mac, and Linux.
+
+    Returns:
+        Full path to gcloud command
+
+    Raises:
+        RuntimeError: If gcloud is not found in PATH
+    """
+    gcloud_path = which("gcloud")
+    if not gcloud_path:
+        raise RuntimeError(
+            "gcloud command not found in PATH. "
+            "Please install Google Cloud SDK: https://cloud.google.com/sdk/docs/install"
+        )
+    return gcloud_path
+
 
 # =============================================================================
 # CONFIGURATION TYPES
@@ -130,13 +158,25 @@ class SubprocessStrategy:
         input_data: str | None = None,
         error_handler: ErrorHandlingStrategy | None = None,
     ) -> str:
-        """Execute command with standardized error handling"""
+        """Execute command with standardized error handling
+
+        Cross-platform gcloud handling: Automatically uses full gcloud path
+        for Windows .CMD compatibility and proper quote handling.
+        """
         handler = error_handler or self.default_handler
 
         try:
             if isinstance(command, str) and not self.use_shell:
-                # Convert string to list for safer execution
-                command = command.split()
+                # CROSS-PLATFORM FIX: Handle gcloud commands for Windows
+                if command.strip().startswith("gcloud"):
+                    # Parse and replace gcloud with full path
+                    gcloud_cmd = get_gcloud_path()
+                    command = shlex.split(command)
+                    command[0] = gcloud_cmd
+                else:
+                    # Use shlex.split() for proper cross-platform parsing
+                    # Handles quotes, spaces, and escape characters correctly
+                    command = shlex.split(command)
 
             result = subprocess.run(
                 command,
@@ -228,8 +268,8 @@ def run_with_user_input(cmd: list[str], input_data: str) -> str:
 
 
 def run_gcp_command(
-    cmd: list[str] | str, capture_output: bool = False, **kwargs
-) -> subprocess.CompletedProcess:
+    cmd: list[str] | str, capture_output: bool = False, **kwargs: Any
+) -> subprocess.CompletedProcess[str]:
     """Execute GCP command and return subprocess result (for compatibility with test scripts)"""
     try:
         if isinstance(cmd, list):
@@ -316,8 +356,46 @@ def run_command(
     show_output: bool = False,
     timeout: int = 600,  # 10 minutes default
 ) -> str:
-    """Execute shell command with proper error handling using ErrorContext"""
-    # Use the new standardized subprocess strategy
+    """Execute shell command with proper error handling using ErrorContext
+
+    Cross-platform gcloud handling: Automatically uses full gcloud path and list format
+    for Windows compatibility (handles .CMD files and quote issues).
+    """
+    # Auto-handle gcloud commands for Windows compatibility
+    if isinstance(cmd, str) and cmd.strip().startswith("gcloud"):
+        try:
+            gcloud_cmd = get_gcloud_path()
+            # Parse command with shlex (handles quotes, spaces, escape chars properly)
+            cmd_parts = shlex.split(cmd)
+            # Replace "gcloud" with full path for Windows .CMD compatibility
+            cmd_parts[0] = gcloud_cmd
+
+            # Execute with list format (cross-platform, avoids cmd.exe quote issues)
+            with ErrorContext(f"gcloud command: {cmd[:50]}..."):
+                result = subprocess.run(
+                    cmd_parts,
+                    capture_output=capture_output,
+                    text=True,
+                    check=check,
+                    cwd=cwd,
+                    timeout=timeout,
+                )
+                if show_output:
+                    return ""
+                return result.stdout.strip() if capture_output else ""
+        except subprocess.TimeoutExpired as e:
+            raise ServiceError(
+                f"Command timed out after {timeout} seconds: {cmd}"
+            ) from e
+        except subprocess.CalledProcessError as e:
+            error_msg = e.stderr.strip() if e.stderr else "Unknown error"
+            raise ServiceError(
+                f"gcloud command failed: {cmd}\nError: {error_msg}"
+            ) from e
+        except Exception as e:
+            raise ServiceError(f"Failed to execute gcloud command: {cmd}") from e
+
+    # For non-gcloud commands, use existing shell strategy
     strategy = SubprocessStrategy(timeout=timeout, use_shell=True)
 
     if show_output:
@@ -566,10 +644,20 @@ def wait_for_cloud_run_service_ready(
 
     for attempt in range(max_checks):
         try:
-            # Use shell=True for the gcloud command to handle quotes properly
+            # Use list format for cross-platform compatibility (Windows, Mac, Linux)
+            gcloud_cmd = get_gcloud_path()
             result = subprocess.run(
-                f"gcloud run services describe {service_name} --region={region} --project={project_id} --format='value(status.url)' --quiet",
-                shell=True,
+                [
+                    gcloud_cmd,
+                    "run",
+                    "services",
+                    "describe",
+                    service_name,
+                    f"--region={region}",
+                    f"--project={project_id}",
+                    "--format=value(status.url)",  # No quotes needed in list format
+                    "--quiet",
+                ],
                 capture_output=True,
                 text=True,
                 timeout=30,
@@ -644,9 +732,17 @@ def ensure_service_agent_exists(
         raise ValueError(f"Unsupported service type: {service_type}")
 
     # Check if service agent exists - use subprocess directly to avoid ErrorContext logging
+    gcloud_cmd = get_gcloud_path()
     result = subprocess.run(
-        f"gcloud iam service-accounts describe {service_agent_email} --project={project_id} --quiet",
-        shell=True,
+        [
+            gcloud_cmd,
+            "iam",
+            "service-accounts",
+            "describe",
+            service_agent_email,
+            f"--project={project_id}",
+            "--quiet",
+        ],
         capture_output=True,
         text=True,
     )
@@ -756,9 +852,10 @@ def check_service_account_secret_access(
     """
     try:
         # Check if service account has secret accessor role for the specific secret
+        gcloud_cmd = get_gcloud_path()
         result = subprocess.run(
             [
-                "gcloud",
+                gcloud_cmd,
                 "secrets",
                 "get-iam-policy",
                 secret_name,
@@ -799,9 +896,10 @@ def check_cloud_run_invoke_permissions(
     """
     try:
         # Check if service account has run.invoker role for the specific service
+        gcloud_cmd = get_gcloud_path()
         result = subprocess.run(
             [
-                "gcloud",
+                gcloud_cmd,
                 "run",
                 "services",
                 "get-iam-policy",
@@ -1001,12 +1099,14 @@ def create_or_update_secret(
         f"gcloud secrets describe {secret_name} --project={project_id} --quiet"
     )
 
+    gcloud_cmd = get_gcloud_path()
+
     if exists:
         log(f"   Updating secret: {secret_name}")
         # Use standardized secure input method
         run_with_user_input(
             [
-                "gcloud",
+                gcloud_cmd,
                 "secrets",
                 "versions",
                 "add",
@@ -1022,7 +1122,7 @@ def create_or_update_secret(
             # Use standardized secure input method
             run_with_user_input(
                 [
-                    "gcloud",
+                    gcloud_cmd,
                     "secrets",
                     "create",
                     secret_name,
@@ -1036,7 +1136,7 @@ def create_or_update_secret(
             log(f"   Secret creation failed, attempting update: {secret_name}")
             run_with_user_input(
                 [
-                    "gcloud",
+                    gcloud_cmd,
                     "secrets",
                     "versions",
                     "add",

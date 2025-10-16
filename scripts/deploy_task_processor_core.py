@@ -17,7 +17,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from .gcp_utils import Colors, log, log_step
+from .gcp_utils import Colors, get_gcloud_path, log, log_step
 from .utils.env_loader import load_env_file
 
 
@@ -52,8 +52,9 @@ def ensure_artifact_registry(project_id: str, region: str) -> bool:
 
     try:
         # Check if repository exists
+        gcloud_cmd = get_gcloud_path()
         check_cmd = [
-            "gcloud",
+            gcloud_cmd,
             "artifacts",
             "repositories",
             "describe",
@@ -70,7 +71,7 @@ def ensure_artifact_registry(project_id: str, region: str) -> bool:
             log(f"   📝 Creating Artifact Registry repository '{repository_name}'...")
 
             create_cmd = [
-                "gcloud",
+                gcloud_cmd,
                 "artifacts",
                 "repositories",
                 "create",
@@ -205,8 +206,9 @@ def deploy_task_processor_function(
 
     env_vars_str = ",".join([f"{k}={v}" for k, v in env_vars.items()])
 
+    gcloud_cmd = get_gcloud_path()
     deploy_args = [
-        "gcloud",
+        gcloud_cmd,
         "functions",
         "deploy",
         function_name,
@@ -255,7 +257,7 @@ def deploy_task_processor_function(
                 log("   🔐 Granting GCS Handler permission to invoke Task Processor (Gen2)...")
 
                 invoke_cmd = [
-                    "gcloud",
+                    gcloud_cmd,
                     "run",
                     "services",
                     "add-iam-policy-binding",

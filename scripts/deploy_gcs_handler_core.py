@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 
 from .deployment_config import get_config
-from .gcp_utils import Colors, log, log_step
+from .gcp_utils import Colors, get_gcloud_path, log, log_step
 from .utils.env_loader import load_env_file
 
 
@@ -53,8 +53,9 @@ def ensure_database_secret(project_id: str, database_url: str, secret_id: str) -
 
     try:
         # Check if secret exists
+        gcloud_cmd = get_gcloud_path()
         check_cmd = [
-            "gcloud",
+            gcloud_cmd,
             "secrets",
             "describe",
             secret_id,
@@ -68,7 +69,7 @@ def ensure_database_secret(project_id: str, database_url: str, secret_id: str) -
             # Create secret if it doesn't exist
             log(f"   📝 Creating secret '{secret_id}'...")
             create_cmd = [
-                "gcloud",
+                gcloud_cmd,
                 "secrets",
                 "create",
                 secret_id,
@@ -91,7 +92,7 @@ def ensure_database_secret(project_id: str, database_url: str, secret_id: str) -
         log("   🔄 Updating secret version...")
 
         add_version_cmd = [
-            "gcloud",
+            gcloud_cmd,
             "secrets",
             "versions",
             "add",
@@ -128,8 +129,9 @@ def ensure_artifact_registry(project_id: str, region: str) -> bool:
 
     try:
         # Check if repository exists
+        gcloud_cmd = get_gcloud_path()
         check_cmd = [
-            "gcloud",
+            gcloud_cmd,
             "artifacts",
             "repositories",
             "describe",
@@ -146,7 +148,7 @@ def ensure_artifact_registry(project_id: str, region: str) -> bool:
             log(f"   📝 Creating Artifact Registry repository '{repository_name}'...")
 
             create_cmd = [
-                "gcloud",
+                gcloud_cmd,
                 "artifacts",
                 "repositories",
                 "create",
@@ -237,8 +239,9 @@ def ensure_cloud_tasks_queue(project_id: str, region: str, environment: str) -> 
 
     try:
         # Check if queue exists
+        gcloud_cmd = get_gcloud_path()
         check_cmd = [
-            "gcloud",
+            gcloud_cmd,
             "tasks",
             "queues",
             "describe",
@@ -254,7 +257,7 @@ def ensure_cloud_tasks_queue(project_id: str, region: str, environment: str) -> 
             log(f"   📝 Creating Cloud Tasks queue '{queue_name}'...")
 
             create_cmd = [
-                "gcloud",
+                gcloud_cmd,
                 "tasks",
                 "queues",
                 "create",
@@ -351,8 +354,9 @@ def deploy_gcs_handler_function(
     env_vars_str = ",".join([f"{k}={v}" for k, v in env_vars.items()])
     secret_mapping = f"DATABASE_URL={config.database_secret_name}:latest"
 
+    gcloud_cmd = get_gcloud_path()
     deploy_args = [
-        "gcloud",
+        gcloud_cmd,
         "functions",
         "deploy",
         function_name,
