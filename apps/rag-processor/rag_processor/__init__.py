@@ -1,5 +1,5 @@
 """
-RAG Processor - Document processing and embedding service for RAG SaaS.
+RAG Processor - Document processing and embedding service for RAG Simple.
 
 This package handles document ingestion, parsing, chunk generation,
 embedding creation, and vector storage for retrieval-augmented generation.

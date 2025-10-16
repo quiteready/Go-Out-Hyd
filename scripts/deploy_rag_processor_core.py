@@ -23,6 +23,7 @@ from pathlib import Path
 from .deployment_config import get_config
 from .gcp_utils import (
     Colors,
+    get_gcloud_path,
     log,
     log_error,
     log_step,
@@ -164,9 +165,10 @@ def ensure_artifact_registry(project_id: str, region: str) -> None:
         pass
 
     try:
+        gcloud_cmd = get_gcloud_path()
         subprocess.run(
             [
-                "gcloud",
+                gcloud_cmd,
                 "artifacts",
                 "repositories",
                 "describe",
@@ -255,8 +257,9 @@ def check_gcs_cache_age(bucket_name: str) -> tuple[bool, float]:
 
     try:
         # List files with detailed info including timestamps
+        gcloud_cmd = get_gcloud_path()
         result = subprocess.run(
-            ["gcloud", "storage", "ls", "-L", "--recursive", gcs_path],
+            [gcloud_cmd, "storage", "ls", "-L", "--recursive", gcs_path],
             capture_output=True,
             text=True,
             check=False,
@@ -318,8 +321,9 @@ def clear_gcs_cache(bucket_name: str) -> None:
 
     log("  🗑️  Clearing GCS model cache...", Colors.YELLOW)
     try:
+        gcloud_cmd = get_gcloud_path()
         subprocess.run(
-            ["gcloud", "storage", "rm", "-r", gcs_path],
+            [gcloud_cmd, "storage", "rm", "-r", gcs_path],
             check=True,
             capture_output=True,
             text=True,
@@ -399,8 +403,9 @@ def download_standard_docling_models(bucket_name: str) -> None:
         gcs_path = f"gs://{bucket_name}/models/docling/"
 
         try:
+            gcloud_cmd = get_gcloud_path()
             subprocess.run(
-                ["gcloud", "storage", "rsync", "-r", str(model_dir) + "/", gcs_path],
+                [gcloud_cmd, "storage", "rsync", "-r", str(model_dir) + "/", gcs_path],
                 check=True,
                 capture_output=True,
                 text=True,
@@ -439,9 +444,10 @@ def setup_model_storage(env_vars: dict[str, str], environment: str) -> None:
     log("  🔍 Checking if standard Docling model suite exists in GCS...")
     log(f"  🔍 Looking for models at: {gcs_models_path}")
 
+    gcloud_cmd = get_gcloud_path()
     check_result = subprocess.run(
         [
-            "gcloud",
+            gcloud_cmd,
             "storage",
             "ls",
             gcs_models_path,
@@ -502,7 +508,7 @@ def setup_model_storage(env_vars: dict[str, str], environment: str) -> None:
             )
             alt_check = subprocess.run(
                 [
-                    "gcloud",
+                    gcloud_cmd,
                     "storage",
                     "ls",
                     candidate_models_path,
@@ -633,8 +639,9 @@ def build_processor_image(env_vars: dict[str, str], environment: str) -> str:
             Colors.CYAN,
         )
 
+        gcloud_cmd = get_gcloud_path()
         build_args = [
-            "gcloud",
+            gcloud_cmd,
             "builds",
             "submit",
             str(app_dir),
@@ -690,9 +697,10 @@ def check_cloud_run_service_state(
 
     try:
         # Check if service exists and get its current image
+        gcloud_cmd = get_gcloud_path()
         result = subprocess.run(
             [
-                "gcloud",
+                gcloud_cmd,
                 "run",
                 "services",
                 "describe",
@@ -818,7 +826,13 @@ def check_prerequisites(environment: str) -> dict[str, str]:
 
     # Set project
     project_id = env_vars["GOOGLE_CLOUD_PROJECT_ID"]
-    run_command(f"gcloud config set project {project_id} --quiet")
+    gcloud_cmd = get_gcloud_path()
+    subprocess.run(
+        [gcloud_cmd, "config", "set", "project", project_id, "--quiet"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
 
     log("✅ Prerequisites checked successfully", Colors.GREEN)
     log(f"   Project: {project_id}")
@@ -920,8 +934,9 @@ def deploy_processor_job(
     log("   Access: Private (requires authentication)")
 
     # Deploy Cloud Run Job (uses deploy command - automatically creates or updates)
+    gcloud_cmd = get_gcloud_path()
     deploy_args = [
-        "gcloud",
+        gcloud_cmd,
         "run",
         "jobs",
         "deploy",
@@ -959,12 +974,10 @@ def deploy_processor_job(
         log("   2. Check service account permissions:")
         log(f"      gcloud iam service-accounts get-iam-policy {service_account}")
         log("   3. Verify secrets exist:")
-        log(
-            f"      gcloud secrets list | grep -E '({config.database_secret_name}|{config.gemini_api_key_secret_name})'"
-        )
+        log(f"      gcloud secrets list --filter='name:({config.database_secret_name} OR {config.gemini_api_key_secret_name})'")
         log("   4. Check Cloud Run Jobs permissions:")
         log(
-            f"      gcloud projects get-iam-policy {project_id} --flatten='bindings[].members' --filter='bindings.members:{service_account}' | grep run"
+            f"      gcloud projects get-iam-policy {project_id} --flatten='bindings[].members' --filter='bindings.members:{service_account} AND bindings.role:roles/run*'"
         )
         sys.exit(1)
 

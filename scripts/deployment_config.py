@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Deployment Configuration - Single Source of Truth
-Shared configuration for RAG SaaS deployment across all environments
+Shared configuration for RAG Simple deployment across all environments
 
 This module provides consistent configuration values for:
 - Setup scripts (setup-gcp-dev.py, setup-gcp-prod.py)

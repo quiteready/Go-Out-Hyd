@@ -82,7 +82,7 @@ Deployment is complete when all 5 phases are finished and user can successfully 
 **🚨 CRITICAL AI LIMITATION:**
 
 - **CANNOT directly read .env.local files** - AI assistants are not able to find the contents of environment files with tools
-- **CAN use terminal commands** when instructed to access environment files (e.g., `grep "VARIABLE=" apps/web/.env.local`)
+- **CAN use terminal commands** when instructed to access environment files (e.g., `uv run python scripts/read_env.py apps/web/.env.local VARIABLE`)
 
 **👤 User Tasks (Must complete manually):**
 
@@ -601,14 +601,13 @@ Downloading `production` Environment Variables for project "your-project-name"
 pwd
 
 # Get project ID from environment file
-grep "GOOGLE_CLOUD_PROJECT_ID=" apps/web/.env.local
+uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID
 
 # Set the project (extract project ID from environment file)
-PROJECT_ID=$(grep "GOOGLE_CLOUD_PROJECT_ID=" apps/web/.env.local | cut -d'=' -f2)
-gcloud config set project $PROJECT_ID
+PROJECT_ID=$(uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID --value-only)
 
 # Verify the correct project is selected
-gcloud config get-value project
+gcloud config get-value project $PROJECT_ID
 ```
 
 **👤 USER TASK - Verify billing setup:**
@@ -1201,7 +1200,7 @@ Now I'll extract the staging Supabase hostname from the synced `apps/web/.env.lo
 
 ```bash
 # From the root directory, extract the SUPABASE_URL from apps/web/.env.local
-grep "SUPABASE_URL=" apps/web/.env.local
+uv run python scripts/read_env.py apps/web/.env.local SUPABASE_URL
 ```
 
 2. **Read current apps/web/next.config.ts**
@@ -1381,7 +1380,7 @@ Please confirm you can see:
 
 ```bash
 # Switch to development project (from your original .env.local)
-PROJECT_ID=$(grep "GOOGLE_CLOUD_PROJECT_ID=" apps/web/.env.local | cut -d'=' -f2)
+PROJECT_ID=$(uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID --value-only)
 gcloud config set project $PROJECT_ID
 ```
 

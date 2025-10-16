@@ -289,7 +289,7 @@ Ask the user: "Are you ready to begin Phase 1: Prerequisites & Environment Setup
 **👤 User will:**
 
 - Configure Cursor terminal to use the same shell as system (Mac/Linux only)
-- Install required development tools (Node.js, Python, gcloud CLI)
+- Install required development tools (Node.js, Python, gcloud CLI, Stripe CLI)
 - Set up development environment
 
 ### Step 1.0: Verify Terminal Shell Environment
@@ -382,10 +382,10 @@ Check each required tool and **tell the user exactly what they need to install**
    - ✅ If shows version: **"UV is installed correctly"**
    - ❌ If command fails: **"You need to install UV package manager"**
 
-4. **Check Google Cloud SDK**
+4. **Check Google Cloud SDK and Beta component**
    - Run: `gcloud --version`
-   - ✅ If shows version: **"Google Cloud SDK is installed correctly"**
-   - ❌ If command fails: **"You need to install Google Cloud SDK"**
+   - ✅ If shows gcloud version and beta component version: **"Google Cloud SDK and Beta component are installed correctly"**
+   - ❌ If command fails: **"You need to install Google Cloud SDK and Beta component"**
 
 
 **🛑 AFTER VERIFICATION:**
@@ -479,6 +479,18 @@ exec -l $SHELL
 gcloud --version  # Should show gcloud SDK version
 ```
 
+2. **Install gcloud beta component** (required for GCP setup scripts)
+   - After installing the Google Cloud SDK, install the beta component:
+
+```bash
+gcloud components install beta
+```
+
+- Verify installation:
+
+```bash
+gcloud --version  # Should show beta version
+```
 
 ### Step 1.3: Setup Project Dependencies
 
@@ -506,7 +518,7 @@ Before proceeding to Phase 2, verify:
 - ✅ Operating system identified and terminal shell configured (Mac/Linux only)
 - ✅ Node.js (18+) and npm installed and verified
 - ✅ Python (3.10+) and UV package manager installed and verified
-- ✅ Google Cloud SDK installed and verified
+- ✅ Google Cloud SDK and Beta component installed and verified
 - ✅ Project dependencies installed successfully
 - ✅ All required development tools are properly configured
 
@@ -1549,7 +1561,7 @@ _Note: We'll test the full authentication flow and document processing after set
 **👤 User will:**
 
 - Create GCP project and enable billing
-- Authenticate to Google Cloud using `gcloud auth application-default login`
+- Authenticate to Google Cloud using `gcloud auth login`
 - Configure gcloud CLI with project from environment file
 - Get Gemini API key and update environment files immediately
 
@@ -1613,7 +1625,7 @@ GOOGLE_CLOUD_PROJECT_ID=your-actual-project-id
 **👤 USER & 🤖 AI ASSISTANT TASK - Authenticate to Google Cloud (via gcloud CLI):**
 **AI ASSISTANT will run the commands, and the USER will interact with the prompts.**
 
-The AI assistant will run the `gcloud auth application-default login` command. Make sure to follow the prompts:
+The AI assistant will run the `gcloud auth login` command. Make sure to follow the prompts:
 
 1. Authenticate in the browser
 2. Grant the necessary permissions
@@ -1621,7 +1633,7 @@ The AI assistant will run the `gcloud auth application-default login` command. M
 
 ```bash
 # Authenticate to Google Cloud (this will open a browser)
-gcloud auth application-default login
+gcloud auth login
 ```
 
 ### Step 5.3: Configure gcloud CLI
@@ -1631,18 +1643,24 @@ gcloud auth application-default login
 
 **🤖 AI ASSISTANT TASK - Authenticate and Configure gcloud:**
 
-1. **Set Project from Environment File**
+1. **Get Project ID from Environment File**
 
 ```bash
-# Get project ID from environment file
-grep "GOOGLE_CLOUD_PROJECT_ID=" apps/web/.env.local
+# Make sure we're in the root folder
+pwd
 
-# Set the project (AI will extract the project ID from the environment file)
-PROJECT_ID=$(grep "GOOGLE_CLOUD_PROJECT_ID=" apps/web/.env.local | cut -d'=' -f2)
-gcloud config set project $PROJECT_ID
+# First time running this command will automatically sync dependencies
+uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID --value-only
 ```
 
-2. **Verify setup:**
+2. **Only if step 1 was successful, Set the gcloud project to the extracted project id**
+
+```bash
+# Set the project
+gcloud config set project <extracted project id>
+```
+
+3. **Verify Setup**
 
 ```bash
 # Verify your project is set correctly
@@ -1739,11 +1757,7 @@ pwd
 npm run setup:gcp:dev
 ```
 
-### Step 5.6: Update Environment Files with Script Output
-
-**👤 USER TASK - Copy Values from Final Success Summary:**
-
-After the GCP setup script completes successfully, it will display a comprehensive success summary at the END. Look for this section in the final output:
+After the GCP setup script completes successfully, it will display a comprehensive success summary at the END:
 
 ```
 🎉 DEVELOPMENT INFRASTRUCTURE SETUP SUCCESSFUL! 🎉
@@ -1751,14 +1765,6 @@ After the GCP setup script completes successfully, it will display a comprehensi
 
 📋 Infrastructure Summary:
   • Storage Bucket: gs://your-project-id-rag-documents-dev
-```
-
-**📋 Copy storage bucket name to environment file:**
-
-#### 🌐 **Web App Environment File (`apps/web/.env.local`)**
-
-```bash
-GOOGLE_CLOUD_STORAGE_BUCKET=your-project-id-rag-documents-dev
 ```
 
 **If the script encounters any issues, I'll help troubleshoot and run individual setup commands.**
@@ -1805,10 +1811,10 @@ I'll check if the GCP setup script already updated both environment files with t
 
 ```bash
 # Check RAG processor environment file
-grep "GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY=" apps/rag-processor/.env.local
+uv run python scripts/read_env.py apps/rag-processor/.env.local GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY
 
 # Check web app environment file
-grep "GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY=" apps/web/.env.local
+uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY
 ```
 
 **✅ IF both files show a long base64 string (not empty or placeholder values):**
@@ -1821,7 +1827,7 @@ grep "GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY=" apps/web/.env.local
 
 ```bash
 # Create authentication key manually for the EXISTING service account
-PROJECT_ID=$(gcloud config get-value project)
+PROJECT_ID=$(uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID --value-only)
 gcloud iam service-accounts keys create web-app-service-account-key.json \
     --iam-account=rag-processor-dev@$PROJECT_ID.iam.gserviceaccount.com
 

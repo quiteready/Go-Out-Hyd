@@ -180,7 +180,7 @@ def main() -> None:
 
     try:
         # Welcome message (outside ErrorContext to avoid logging user cancellation as error)
-        log("🧪 RAG SaaS Development Environment Setup", Colors.CYAN + Colors.BOLD)
+        log("🧪 RAG Simple Development Environment Setup", Colors.CYAN + Colors.BOLD)
         log("=" * 50)
         log(
             "Setting up a cost-effective development environment for testing and development."

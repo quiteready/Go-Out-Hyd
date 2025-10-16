@@ -2,7 +2,7 @@
 name = "rag-simple-template"
 version = "0.1.0"
 description = "RAG SaaS template with deployment scripts"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 dependencies = [
     "python-dotenv>=1.0.0",
     "structlog>=23.2.0",
