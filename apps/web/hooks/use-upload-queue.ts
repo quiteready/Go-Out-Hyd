@@ -14,6 +14,7 @@ import {
 } from "@/lib/upload-queue";
 import { createUploadError, UploadError } from "@/lib/upload-error-handling";
 import { formatUploadQueueError } from "@/lib/error-formatting";
+import { validateFileMetadata } from "@/lib/file-validation";
 
 interface UseUploadQueueProps {
   onUploadComplete?: (documentData: {
@@ -83,11 +84,19 @@ export function useUploadQueue({
       try {
         console.log("🚀 [BulkUpload] Starting upload for:", item.file.name);
 
-        // Step 1: Get signed URL
+        // Step 1: Determine content type (with fallback for Windows)
+        const validation = validateFileMetadata(
+          item.file.type,
+          item.file.size,
+          item.file.name
+        );
+        const contentType = validation.mimeType || item.file.type;
+
+        // Step 2: Get signed URL
         const requestBody = {
           fileName: item.file.name,
           fileSize: item.file.size,
-          contentType: item.file.type,
+          contentType: contentType,
         };
 
         const response = await fetch("/api/documents/upload-url", {
@@ -140,7 +149,7 @@ export function useUploadQueue({
 
         onProgress(10);
 
-        // Step 2: Upload file to GCS with real-time progress tracking
+        // Step 3: Upload file to GCS with real-time progress tracking
         const uploadResponse = await new Promise<Response>(
           (resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -194,7 +203,7 @@ export function useUploadQueue({
 
             // Configure and send request
             xhr.open("PUT", uploadUrl);
-            xhr.setRequestHeader("Content-Type", item.file.type);
+            xhr.setRequestHeader("Content-Type", contentType);
             xhr.send(item.file);
           }
         );
@@ -207,7 +216,7 @@ export function useUploadQueue({
 
         onProgress(90);
 
-        // Step 3: Mark upload as complete with retry logic for timeout errors
+        // Step 4: Mark upload as complete with retry logic for timeout errors
         let completeResponse;
         let retryCount = 0;
         const maxRetries = 3;

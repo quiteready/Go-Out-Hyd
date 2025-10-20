@@ -1826,13 +1826,19 @@ uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_SERVICE_ACCOU
 - The authentication keys weren't automatically created. I'll create them manually for you now:
 
 ```bash
+# Check the service account email
+uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID --value-only
+```
+
+- Now let's create the authentication key manually for the existing service account, and we will use the extracted service account email in the <project-id> placeholder:
+
+```bash
 # Create authentication key manually for the EXISTING service account
-PROJECT_ID=$(uv run python scripts/read_env.py apps/web/.env.local GOOGLE_CLOUD_PROJECT_ID --value-only)
 gcloud iam service-accounts keys create web-app-service-account-key.json \
-    --iam-account=rag-processor-dev@$PROJECT_ID.iam.gserviceaccount.com
+    --iam-account=rag-processor-dev@<project-id>.iam.gserviceaccount.com
 
 # Convert the key to base64 format (required for environment variables)
-cat web-app-service-account-key.json | base64 -w 0 > web-app-service-account-key.json.base64
+uv run python -c "import base64; print(base64.b64encode(open('web-app-service-account-key.json', 'rb').read()).decode(), end='')" > web-app-service-account-key.json.base64
 
 # Display the base64 key for user to copy
 echo "📝 Copy this base64 authentication key:"
