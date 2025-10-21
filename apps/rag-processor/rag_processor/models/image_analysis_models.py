@@ -16,12 +16,9 @@ class ImageAnalysisError(NonRetryableError):
 
 
 class ImageFormat(str, Enum):
-    """Supported image formats for analysis."""
+    """Supported image formats for analysis (Google GenAI compatible)."""
 
     JPEG = "jpeg"
     JPG = "jpg"
     PNG = "png"
-    GIF = "gif"
-    BMP = "bmp"
-    TIFF = "tiff"
     WEBP = "webp"

@@ -205,7 +205,7 @@ class EmbeddingService:
 
                 # Determine file type and load accordingly
                 file_ext = media_file_path.lower().split(".")[-1]
-                image_formats = ["jpg", "jpeg", "png", "bmp", "gif", "tiff", "webp"]
+                image_formats = ["jpg", "jpeg", "png", "webp"]
                 video_formats = ["mp4", "mov", "avi", "mkv", "webm", "flv", "m4v"]
 
                 embedding: list[float] = []  # Initialize to avoid unbound variable
