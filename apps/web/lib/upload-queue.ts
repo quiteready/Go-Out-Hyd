@@ -71,7 +71,7 @@ export function validateFiles(files: File[]): ValidationResult {
 
   // Validate each file
   files.forEach((file) => {
-    const validation = validateFileMetadata(file.type, file.size);
+    const validation = validateFileMetadata(file.type, file.size, file.name);
     if (validation.valid) {
       valid.push(file);
     } else {

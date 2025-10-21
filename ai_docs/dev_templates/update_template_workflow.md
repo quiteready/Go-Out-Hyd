@@ -86,14 +86,14 @@ git branch -D template-update-[timestamp]  # Delete update branch
 
 ```bash
 # 1. Extract current version from shipkit.json
-CURRENT_VERSION=$(cat shipkit.json | grep '"version"' | sed 's/.*"version": "\(.*\)".*/\1/')
+echo "Current version: $(uv run python scripts/update-helpers.py getVersion)"
 
 # 2. Fetch upstream tags and find available updates
 git fetch upstream --tags
-git tag --list --sort=version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$'
+echo "Available versions: \n$(uv run python scripts/update-helpers.py listTags)"
 
 # 3. Filter tags newer than current version
-# Find incremental update path: 1.1.22 → 1.1.23 → 1.1.24 → 1.2.0
+# Find incremental update path: 1.1.22 → 1.1.23 → 1.2.0
 ```
 
 ### Semantic Version Categorization
@@ -402,31 +402,27 @@ Ready to continue with the next version increment?
 
 ```bash
 # Ensure we're starting from a clean, up-to-date main
-git status                     # Verify clean working directory
-git checkout main             # Switch to main branch
-git pull origin main 2>/dev/null || true  # Get latest changes (if origin exists)
-git checkout -b template-update-$(date +%Y%m%d-%H%M%S)
+git status # Verify clean working directory
+git checkout main # Switch to main branch
+git pull origin main # Get latest changes
+git checkout -b template-update-$(uv run python scripts/update-helpers.py getTimestamp)
 ```
 
 ### Upstream Configuration & Version Detection
 
 ```bash
 # Set up upstream remote if it doesn't exist
-if ! git remote get-url upstream > /dev/null 2>&1; then
-    git remote add upstream [TEMPLATE_REPO_URL]
-fi
+uv run python scripts/update-helpers.py setupUpstream
 
 # Fetch upstream tags and latest changes
 git fetch upstream --tags
 git fetch upstream main
 
 # Extract current version from shipkit.json
-CURRENT_VERSION=$(cat shipkit.json | grep '"version"' | sed 's/.*"version": "\(.*\)".*/\1/')
-echo "Current project version: $CURRENT_VERSION"
+echo "Current project version: $(uv run python scripts/update-helpers.py getVersion)"
 
 # Get available upstream versions
-AVAILABLE_VERSIONS=$(git tag --list --sort=version:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//')
-echo "Available upstream versions: $AVAILABLE_VERSIONS"
+echo "Available upstream versions: \n$(uv run python scripts/update-helpers.py listTags)"
 ```
 
 ### Version-Specific Update Application
@@ -435,56 +431,55 @@ echo "Available upstream versions: $AVAILABLE_VERSIONS"
 
 ```bash
 # Example: Applying version 1.1.22 → 1.1.23
-FROM_VERSION="1.1.22"
-TO_VERSION="1.1.23"
+# Replace <FROM_VERSION> with 1.1.22 and <TO_VERSION> with 1.1.23 in commands below
 
 # Show version-specific changes
-echo "📋 Changes in version $TO_VERSION:"
-git diff v$FROM_VERSION..v$TO_VERSION --name-only
-git log v$FROM_VERSION..v$TO_VERSION --oneline --format="  • %s"
+echo "📋 Changes in version <TO_VERSION>:"
+git diff v<FROM_VERSION>..v<TO_VERSION> --name-only
+git log v<FROM_VERSION>..v<TO_VERSION> --oneline --format="  • %s"
 
 # Apply version-specific changes (selective merge)
-git merge v$TO_VERSION --no-commit --no-ff
+git merge v<TO_VERSION> --no-commit --no-ff
 # Review changes, resolve conflicts if needed
 
 # Update shipkit.json version after successful application
-sed -i.bak "s/\"version\": \"$FROM_VERSION\"/\"version\": \"$TO_VERSION\"/" shipkit.json
+uv run python scripts/update-helpers.py updateVersion <TO_VERSION>
 git add shipkit.json
 
 # Commit this version increment
-git commit -m "Update to template version $TO_VERSION
-
-Applied changes from $FROM_VERSION → $TO_VERSION:
-$(git log v$FROM_VERSION..v$TO_VERSION --oneline --format="• %s")"
+git commit -m "Update to template version <TO_VERSION>"
 ```
 
 ### Version Rollback Capability
 
 ```bash
 # Rollback to specific version (creates versioned rollback branches)
-ROLLBACK_TO_VERSION="1.1.23"
+# Replace <ROLLBACK_TO_VERSION> with the version to rollback to (e.g., 1.1.23)
+# Replace <COMMIT_HASH> with the commit hash from the output (e.g., 1234567890)
 
 # Create rollback branch
-git checkout -b rollback-to-v$ROLLBACK_TO_VERSION-$(date +%Y%m%d-%H%M%S)
+git checkout -b rollback-to-v<ROLLBACK_TO_VERSION>-$(uv run python scripts/update-helpers.py getTimestamp)
 
-# Reset to the commit where we applied that version
-git log --grep="Update to template version $ROLLBACK_TO_VERSION" --format="%H" -n 1 | xargs git reset --hard
+# Find the commit hash for the version
+git log --grep="Update to template version <ROLLBACK_TO_VERSION>" --format="%H" -n 1
+# Copy the commit hash from output above, then reset to it:
+git reset --hard <COMMIT_HASH>
 
 # Update shipkit.json to reflect rollback version
-sed -i.bak "s/\"version\": \".*\"/\"version\": \"$ROLLBACK_TO_VERSION\"/" shipkit.json
-git add shipkit.json && git commit -m "Rollback to template version $ROLLBACK_TO_VERSION"
+uv run python scripts/update-helpers.py updateVersion <ROLLBACK_TO_VERSION>
+git add shipkit.json
+git commit -m "Rollback to template version <ROLLBACK_TO_VERSION>"
 ```
 
 ### Validation & Completion
 
 ```bash
 # Test each version increment (if applicable)
-npm run lint 2>/dev/null || echo "No lint script available"
-npm run type-check 2>/dev/null || echo "No type-check script available"
+npm run lint
+npm run type-check
 
 # Version-aware merge preparation
-FINAL_VERSION=$(cat shipkit.json | grep '"version"' | sed 's/.*"version": "\(.*\)".*/\1/')
-echo "Final project version after updates: $FINAL_VERSION"
+echo "Final project version after updates: $(uv run python scripts/update-helpers.py getVersion)"
 
 # Prepare for final merge (user decision)
 git checkout main

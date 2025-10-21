@@ -1,6 +1,7 @@
 import {
   SUPPORTED_FILE_TYPES,
   MAX_FILE_SIZES,
+  EXTENSION_TO_MIME_TYPE,
 } from "@/lib/file-validation-constants";
 
 export type FileCategory = keyof typeof SUPPORTED_FILE_TYPES;
@@ -12,6 +13,7 @@ export interface FileValidationResult {
   error?: string;
   category?: FileCategory;
   maxSize?: number;
+  mimeType?: string;
 }
 
 export function getFileCategory(mimeType: string): FileCategory | null {
@@ -23,17 +25,43 @@ export function getFileCategory(mimeType: string): FileCategory | null {
   return null;
 }
 
+/**
+ * Gets MIME type from filename extension
+ * This is used as a fallback when browsers (especially on Windows) don't provide MIME types
+ */
+export function getMimeTypeFromFilename(filename: string): string | null {
+  const lastDotIndex = filename.lastIndexOf(".");
+  if (lastDotIndex === -1) {
+    return null;
+  }
+
+  const extension = filename.slice(lastDotIndex).toLowerCase();
+  return EXTENSION_TO_MIME_TYPE[extension] || null;
+}
+
 export function validateFileMetadata(
   mimeType: string,
-  fileSize: number
+  fileSize: number,
+  filename?: string,
 ): FileValidationResult {
+  // Determine the MIME type to use for validation
+  // If browser-provided MIME type is empty or invalid, get it from filename
+  let validatedMimeType = mimeType;
+
+  if ((!mimeType || !getFileCategory(mimeType)) && filename) {
+    const mimeTypeFromFilename = getMimeTypeFromFilename(filename);
+    if (mimeTypeFromFilename) {
+      validatedMimeType = mimeTypeFromFilename;
+    }
+  }
+
   // Check if file type is supported
-  const category = getFileCategory(mimeType);
+  const category = getFileCategory(validatedMimeType);
 
   if (!category) {
     return {
       valid: false,
-      error: `Unsupported file type: ${mimeType}. Please upload a supported document, image, video, or audio file.`,
+      error: `Unsupported file type: ${mimeType || (filename ? `file extension from ${filename}` : "unknown")}. Please upload a supported document, image, video, or audio file.`,
     };
   }
 
@@ -55,6 +83,7 @@ export function validateFileMetadata(
       error: "File is empty. Please select a valid file.",
       category,
       maxSize,
+      mimeType: validatedMimeType,
     };
   }
 
@@ -62,6 +91,7 @@ export function validateFileMetadata(
     valid: true,
     category,
     maxSize,
+    mimeType: validatedMimeType,
   };
 }
 

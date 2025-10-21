@@ -112,7 +112,7 @@ export function BulkUploadArea({
       const validFiles: File[] = [];
 
       limitedFiles.forEach((file) => {
-        const validation = validateFileMetadata(file.type, file.size);
+        const validation = validateFileMetadata(file.type, file.size, file.name);
         if (validation.valid) {
           validFiles.push(file);
         } else {

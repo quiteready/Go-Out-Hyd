@@ -60,3 +60,41 @@ export const MAX_FILE_SIZES = {
   videos: 1024 * 1024 * 1024, // 1GB for videos (system limit)
   audio: 1024 * 1024 * 1024, // 1GB for audio files (system limit)
 } as const;
+
+// Reverse mapping: file extension -> MIME type
+// This is used as a fallback when browsers (especially Windows) don't provide MIME types
+export const EXTENSION_TO_MIME_TYPE: Record<string, string> = {
+  // Documents
+  ".pdf": "application/pdf",
+  ".docx":
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ".pptx":
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ".txt": "text/plain",
+  ".md": "text/markdown",
+  ".markdown": "text/markdown",
+  // Images
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  // Videos
+  ".mp4": "video/mp4",
+  ".avi": "video/avi",
+  ".mov": "video/quicktime",
+  ".webm": "video/webm",
+  ".wmv": "video/x-ms-wmv",
+  ".flv": "video/x-flv",
+  ".mkv": "video/x-matroska",
+  ".mpeg": "video/mpeg",
+  ".mpg": "video/mpeg",
+  ".3gp": "video/3gpp",
+  ".3g2": "video/3gpp2",
+  // Audio
+  ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".flac": "audio/flac",
+  ".aac": "audio/aac",
+  ".ogg": "audio/ogg",
+  ".m4a": "audio/mp4",
+} as const;
