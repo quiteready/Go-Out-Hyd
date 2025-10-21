@@ -1,6 +1,6 @@
 {
   "templateName": "rag-simple",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "generatedAt": "2025-09-27T19:30:00Z",
   "cliVersion": "1.1.22",
   "description": "Simple AI RAG app with document Q&A - no billing complexity",
@@ -20,6 +20,7 @@
     "2.0.4": "Add Windsurf and Claude Code rule variants.",
     "2.0.5": "Enhanced text file processing with LangChain semantic chunking and encoding detection.",
     "2.0.6": "Add MCP support for context7 and time in mcp.json for Claude Code.",
-    "2.0.7": "Windows Compatibility Fix."
+    "2.0.7": "Windows Compatibility Fix.",
+    "2.0.8": "Windows-Compatible Template Update Workflow + markdown validation on windows."
   }
 }
