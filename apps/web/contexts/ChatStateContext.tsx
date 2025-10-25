@@ -204,7 +204,7 @@ export function ChatStateProvider({
     try {
       // Save user message (creates conversation if needed)
       const result = await saveMessage(
-        conversationHook.localConversation?.id || null,
+        conversationHook.currentConversationId.current,
         userInput,
         filesToUpload
       );
