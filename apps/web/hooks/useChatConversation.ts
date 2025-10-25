@@ -1,27 +1,15 @@
-import { useRef, useState, RefObject } from "react";
+import { useRef, RefObject } from "react";
 import { type Conversation } from "@/lib/drizzle/schema";
 
 export function useChatConversation(initialConversation: Conversation | null): {
-  localConversation: Conversation | null;
   currentConversationId: RefObject<string | null>;
-  isNewConversationRef: RefObject<boolean>;
-  updateConversation: (conversation: Conversation) => void;
   handleNewConversation: (conversationId: string) => void;
   navigateToConversation: () => void;
 } {
-  const [localConversation, setLocalConversation] =
-    useState<Conversation | null>(initialConversation);
   const currentConversationId = useRef(initialConversation?.id || null);
   const isNewConversationRef = useRef(!initialConversation);
 
-  const updateConversation = (conversation: Conversation): void => {
-    setLocalConversation(conversation);
-    currentConversationId.current = conversation.id;
-    isNewConversationRef.current = false;
-  };
-
   const handleNewConversation = (conversationId: string): void => {
-    setLocalConversation(null);
     currentConversationId.current = conversationId;
     isNewConversationRef.current = true;
   };
@@ -39,10 +27,7 @@ export function useChatConversation(initialConversation: Conversation | null): {
   };
 
   return {
-    localConversation,
     currentConversationId,
-    isNewConversationRef,
-    updateConversation,
     handleNewConversation,
     navigateToConversation,
   };
