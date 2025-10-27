@@ -1595,6 +1595,127 @@ import { getPublicUrl } from "@/lib/storage";
 - **Authentication**: Session management (server) | User type definitions (client)
 - **API integrations**: Server-side API calls (server) | Request/response types (client)
 
+### Server Actions Export Restrictions
+
+Files marked with `"use server"` directive can ONLY export async functions. They cannot export or re-export synchronous utilities, constants, or types.
+
+**The Problem:**
+
+Next.js uses the `"use server"` directive to identify Server Action boundaries. All exports from these files become RPC endpoints callable from the client. Synchronous functions can't be exposed as Server Actions.
+
+**Error you'll see:**
+```
+Error: Only async functions are allowed to be exported in a "use server" file.
+```
+
+**Common Mistake - Re-exporting utilities:**
+
+```typescript
+// ❌ Bad - app/actions/blog.ts
+"use server";
+
+import { db } from "@/server/db";
+
+// This throws error: "Only async functions are allowed to be exported in a 'use server' file"
+export { generateSlug, getBlogAssetUrl } from "@/lib/blog-utils";
+
+export async function createBlogPost(data: PostData) {
+  const slug = generateSlug(data.title);
+  // ... server action logic
+}
+```
+
+**The Solution - Separate files:**
+
+```typescript
+// ✅ Good - lib/blog-utils.ts (separate file for utilities)
+/**
+ * Client-safe blog utilities
+ * Can be imported by both client and server components
+ */
+export function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
+
+export function getBlogAssetUrl(path: string): string {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return `${supabaseUrl}/storage/v1/object/public/blog-assets/${path}`;
+}
+
+// ✅ Good - app/actions/blog.ts (server actions only)
+"use server";
+
+import { db } from "@/server/db";
+import { generateSlug } from "@/lib/blog-utils";
+
+// Only async server actions - no re-exports
+export async function createBlogPost(data: PostData) {
+  const slug = generateSlug(data.title); // Direct import OK
+  // ... server action logic
+}
+```
+
+**Alternative - Dynamic Import (if needed):**
+
+```typescript
+// ✅ Good - Dynamic import within server action
+"use server";
+
+export async function createBlogPost(data: PostData) {
+  const { generateSlug } = await import("@/lib/blog-utils");
+  const slug = generateSlug(data.title);
+  // ... server action logic
+}
+```
+
+**Architecture Pattern:**
+
+| File Type | Location | Exports | Directive |
+|---|---|---|---|
+| **Server Actions** | `app/actions/[feature].ts` | ONLY async functions | `"use server"` |
+| **Utilities** | `lib/[feature]-utils.ts` | Synchronous helpers | None (client-safe) |
+| **Client Components** | Import utilities from `lib/` directly | N/A | `"use client"` |
+| **Server Components** | Can import from either `lib/` or `app/actions/` | N/A | None (default) |
+
+**Import Strategy:**
+
+```typescript
+// ✅ Client components import utilities directly
+"use client";
+import { generateSlug, getBlogAssetUrl } from "@/lib/blog-utils";
+
+function BlogForm() {
+  const slug = generateSlug(title);
+  // ...
+}
+
+// ✅ Server actions import utilities (never re-export them)
+"use server";
+import { generateSlug } from "@/lib/blog-utils";
+
+export async function createPost(data: PostData) {
+  const slug = generateSlug(data.title);
+  // ...
+}
+
+// ❌ Server actions CANNOT re-export utilities
+"use server";
+export { generateSlug } from "@/lib/blog-utils"; // ERROR!
+```
+
+**Why This Matters:**
+
+1. **Clear Boundaries**: Server Actions are RPC endpoints - only async functions make sense
+2. **Type Safety**: Prevents accidentally exposing synchronous code as Server Actions
+3. **Performance**: Utilities stay in lib/ files without Server Action overhead
+4. **Maintainability**: Clear separation between actions (mutations) and utilities (helpers)
+
+**Key Takeaway:** Never mix `"use server"` files with utility exports. Keep Server Actions pure (async only) and utilities in separate lib/ files.
+
 ### No Toast in Server Actions
 
 Server actions run on the server and do not have access to the DOM or browser APIs. Toast notifications require client-side execution.
