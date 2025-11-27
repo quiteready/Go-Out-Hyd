@@ -376,6 +376,11 @@ AI Agent: MANDATORY - Analyze existing context providers before planning new dat
 - **Responsive Design:** Use mobile-first approach with Tailwind breakpoints (`sm:`, `md:`, `lg:`)
 - **Theme Support:** Use CSS variables for colors, support `dark:` classes for dark mode
 - **Accessibility:** Follow WCAG AA guidelines, proper ARIA labels, keyboard navigation
+- **Text Sizing & Readability:**
+  - Main content (documents, search results, Q&A responses): Use `text-base` (16px) or larger for comfortable reading
+  - UI chrome (timestamps, metadata, secondary labels): Can use `text-sm` (14px) or `text-xs` (12px)
+  - Prose content: Use default `prose` class, not `prose-sm`, unless space is severely constrained
+  - Prioritize readability over compact layouts - users shouldn't strain to read content
 
 ### Page Updates
 <!-- Pages that need changes -->

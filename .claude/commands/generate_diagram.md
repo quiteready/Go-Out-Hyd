@@ -122,6 +122,24 @@ Include:
 - High-contrast styling with stroke colors and white text for readability
 - Comments explaining complex parts
 
+**CRITICAL SYNTAX RULES TO AVOID ERRORS:**
+
+1. **Quote node labels with special characters:**
+   - ❌ BAD: `Node[answer-transcript-question Task]` (hyphens cause "Unsupported markdown: list" error)
+   - ✅ GOOD: `Node["answer-transcript-question Task"]`
+
+2. **Quote labels with square brackets inside:**
+   - ❌ BAD: `Node[Context: [MM:SS] text]` (nested brackets cause parse errors)
+   - ✅ GOOD: `Node["Context: MM:SS text"]`
+
+3. **Quote labels with hyphens surrounded by spaces:**
+   - ❌ BAD: `Node[streams.pipe - answer]` (space-hyphen-space triggers markdown list parser)
+   - ✅ GOOD: `Node["streams.pipe(answer)"]` or `Node["streams.pipe: answer"]`
+
+4. **When in doubt, always quote node labels:**
+   - Use double quotes for any node label with: hyphens, colons, parentheses, brackets, or special chars
+   - Example: `Node["My Label"]` is always safe
+
 **Required Styling Pattern:**
 ```
 %% High contrast styling for readability
