@@ -1,6 +1,6 @@
 {
   "templateName": "rag-simple",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "generatedAt": "2025-09-27T19:30:00Z",
   "cliVersion": "1.1.22",
   "description": "Simple AI RAG app with document Q&A - no billing complexity",
@@ -23,6 +23,7 @@
     "2.0.7": "Windows Compatibility Fix.",
     "2.0.8": "Windows-Compatible Template Update Workflow + markdown validation on windows.",
     "2.0.9": "Add Claude command support for all prep and dev templates",
-    "2.0.10": "Fix conversation splitting bug"
+    "2.0.10": "Fix conversation splitting bug",
+    "2.0.11": "Enhanced Claude Code configuration and developer documentation"
   }
 }
