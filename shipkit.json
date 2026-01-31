@@ -25,6 +25,6 @@
     "2.0.9": "Add Claude command support for all prep and dev templates",
     "2.0.10": "Fix conversation splitting bug",
     "2.0.11": "Enhanced Claude Code configuration and developer documentation",
-    "2.0.12": "Add task_review.md and worktree.md development workflow templates"
+    "2.0.12": "Add task_review.md and worktree.md development workflow templates, add embedding migration tools"
   }
 }
