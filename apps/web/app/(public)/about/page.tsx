@@ -69,7 +69,7 @@ export default function AboutPage(): ReactElement {
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-caramel transition-colors hover:text-caramel/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
-            aria-label="GoOut Hyd on Instagram (placeholder link)"
+            aria-label="GoOut Hyd on Instagram"
           >
             <Instagram className="h-5 w-5 shrink-0" aria-hidden />
             <span>Instagram</span>
