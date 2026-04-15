@@ -1,20 +1,21 @@
-import { Lexend_Deca, JetBrains_Mono } from "next/font/google";
-import { ThemeProvider } from "next-themes";
+import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export { metadata } from "@/lib/metadata";
 
-const lexendDeca = Lexend_Deca({
-  variable: "--font-lexend-deca",
-  display: "swap",
+const dmSerifDisplay = DM_Serif_Display({
+  weight: "400",
+  variable: "--font-heading",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  display: "swap",
+const dmSans = DM_Sans({
+  weight: ["300", "400", "500"],
+  variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export default function RootLayout({
@@ -23,19 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${lexendDeca.variable} ${jetbrainsMono.variable} font-sans antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
+    <html lang="en" className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
+      <body className="font-body antialiased bg-background text-foreground">
+        {children}
+        <Toaster />
       </body>
     </html>
   );

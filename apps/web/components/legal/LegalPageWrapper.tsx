@@ -7,6 +7,8 @@ interface LegalPageWrapperProps {
   lastUpdated: string;
   children: ReactNode;
   description?: string;
+  /** Shown in the footer notice; e.g. hello@goouthyd.in */
+  contactEmail?: string;
 }
 
 export default function LegalPageWrapper({
@@ -14,6 +16,7 @@ export default function LegalPageWrapper({
   lastUpdated,
   children,
   description,
+  contactEmail,
 }: LegalPageWrapperProps) {
   return (
     <div className="min-h-screen bg-background">
@@ -56,7 +59,7 @@ export default function LegalPageWrapper({
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           <div
-            className="prose prose-lg prose-slate dark:prose-invert max-w-none
+            className="prose prose-lg prose-slate max-w-none
                          [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h2]:mt-16 [&_h2]:mb-8 [&_h2]:pb-4 [&_h2]:border-b-2 [&_h2]:border-border [&_h2]:leading-tight
                          [&_h3]:text-2xl [&_h3]:font-medium [&_h3]:text-foreground [&_h3]:mt-12 [&_h3]:mb-6 [&_h3]:leading-snug
                          [&_h4]:text-xl [&_h4]:font-medium [&_h4]:text-foreground [&_h4]:mt-8 [&_h4]:mb-4 [&_h4]:leading-normal
@@ -90,13 +93,20 @@ export default function LegalPageWrapper({
           <div className="max-w-4xl mx-auto text-center">
             <p className="text-base text-muted-foreground">
               If you have any questions about this document, please contact us
-              at{" "}
-              <a
-                href="mailto:legal@shipkit.ai"
-                className="text-primary hover:underline font-medium"
-              >
-                legal@shipkit.ai
-              </a>
+              {contactEmail ? (
+                <>
+                  {" "}
+                  at{" "}
+                  <a
+                    href={`mailto:${contactEmail}`}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    {contactEmail}
+                  </a>
+                </>
+              ) : (
+                <> through our website.</>
+              )}
             </p>
           </div>
         </div>

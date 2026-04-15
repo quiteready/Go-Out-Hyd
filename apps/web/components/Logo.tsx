@@ -1,30 +1,15 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
-  width?: number;
-  height?: number;
   className?: string;
 }
 
-export default function Logo({
-  width = 32,
-  height = 32,
-  className = "",
-}: LogoProps) {
+export function Logo({ className }: LogoProps) {
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Image
-        src="/logo.png"
-        alt="RAGI Logo"
-        width={width}
-        height={height}
-        className="flex-shrink-0"
-        priority
-      />
-      <span className="hidden sm:block text-2xl font-bold text-primary">
-        RAGI
-      </span>
-    </div>
+    <span
+      className={cn("font-heading text-espresso tracking-tight", className)}
+    >
+      GoOut Hyd
+    </span>
   );
 }

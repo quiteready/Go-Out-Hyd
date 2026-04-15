@@ -2,345 +2,258 @@
 
 ## Project Overview
 
-This is a **RAG (Retrieval-Augmented Generation) application** - a polyglot monorepo that allows users to upload documents and ask questions about them through an intelligent chat interface. Supports multi-modal content including PDFs, images, videos, and audio.
+**GoOut Hyd** (goouthyd.in) is a venue discovery and experience platform for Hyderabad, India. It connects independent cafe owners with experience-seeking customers aged 20-35 through curated listings and event discovery, powered by Wilson's event management network. Built to expand beyond cafes to bars, clubs, and rooftops.
 
-**Key Features:**
+This is NOT an AI application. The codebase was repurposed from a RAG (document processing) app. All RAG-specific code (document upload, embeddings, vector search, AI chat) is being stripped. The infrastructure (Next.js, Supabase, Drizzle, Tailwind, Vercel) is retained.
 
-- Multi-modal document upload (PDFs, images, videos, audio)
-- Intelligent document processing with chunking and embeddings
-- Vector similarity search for context retrieval
-- AI-powered chat with document context (Google Gemini)
-- Real-time processing status tracking
-- Admin dashboard for user management
-- Role-based access control (member/admin)
+**Key Features (Phase 1 -- MVP):**
 
-**Architecture**: Polyglot monorepo with multiple applications:
-- `apps/web/`: Next.js 15 frontend with Supabase auth
-- `apps/rag-processor/`: Python FastAPI service for document processing and embeddings
-- `apps/rag-gcs-handler/`: Cloud Function for GCS upload events
-- `apps/rag-task-processor/`: Cloud Run service for async task processing
+- Public cafe browsing by area (no auth required)
+- Cafe profiles with photos, menu highlights, contact info, and upcoming events
+- Events listing with category-based filtering
+- Partner interest form for cafe owner onboarding
+- Email notification to Wilson on new lead submissions
+- Wilson manages all data via Supabase dashboard
+
+**Architecture**: Monorepo with web application:
+- `apps/web/`: Next.js 15 frontend with Supabase and Drizzle ORM
 
 **Tech Stack:**
 
-- **Frontend**: Next.js 15 (App Router), React 19, Supabase, Drizzle ORM, AI SDK
-- **Backend**: Python 3.10+, FastAPI, uv package management, Docling, Vertex AI
-- **Infrastructure**: Google Cloud (Cloud Run, Cloud Functions, Cloud Storage), pgvector
-- **AI/ML**: Google Gemini (chat), Vertex AI embeddings (text + multimodal)
+- **Framework**: Next.js 15.5.4 (App Router), React 19, TypeScript 5 (strict mode)
+- **Database**: PostgreSQL via Supabase, Drizzle ORM 0.44.6, drizzle-zod 0.8.2
+- **Styling**: Tailwind CSS 3.4.1, shadcn/ui (Radix primitives + CVA), tailwindcss-animate
+- **Typography**: DM Serif Display (headings), DM Sans (body) via Google Fonts
+- **Colors**: Espresso/caramel/cream palette. Light-only mode (no dark mode toggle).
+- **Env Validation**: @t3-oss/env-nextjs with Zod
+- **Icons**: lucide-react
+- **Notifications**: sonner (toast)
+- **Deployment**: Vercel
+- **Auth**: Supabase email/password (dormant in Phase 1, activates Phase 2)
 
 ## Development Commands
 
-### Root-Level Commands (Recommended)
-
-```bash
-# Development
-npm run dev              # Start web frontend
-
-# Database Operations
-npm run db:generate      # Generate migrations from schema changes
-npm run db:generate:custom # Generate custom SQL migrations
-npm run db:migrate       # Run pending migrations
-npm run db:rollback      # Rollback last migration
-npm run db:status        # Check migration status
-npm run db:seed          # Seed database
-
-# Production Database
-npm run db:generate:prod
-npm run db:migrate:prod
-npm run db:rollback:prod
-npm run db:status:prod
-
-# Deployment
-npm run deploy:processor:dev    # Deploy RAG processor to Cloud Run (dev)
-npm run deploy:processor:prod   # Deploy RAG processor to Cloud Run (prod)
-npm run deploy:gcs-handler:dev  # Deploy GCS handler Cloud Function (dev)
-npm run deploy:gcs-handler:prod # Deploy GCS handler Cloud Function (prod)
-npm run deploy:task-processor:dev  # Deploy task processor (dev)
-npm run deploy:task-processor:prod # Deploy task processor (prod)
-
-# GCP Setup
-npm run setup:gcp:dev    # Setup GCP infrastructure (dev)
-npm run setup:gcp:prod   # Setup GCP infrastructure (prod)
-
-# Type Checking and Linting
-npm run type-check       # TypeScript type checking
-npm run lint             # ESLint
-npm run format           # Prettier formatting
-```
-
-### Web Application Commands
+### Web Application
 
 ```bash
 cd apps/web
 npm run dev              # Start dev server with Turbopack
-npm run build            # Production build
-npm run storage:setup    # Setup Supabase storage buckets
+npm run lint             # ESLint
+npm run type-check       # TypeScript type checking
 ```
 
-### Python Backend Commands
+### Database Operations (from project root)
 
 ```bash
-# Run from project root using uv
-uv run python -m rag_processor.main  # Start RAG processor locally
-
-# Linting and formatting
-uv run ruff check .      # Lint Python code
-uv run ruff format .     # Format Python code
-uv run black .           # Alternative formatter
-uv run mypy .            # Type checking
+npm run db:generate      # Generate migrations from schema changes
+npm run db:generate:custom  # Generate custom SQL migrations
+npm run db:migrate       # Run pending migrations
+npm run db:rollback      # Rollback last migration
+npm run db:status        # Check migration status
+npm run db:seed          # Seed database
+npm run db:studio        # Open Drizzle Studio
 ```
 
-## Architecture Overview
+### Important: Never use direct commands
 
-### Document Processing Flow
+- Use `npm run db:*` scripts, never `npx drizzle-kit` directly (env loading via dotenv-cli)
+- Use `npm run lint` or `npm run type-check` for validation, never `npm run build`
+- Use `npx shadcn@latest add <component>` for new shadcn components
 
-1. **Upload**: User uploads file → signed URL → Google Cloud Storage
-2. **Event**: GCS upload triggers Cloud Function (`rag-gcs-handler`)
-3. **Queue**: Handler creates processing job and triggers task processor
-4. **Process**: `rag-processor` downloads, parses, chunks document
-5. **Embed**: Generate embeddings (text or multimodal based on content type)
-6. **Store**: Chunks and embeddings stored in PostgreSQL with pgvector
-7. **Search**: User query → embedding → vector similarity search → context
-8. **Chat**: Context + query sent to Gemini for AI response
+## Route Structure (apps/web) -- Phase 1
 
-### Multi-Modal Embedding Strategy
+- `app/(public)/` -- Public pages (no auth)
+  - `/` -- Landing page with featured cafes and upcoming events
+  - `/cafes` -- Cafe listing by area
+  - `/cafes/[slug]` -- Individual cafe profile (photos, menu, events, contact)
+  - `/events` -- Events listing with category cards for filtering
+  - `/events/[slug]` -- Individual event detail (date, venue, description, ticket price)
+  - `/partner` -- Cafe owner interest form and pitch page
+  - `/about` -- Platform story and mission
+  - `/privacy` -- Privacy policy (static)
+  - `/terms` -- Terms of service (static)
+- `app/actions/` -- Server Actions
+  - `leads.ts` -- submitPartnerForm() (validate, save to DB, send email via Resend)
 
-```
-TEXT CONTENT (documents, text chunks):
-- Model: text-embedding-004 (Vertex AI)
-- Dimensions: 768
-- Index: HNSW with cosine similarity
+### No API Routes in Phase 1
 
-MULTIMODAL CONTENT (images, videos, audio):
-- Model: multimodalembedding@001
-- Dimensions: 1408
-- Index: HNSW with cosine similarity
-```
+All data fetching happens server-side in Server Components via Drizzle ORM. The only write operation is the partner form, handled by a Server Action. No REST API layer needed.
 
-### Route Structure (apps/web)
+### Routes NOT in Phase 1
 
-- `app/(public)/` - Public pages (landing, terms, privacy, cookies)
-- `app/(auth)/` - Authentication pages (login, signup, password reset)
-- `app/(protected)/` - Protected routes requiring authentication
-  - `/documents` - Document management and upload
-  - `/chat` - RAG-powered chat interface
-  - `/history` - Conversation history
-  - `/profile` - User profile
-  - `/admin/dashboard` - Admin metrics (admin only)
-- `app/api/` - API routes
-  - `/api/chat` - Streaming chat endpoint with RAG context
-  - `/api/documents` - Document management endpoints
+Auth pages, protected routes, admin dashboard, chat, documents, user profiles -- all stripped or dormant.
 
-### Database Schema (apps/web/lib/drizzle/schema/)
+## Database Schema (Drizzle ORM)
 
-- **users** - User profiles (synced with Supabase auth), roles (member/admin)
-- **documents** - Document metadata, GCS paths, processing status
-- **document_chunks** - Text chunks with embeddings (text_embedding + multimodal_embedding columns)
-- **document_processing_jobs** - Processing job tracking
-- **conversations** - Chat conversations
-- **messages** - Individual chat messages
+Schema files live in `apps/web/lib/drizzle/schema/`. Phase 1 tables:
 
-### Python Backend Structure (apps/rag-processor)
+- **cafes** -- Cafe profiles (name, slug, area, description, cover_image, phone, instagram_handle, google_maps_url, address, status, created_at, updated_at)
+- **cafe_images** -- Photo gallery for each cafe (cafe_id, image_url, alt_text, sort_order)
+- **menu_items** -- Menu entries per cafe (cafe_id, category, name, price, description, is_available)
+- **events** -- Events tied to cafes (cafe_id, title, slug, description, event_type, date, ticket_price, cover_image, status)
+- **cafe_leads** -- Partner form submissions (owner_name, cafe_name, phone, area, status, created_at)
 
-```
-rag_processor/
-├── main.py              # FastAPI entry point
-├── config.py            # Configuration management
-├── models/              # Pydantic models
-├── services/            # Business logic
-│   ├── document_processor.py
-│   ├── embedding_service.py
-│   ├── chunking_service.py
-│   └── storage_service.py
-└── utils/               # Utilities
+Event types: live_music, open_mic, workshop, comedy_night, gaming
+
+### Schema Management
+
+All schema changes go through Drizzle ORM migrations:
+
+```bash
+npm run db:generate   # After editing schema files
+npm run db:migrate    # Apply to database
 ```
 
-## Critical Requirements
+Never create tables directly in Supabase. Always use Drizzle schema definitions.
+
+## Environment Variables
+
+### Required (apps/web/.env.local)
+
+**Server-only:**
+- `DATABASE_URL` -- PostgreSQL connection string (Supabase)
+- `SUPABASE_URL` -- Supabase project URL
+- `SUPABASE_ANON_KEY` -- Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY` -- Supabase service role key (for admin operations)
+
+**Client:**
+- `NEXT_PUBLIC_APP_URL` -- App URL (http://localhost:3000 in dev)
+
+### Not needed in Phase 1
+
+- `GEMINI_API_KEY` -- No AI features
+- `GOOGLE_CLOUD_*` -- No GCS/Vertex AI
+- `STRIPE_*` -- No payments
+
+## Code Quality Standards
+
+### TypeScript
+
+- Strict mode always. No `any` types.
+- Explicit return types on all functions.
+- No `@ts-expect-error` or `eslint-disable` comments.
+- Use Drizzle's inferred types from schema (via drizzle-zod) rather than duplicating type definitions.
+
+### Components
+
+- Server Components by default. Client Components only when needed (forms, interactivity, hooks).
+- Use `"use client"` directive explicitly when needed.
+- Always use Next.js `Image` component for images.
+- Use shadcn/ui components, never raw HTML inputs/buttons. Install with `npx shadcn@latest add <component>`.
+- Style with Tailwind utility classes. Use `cn()` helper for conditional classes, never inline style objects.
+
+### Server/Client Separation
+
+Never mix server-side imports with client-safe utilities in the same file.
+
+- `*-client.ts` or `*-constants.ts` -- Client-safe constants, types, pure functions
+- `*.ts` -- Server-side functions (may re-export from client files)
+
+### Forms and Validation
+
+- Validate all form inputs with Zod schemas before hitting Supabase.
+- Use Server Actions for form submissions. Always return result objects with `{ success, error? }`.
+- Never use `@ts-ignore` to bypass Zod validation types.
 
 ### Next.js 15 Async Params
 
-In Next.js 15, both `params` and `searchParams` are Promises that MUST be awaited:
+Both `params` and `searchParams` are Promises that MUST be awaited:
 
 ```tsx
-// ✅ Correct
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params;
+  const { slug } = await params;
 }
-```
-
-### Python Type Annotations
-
-ALL Python code MUST have explicit type annotations:
-
-```python
-# ✅ Correct
-def process_document(file_path: str, user_id: str) -> ProcessingResult:
-    ...
-
-# ❌ Wrong - missing annotations
-def process_document(file_path, user_id):
-    ...
 ```
 
 ### Drizzle Type-Safe Operators
 
-**NEVER** use raw SQL for basic operations:
+Never use raw SQL for basic operations:
 
 ```tsx
-// ❌ BAD
+// BAD
 sql`${column} = ANY(${array})`;
 
-// ✅ GOOD
+// GOOD
 import { inArray } from "drizzle-orm";
 inArray(column, array);
 ```
 
-## Environment Variables
+## Target Geography
 
-### Web Application (apps/web/.env.local)
+- **City**: Hyderabad, India
+- **Priority Areas**: Banjara Hills, Jubilee Hills, Kondapur, Gachibowli, Madhapur (expandable)
+- **Currency**: INR (₹)
+- **Phone Format**: Indian (+91)
 
-**Server-only:**
-- `DATABASE_URL` - PostgreSQL connection string
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-- `GEMINI_API_KEY` - Google AI API key for chat
-- `GOOGLE_CLOUD_PROJECT_ID`, `GOOGLE_CLOUD_REGION`
-- `GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY` - For Vertex AI embeddings
-- `GOOGLE_CLOUD_STORAGE_BUCKET` - GCS bucket for uploads
+## Phase 1 Constraints -- Never Break These
 
-**Client:**
-- `NEXT_PUBLIC_APP_URL`
+- No user authentication or login
+- No payment processing (Razorpay, Stripe, or otherwise)
+- No cafe owner dashboard or self-serve features
+- No admin panel UI (Wilson uses Supabase dashboard)
+- No WhatsApp integration (contact via phone, Google Maps, Instagram only)
+- No AI features
+- No cafe tag/attribute filtering (browse by area only)
+- No push notifications
+- No mobile app
+- Every page must work on both mobile and desktop
+- Write complete working code only, never placeholder comments
 
-### RAG Processor (Cloud Run environment)
+## What Gets Stripped from RAG Codebase
 
-- `DATABASE_URL` - PostgreSQL connection string
-- `GCP_PROJECT_ID`, `GCS_BUCKET_NAME`
-- `GOOGLE_APPLICATION_CREDENTIALS` - Service account for GCP APIs
+### Dependencies to Remove
+- @ai-sdk/google, @ai-sdk/react, ai (AI SDK)
+- @google-cloud/aiplatform, @google-cloud/storage (GCP)
+- react-markdown, remark-gfm (chat rendering)
+- stripe (payments)
 
-## Code Quality Standards
+### Code to Remove
+- `apps/rag-processor/` -- Entire Python backend
+- `apps/web/components/chat/` -- Chat UI
+- `apps/web/components/documents/` -- Document upload
+- `apps/web/components/history/` -- Conversation history
+- `apps/web/contexts/ChatStateContext.tsx` -- Chat state
+- `apps/web/lib/search/` -- Vector search
+- `apps/web/lib/embeddings/` -- Embedding generation
+- `apps/web/lib/rag/` -- RAG pipeline
+- `apps/web/lib/documents.ts`, `storage.ts`, `attachments.ts` -- Document handling
+- `apps/web/lib/chat-utils.ts`, `chat-utils-client.ts` -- Chat utilities
+- `apps/web/app/(protected)/` -- All protected routes
+- `apps/web/app/api/chat/` -- Chat API
+- `apps/web/app/api/documents/` -- Document API
+- `apps/web/app/api/webhooks/stripe/` -- Stripe webhook
+- All RAG database schema files (documents, document_chunks, conversations, messages, processing_jobs)
 
-### TypeScript (Frontend)
+### Cursor Rules to Remove (Python-specific, no longer relevant)
+- All `python-*.mdc` files
+- `pydantic-*.mdc`
+- `use-uv-pyproject-dependencies.mdc`
 
-- Explicit return types for all functions
-- No `any` types - use proper interfaces
-- No `@ts-expect-error` or `eslint-disable` comments
-- Server/client separation: `*-client.ts` for client-safe code
+### Files to Keep and Adapt
+- `apps/web/lib/supabase/server.ts` -- Supabase server client
+- `apps/web/lib/supabase/admin.ts` -- Supabase admin client
+- `apps/web/lib/supabase/middleware.ts` -- Update public routes for CafeConnect
+- `apps/web/lib/auth.ts` -- Keep but dormant until Phase 2
+- `apps/web/lib/env.ts` -- Update to remove GCP/AI env vars
+- `apps/web/lib/drizzle/db.ts` -- Database connection (keep as-is)
+- `apps/web/drizzle.config.ts` -- Drizzle config (keep as-is)
+- `apps/web/components/ui/` -- All shadcn components
+- `apps/web/middleware.ts` -- Update for public-only routes
 
-### Python (Backend)
+## Phase 2 Features (Do NOT build yet)
 
-- Complete type annotations required
-- Use modern Python 3.10+ syntax: `dict[str, int]` not `Dict[str, int]`
-- Use `uv` for dependency management, never pip directly
-- Follow Ruff and Black formatting (88 char line length)
-- Always use `raise ... from e` for exception chaining
-
-## Server/Client Separation
-
-### CRITICAL: Separate Server and Client Utilities
-
-**NEVER** mix server-side imports with client-safe utilities in the same file.
-
-```tsx
-// ❌ BAD - Mixing concerns causes build errors
-// lib/documents.ts
-import { createClient } from "@/lib/supabase/server"; // Server-only
-export const FILE_TYPES = [...]; // Client-safe constant
-
-// ✅ GOOD - Separate files
-// lib/document-utils.ts (client-safe)
-export const FILE_TYPES = [...];
-
-// lib/documents.ts (server-only)
-import { createClient } from "@/lib/supabase/server";
-export { FILE_TYPES } from "./document-utils";
-```
-
-**File naming conventions:**
-- `*-client.ts` - Client-safe constants, types, pure functions
-- `*.ts` - Server-side functions (may re-export from client files)
-
-## Deployment
-
-### GCP Infrastructure Setup
-
-1. Run `npm run setup:gcp:dev` to create:
-   - Cloud Storage bucket
-   - Cloud Run services
-   - Cloud Functions
-   - IAM permissions
-   - Secret Manager entries
-
-2. Deploy services:
-   ```bash
-   npm run deploy:processor:dev
-   npm run deploy:gcs-handler:dev
-   npm run deploy:task-processor:dev
-   ```
-
-### Frontend Deployment
-
-Frontend deploys to Vercel with automatic deployments on push to main.
-
-## Authentication & Authorization
-
-**Server-side only utilities** (`apps/web/lib/auth.ts`):
-
-- `getCurrentUserId()` - Get authenticated user ID (most common use case)
-- `requireUserId()` - Require authentication, redirects to /auth/login if not authenticated
-- `getCurrentUserWithRole()` - Get user with role information
-- `requireAdminAccess()` - Enforce admin-only access, redirects to /unauthorized
-
-## Common Patterns
-
-### Server Actions
-
-Always validate authentication and return result objects:
-
-```tsx
-"use server";
-export async function myAction(): Promise<{
-  success: boolean;
-  error?: string;
-}> {
-  const userId = await requireUserId();
-  // ... logic
-  return { success: true };
-}
-```
-
-### Protected Pages
-
-```tsx
-export default async function ProtectedPage() {
-  const userId = await requireUserId();
-  // ... render page
-}
-```
-
-### Admin Pages
-
-```tsx
-export default async function AdminPage() {
-  await requireAdminAccess();
-  // ... render admin content
-}
-```
-
-## Testing & Debugging
-
-### TypeScript Errors
-
-Run `npm run type-check` from project root.
-
-### Python Errors
-
-```bash
-uv run ruff check .
-uv run mypy .
-```
-
-### Database Migrations
-
-Check status: `npm run db:status`
+- WhatsApp CTA buttons and notifications
+- Event ticketing with Razorpay and QR codes
+- Cafe owner self-serve dashboard
+- Customer accounts and authentication
+- Cafe tags and advanced filtering
+- Admin UI for Wilson
+- Content engine (reels, posts, influencer management)
+- 3D animated landing page
+- Venue expansion (bars, clubs, rooftops)
+- Wilson's weekly curated list
+- Compliance shield (FSSAI, IPRS, PPL guidance)

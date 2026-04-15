@@ -1,188 +1,810 @@
-# Wireframe Reference Doc
+## Wireframe Reference Doc
 
-## ASCII / Markdown Mock-ups
+### ASCII / Markdown Mock-ups
+
+**Top Navigation Bar (shared across all pages)**
 
 ```text
-=== RAGI Protected App Layout (Desktop & Mobile) ===
-+----------------------------------------------------------+
-| Mobile Header (mobile only) [☰] RAGI    [👤 Profile]    |
-|=========================================================|
-| Sidebar (64px↔256px) |  Main Content (dynamic width)    |
-|---------------------|-----------------------------------|
-| 💬 Chat             |  [Page-specific content]          |
-| 📄 Documents        |  - Desktop: Starts after sidebar  |
-| 🕐 History          |  - Mobile: Full width overlay     |
-| 👤 Profile          |                                   |
-|                     |                                   |
-| Usage Tracker       |                                   |
-| ▓▓▓░░ 67/100       |                                   |
-| ▓▓░░░ 2GB/5GB      |                                   |
-| ▓▓▓▓░ 45/1000      |                                   |
-+---------------------+-----------------------------------+
+DESKTOP:
++----------------------------------------------------------------------+
+| GoOut Hyd                    Cafes   Events   About   [List Your Cafe]|
++----------------------------------------------------------------------+
 
-=== Landing Page `/` (Public Layout) ===
-+-------------------------------------------------------------+
-| Fixed Navbar: [RAGI Logo] [Features|Pricing|FAQ] [Login|Get Started] |
-+=============================================================+
-| Hero Section: (pt-16 for fixed navbar)                     |
-| "Chat with Your Documents Using RAGI"                      |
-| [Gemini AI Badge] [Upload and chat demo]                   |
-|-------------------------------------------------------------|
-| Features Section: 3-column grid                            |
-| [Document Intelligence] [Smart Search] [Multimedia]        |
-|-------------------------------------------------------------|
-| Problem Section: "Hours wasted searching documents"        |
-|-------------------------------------------------------------|
-| RAG Demo Section: Interactive preview                      |
-|-------------------------------------------------------------|
-| Pricing Section: Free | Basic $29 | Pro $99               |
-|-------------------------------------------------------------|
-| FAQ Section: Collapsible questions                         |
-|-------------------------------------------------------------|
-| CTA Section: Final call to action                          |
-|-------------------------------------------------------------|
-| Footer: Links and legal                                    |
-+-------------------------------------------------------------+
-
-=== Chat Interface `/chat/[[...conversationId]]` ===
-+----------------------------------------------------------+
-| [Mobile Header: ☰ RAGI | 👤]  (mobile only)              |
-|=========================================================|
-| Sidebar 64/256px  |  Messages Area (dynamic padding)     |
-|-------------------|---------------------------------------|
-| 💬 Chat ●         | Welcome Card (if new conversation)   |
-| 📄 Documents      | "Turn documents into intelligent..."  |
-| 🕐 History        | [Example prompts clickable]          |
-| 👤 Profile        |                                      |
-|                   | OR                                   |
-| Usage Tracker     |                                      |
-| ▓▓▓░░ 67/100     | Chat Messages (scroll area)          |
-| ▓▓░░░ 2GB/5GB    | User: "What are key findings?"       |
-| ▓▓▓▓░ 45/1000    | AI: [Response with citations] 📄     |
-|                   | [Thinking indicator if loading...]   |
-+-------------------+---------------------------------------|
-|                   | Fixed Input Area (bottom)            |
-|                   | [📎] [Text input area...]    [Send]  |
-|                   | Model: Gemini 2.5 Flash | Usage 5/∞ |
-+----------------------------------------------------------+
-* Input area dynamically adjusts sidebar left margin
-* Mobile: left-0, Desktop collapsed: left-16, expanded: left-64
-
-=== Documents Management `/documents` ===
-+----------------------------------------------------------+
-| [Mobile Header: ☰ RAGI | 👤]  (mobile only)              |
-|=========================================================|
-| Sidebar 64/256px  |  Document Dashboard                  |
-|-------------------|---------------------------------------|
-| 💬 Chat           | Container max-w-4xl mx-auto px-4 py-8|
-| 📄 Documents ●    |                                      |
-| 🕐 History        | "Document Management"                |
-| 👤 Profile        | "Upload and manage your documents..." |
-|                   |                                      |
-| Usage Tracker     | [Usage Warning Banner if near limit] |
-| ▓▓▓░░ 67/100     |                                      |
-| ▓▓░░░ 2GB/5GB    | DocumentList Component               |
-| ▓▓▓▓░ 45/1000    | • report.pdf [2.3MB] [✓ Complete]    |
-|                   | • audio.mp3  [4.1MB] [⏳ Processing] |
-|                   | • image.jpg  [1.8MB] [✓ Complete]    |
-|                   |                                      |
-|                   | [➕ Upload Documents Button]         |
-|                   |                                      |
-|                   | BulkUploadDialog (modal overlay)     |
-+-------------------+---------------------------------------|
-
-=== Conversation History `/history` ===
-+----------------------------------------------------------+
-| [Mobile Header: ☰ RAGI | 👤]  (mobile only)              |
-|=========================================================|
-| Sidebar 64/256px  |  History Browser                     |
-|-------------------|---------------------------------------|
-| 💬 Chat           | Container max-w-4xl mx-auto px-4 py-8|
-| 📄 Documents      |                                      |
-| 🕐 History ●      | "Chat History"                       |
-| 👤 Profile        | "View and manage previous..."        |
-|                   |                                      |
-| Usage Tracker     | ConversationTable Component         |
-| ▓▓▓░░ 67/100     | Today                                |
-| ▓▓░░░ 2GB/5GB    | • "Quarterly analysis" [Gemini] →    |
-| ▓▓▓▓░ 45/1000    | • "Meeting summary" [Gemini] →       |
-|                   |                                      |
-|                   | Yesterday                            |
-|                   | • "Product roadmap" [Gemini] →       |
-|                   |                                      |
-|                   | OR (if empty)                        |
-|                   | [Empty State with MessageSquare icon]|
-|                   | "No conversations yet"               |
-|                   | [Start Chatting Button]             |
-+-------------------+---------------------------------------|
-
-=== Profile & Billing `/profile` ===
-+----------------------------------------------------------+
-| [Mobile Header: ☰ RAGI | 👤]  (mobile only)              |
-|=========================================================|
-| Sidebar 64/256px  |  Profile Dashboard                   |
-|-------------------|---------------------------------------|
-| 💬 Chat           | Container max-w-4xl mx-auto px-4 py-8|
-| 📄 Documents      |                                      |
-| 🕐 History        | Account Information Card             |
-| 👤 Profile ●      | Email: user@example.com             |
-|                   | Name: [Editable inline] ✏️           |
-| Usage Tracker     | Member since: Dec 2024               |
-| ▓▓▓░░ 67/100     |                                      |
-| ▓▓░░░ 2GB/5GB    | Usage Statistics Card               |
-| ▓▓▓▓░ 45/1000    | Documents: ▓▓▓░░ 15/1000            |
-|                   | Storage: ▓▓░░░ 2GB/5GB              |
-|                   | Requests: ▓▓▓▓░ 450/1000            |
-|                   |                                      |
-|                   | Subscription Plans Grid              |
-|                   | [Free] [Basic $29 ✓Current] [Pro $99]|
-|                   | BillingManagementCard                |
-|                   | [Manage Billing Portal] [Cancel]    |
-+-------------------+---------------------------------------|
-
-=== Authentication Pages (Centered Layout) ===
-Login `/auth/login`                Sign Up `/auth/sign-up`
-+-------------------------+        +-------------------------+
-| [RAGI Logo centered]    |        | [RAGI Logo centered]    |
-|                         |        |                         |
-| Email: [____________]   |        | Email: [____________]   |
-| Password: [_________]   |        | Password: [_________]   |
-| [Remember me] ☐        |        | Confirm: [__________]   |
-| [Login Button]         |        | [Sign Up Button]       |
-| [Forgot Password?]     |        | Have account? [Login]   |
-| Don't have account?     |        |                         |
-| [Sign Up Link]         |        |                         |
-+-------------------------+        +-------------------------+
+MOBILE:
++----------------------------------------------------------------------+
+| GoOut Hyd                                                     [☰]    |
++----------------------------------------------------------------------+
+         Slide-out menu:
+         +--------------------+
+         | Cafes              |
+         | Events             |
+         | About              |
+         | [List Your Cafe]   |
+         +--------------------+
 ```
 
-## Navigation Flow Map
+---
 
+**Landing Page -- `/`**
+
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+|  ████████████████████████████████████████████████████████████████████  |
+|  ██                                                                ██ |
+|  ██              Your Weekend Starts Here                          ██ |
+|  ██    Discover Hyderabad's best independent cafes,                ██ |
+|  ██    live music nights, open mics, and more                      ██ |
+|  ██                                                                ██ |
+|  ██         [Explore Cafes]    [Browse Events]                     ██ |
+|  ██                                                                ██ |
+|  ████████████████████████████████████████████████████████████████████  |
+|                         (espresso bg, atmospheric image)              |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Find Your Spot                                          (cream bg)   |
+|                                                                       |
+|  [Banjara Hills] [Jubilee Hills] [Kondapur] [Gachibowli] [Madhapur]  |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Cafes Worth the Drive                                   (milk bg)    |
+|                                                                       |
+|  +---------------+ +---------------+ +---------------+                |
+|  | ┌───────────┐ | | ┌───────────┐ | | ┌───────────┐ |               |
+|  | │  cover    │ | | │  cover    │ | | │  cover    │ |               |
+|  | │  image    │ | | │  image    │ | | │  image    │ |               |
+|  | └───────────┘ | | └───────────┘ | | └───────────┘ |               |
+|  | Cafe Name     | | Cafe Name     | | Cafe Name     |               |
+|  | [area tag]    | | [area tag]    | | [area tag]    |               |
+|  | Short desc... | | Short desc... | | Short desc... |               |
+|  +---------------+ +---------------+ +---------------+                |
+|                                                                       |
+|                                          See All Cafes ->             |
++----------------------------------------------------------------------+
+|                                                                       |
+|  What's Happening This Week                              (cream bg)   |
+|                                                                       |
+|  +---------------+ +---------------+ +---------------+ +----------+  |
+|  | ┌───────────┐ | | ┌───────────┐ | | ┌───────────┐ | | ┌──────┐ | |
+|  | │  cover    │ | | │  cover    │ | | │  cover    │ | | │cover │ | |
+|  | │  image    │ | | │  image    │ | | │  image    │ | | │image │ | |
+|  | └───────────┘ | | └───────────┘ | | └───────────┘ | | └──────┘ | |
+|  | [Mar 28]      | | [Mar 29]      | | [Mar 30]      | | [Apr 2] | |
+|  | Event Name    | | Event Name    | | Event Name    | | Event   | |
+|  | @ Cafe Name   | | @ Cafe Name   | | @ Cafe Name   | | @ Cafe  | |
+|  | [Live Music]  | | [Open Mic]    | | [Workshop]    | | [Comedy]| |
+|  +---------------+ +---------------+ +---------------+ +----------+  |
+|                                                                       |
+|                                         See All Events ->             |
++----------------------------------------------------------------------+
+|  ████████████████████████████████████████████████████████████████████  |
+|  ██                                                                ██ |
+|  ██       Own a Cafe? Let Hyderabad Find You                       ██ |
+|  ██       Plans starting at ₹999/month                             ██ |
+|  ██                                                                ██ |
+|  ██                  [List Your Cafe]                               ██ |
+|  ██                                                                ██ |
+|  ████████████████████████████████████████████████████████████████████  |
+|                         (espresso bg, partner CTA)                    |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
+| GoOut Hyd             Cafes | Events | List   | Instagram             |
+| Discover Hyderabad's  Your Cafe | About        Made with love        |
+| best cafes & events   Privacy | Terms          in Hyderabad           |
++----------------------------------------------------------------------+
 ```
-Landing → Sign Up → Chat (new conversation) → Documents Upload → Chat (with docs)
-          ↘︎ Login → Chat (resume/new) → History → Chat (resume conversation)
-                                    → Profile → Stripe Checkout → Chat
-                                    → Documents → Bulk Upload → Chat
 
-Chat → Documents (upload more files)
-    → History (view past conversations) → Chat (resume specific conversation)
-    → Profile (manage subscription) → Stripe Portal → Profile
-                                   → Cancel Subscription → Profile
+```text
+MOBILE:
++----------------------------+
+| GoOut Hyd             [☰]  |
++----------------------------+
+| ██████████████████████████ |
+| ██                      ██ |
+| ██  Your Weekend        ██ |
+| ██  Starts Here         ██ |
+| ██                      ██ |
+| ██  Discover Hyderabad  ██ |
+| ██  best cafes & events ██ |
+| ██                      ██ |
+| ██  [Explore Cafes]     ██ |
+| ██  [Browse Events]     ██ |
+| ██                      ██ |
+| ██████████████████████████ |
++----------------------------+
+| Find Your Spot             |
+|                            |
+| [Banjara Hills]            |
+|     [Jubilee Hills]        |
+| [Kondapur] [Gachibowli]   |
+|     [Madhapur]             |
++----------------------------+
+| Cafes Worth the Drive      |
+|                            |
+| +------------------------+ |
+| | ┌────────────────────┐ | |
+| | │   cover image      │ | |
+| | └────────────────────┘ | |
+| | Cafe Name              | |
+| | [area tag]             | |
+| | Short desc...          | |
+| +------------------------+ |
+| +------------------------+ |
+| | ┌────────────────────┐ | |
+| | │   cover image      │ | |
+| | └────────────────────┘ | |
+| | Cafe Name              | |
+| | [area tag]             | |
+| +------------------------+ |
+|                            |
+|        See All Cafes ->    |
++----------------------------+
+| What's Happening This Week |
+|                            |
+| +------------------------+ |
+| | [Mar 28] [Live Music]  | |
+| | Event Name             | |
+| | @ Cafe Name            | |
+| +------------------------+ |
+| +------------------------+ |
+| | [Mar 29] [Open Mic]    | |
+| | Event Name             | |
+| | @ Cafe Name            | |
+| +------------------------+ |
+|                            |
+|       See All Events ->    |
++----------------------------+
+| ██████████████████████████ |
+| ██ Own a Cafe?          ██ |
+| ██ Let Hyd Find You     ██ |
+| ██ From ₹999/month      ██ |
+| ██ [List Your Cafe]     ██ |
+| ██████████████████████████ |
++----------------------------+
+| FOOTER                     |
++----------------------------+
+```
 
-Documents → Chat (start conversation with uploaded docs)
-         → History (view conversations about documents)
-         → Profile (check storage usage)
+---
 
-History → Chat (resume any conversation)
-       → Documents (upload more files)
-       → Profile (upgrade for more history)
+**Cafe Listing -- `/cafes`**
 
-Auth Flow:
-Sign Up → Email Verification → Login → Chat
-Login → Password Reset → Update Password → Chat
-      → Chat (direct access if authenticated)
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Cafes                                                   (cream bg)   |
+|                                                                       |
+|  [All Areas] [Banjara Hills] [Jubilee Hills] [Kondapur]              |
+|  [Gachibowli] [Madhapur]                                             |
+|        ^active = caramel fill, others = outlined                      |
++----------------------------------------------------------------------+
+|                                                                       |
+|  +---------------+ +---------------+ +---------------+   (milk bg)    |
+|  | ┌───────────┐ | | ┌───────────┐ | | ┌───────────┐ |               |
+|  | │  cover    │ | | │  cover    │ | | │  cover    │ |               |
+|  | │  image    │ | | │  image    │ | | │  image    │ |               |
+|  | └───────────┘ | | └───────────┘ | | └───────────┘ |               |
+|  | Cafe Name     | | Cafe Name     | | Cafe Name     |               |
+|  | [area tag]    | | [area tag]    | | [area tag]    |               |
+|  | Short desc... | | Short desc... | | Short desc... |               |
+|  +---------------+ +---------------+ +---------------+                |
+|                                                                       |
+|  +---------------+ +---------------+ +---------------+                |
+|  | ┌───────────┐ | | ┌───────────┐ | | ┌───────────┐ |               |
+|  | │  cover    │ | | │  cover    │ | | │  cover    │ |               |
+|  | │  image    │ | | │  image    │ | | │  image    │ |               |
+|  | └───────────┘ | | └───────────┘ | | └───────────┘ |               |
+|  | Cafe Name     | | Cafe Name     | | Cafe Name     |               |
+|  | [area tag]    | | [area tag]    | | [area tag]    |               |
+|  | Short desc... | | Short desc... | | Short desc... |               |
+|  +---------------+ +---------------+ +---------------+                |
+|                                                                       |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
 
-Error Handling:
-Any Protected Route → Auth Error → Login → Chat
-Chat → Conversation Not Found → New Chat
-Documents → Upload Error → Documents (retry)
+EMPTY STATE (when filtered area has no cafes):
++----------------------------------------------------------------------+
+|                                                                       |
+|         No cafes in Kondapur yet -- check back soon!                  |
+|                                                                       |
+|                     [Browse All Areas]                                 |
+|                                                                       |
++----------------------------------------------------------------------+
+```
+
+```text
+MOBILE:
++----------------------------+
+| GoOut Hyd             [☰]  |
++----------------------------+
+| Cafes                      |
+|                            |
+| [All] [Banjara] [Jubilee]  |
+| [Kondapur] [Gachibowli]   |
+|  <- horizontal scroll ->   |
++----------------------------+
+| +------------------------+ |
+| | ┌────────────────────┐ | |
+| | │   cover image      │ | |
+| | └────────────────────┘ | |
+| | Cafe Name              | |
+| | [area tag]             | |
+| +------------------------+ |
+| +------------------------+ |
+| | ┌────────────────────┐ | |
+| | │   cover image      │ | |
+| | └────────────────────┘ | |
+| | Cafe Name              | |
+| | [area tag]             | |
+| +------------------------+ |
++----------------------------+
+| FOOTER                     |
++----------------------------+
+```
+
+---
+
+**Cafe Profile -- `/cafes/[slug]`**
+
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+| ████████████████████████████████████████████████████████████████████  |
+| ██                                                                ██ |
+| ██                    ┌─────────────────────┐                     ██ |
+| ██                    │                     │                     ██ |
+| ██                    │    COVER PHOTO       │                     ██ |
+| ██                    │    (full-width)      │                     ██ |
+| ██                    │                     │                     ██ |
+| ██                    └─────────────────────┘                     ██ |
+| ██                                                                ██ |
+| ██                       Cafe Name                                ██ |
+| ██                       [Banjara Hills]                          ██ |
+| ██                                                                ██ |
+| ████████████████████████████████████████████████████████████████████  |
++----------------------------------------------------------------------+
+|                                                                       |
+|  +----------------------------------------------------------------+  |
+|  |  [📞 +91 98765 43210]  [📍 Directions]  [📸 @cafeinsta]       |  |
+|  |  123 Road Name, Banjara Hills, Hyderabad                       |  |
+|  +----------------------------------------------------------------+  |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  About This Cafe                                         (cream bg)   |
+|                                                                       |
+|  Lorem ipsum cafe description paragraph one. Wilson writes            |
+|  this content about the cafe's vibe, specialties, and story.          |
+|                                                                       |
+|  Second paragraph about the ambiance and what makes this              |
+|  cafe special for visitors.                                           |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Photos                                                  (milk bg)    |
+|                                                                       |
+|  ┌──────────┐ ┌──────────┐ ┌──────────┐                              |
+|  │          │ │          │ │          │                              |
+|  │  photo 1 │ │  photo 2 │ │  photo 3 │                              |
+|  │          │ │          │ │          │                              |
+|  └──────────┘ └──────────┘ └──────────┘                              |
+|  ┌──────────┐ ┌──────────┐ ┌──────────┐                              |
+|  │          │ │          │ │          │                              |
+|  │  photo 4 │ │  photo 5 │ │  photo 6 │                              |
+|  │          │ │          │ │          │                              |
+|  └──────────┘ └──────────┘ └──────────┘                              |
+|                   (click to open lightbox)                             |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Menu Highlights                                         (cream bg)   |
+|                                                                       |
+|  COFFEE                                                               |
+|  - Cappuccino ................................ ₹199                    |
+|  - Cold Brew ................................. ₹249                    |
+|  - Matcha Latte .............................. ₹279                    |
+|                                                                       |
+|  FOOD                                                                 |
+|  - Truffle Mushroom Toast .................... ₹349                    |
+|    Sourdough, truffle oil, aged parmesan                              |
+|  - Avocado Bowl .............................. ₹399                    |
+|                                                                       |
+|  DESSERTS                                                             |
+|  - Burnt Basque Cheesecake ................... ₹299                    |
+|  - Tiramisu .................................. ₹279                    |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Upcoming Events at This Cafe                            (milk bg)    |
+|                                                                       |
+|  +-----------------------------+ +-----------------------------+      |
+|  | [Mar 28]   [Live Music]     | | [Apr 5]    [Open Mic]       |      |
+|  | Jazz Night Under the Stars  | | Sunday Open Mic Session     |      |
+|  | ₹299                        | | Free Entry                  |      |
+|  +-----------------------------+ +-----------------------------+      |
+|                                                                       |
+|  OR if no events:                                                     |
+|  "No upcoming events -- follow us on Instagram for updates"           |
+|                                                                       |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
+```
+
+```text
+MOBILE:
++----------------------------+
+| GoOut Hyd             [☰]  |
++----------------------------+
+| ██████████████████████████ |
+| ██                      ██ |
+| ██    COVER PHOTO       ██ |
+| ██    (full-width)      ██ |
+| ██                      ██ |
+| ██    Cafe Name         ██ |
+| ██    [Banjara Hills]   ██ |
+| ██                      ██ |
+| ██████████████████████████ |
++----------------------------+
+| [📞 Call] [📍 Map] [📸 IG]|
+| 123 Road, Banjara Hills   |
++----------------------------+
+| About This Cafe            |
+|                            |
+| Description paragraph...   |
++----------------------------+
+| Photos                     |
+|                            |
+| ┌──────────┐┌──────────┐  |
+| │ photo 1  ││ photo 2  │  |
+| └──────────┘└──────────┘  |
+| ┌──────────┐┌──────────┐  |
+| │ photo 3  ││ photo 4  │  |
+| └──────────┘└──────────┘  |
++----------------------------+
+| Menu Highlights            |
+|                            |
+| COFFEE                     |
+| Cappuccino .......... ₹199 |
+| Cold Brew ........... ₹249 |
+|                            |
+| FOOD                       |
+| Truffle Toast ....... ₹349 |
+| Avocado Bowl ........ ₹399 |
++----------------------------+
+| Upcoming Events            |
+|                            |
+| +------------------------+ |
+| | [Mar 28] [Live Music]  | |
+| | Jazz Night             | |
+| | ₹299                   | |
+| +------------------------+ |
++----------------------------+
+| FOOTER                     |
++----------------------------+
+```
+
+---
+
+**Events Listing -- `/events`**
+
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Events                                                  (cream bg)   |
+|                                                                       |
+|  +-------+ +------------+ +----------+ +----------+ +---------+      |
+|  | All   | | 🎸 Live    | | 🎤 Open  | | 🎨 Work- | | 😂 Com- |      |
+|  |       | | Music      | | Mic      | | shop     | | edy     |      |
+|  +-------+ +------------+ +----------+ +----------+ +---------+      |
+|                                                                       |
+|  +--------+                                                           |
+|  | 🎮 Gam-|                                                           |
+|  | ing    |                                                           |
+|  +--------+                                                           |
+|     ^active category = caramel bg + foam text                         |
++----------------------------------------------------------------------+
+|                                                                       |
+|  +------------------+ +------------------+ +------------------+       |
+|  | ┌──────────────┐ | | ┌──────────────┐ | | ┌──────────────┐ |      |
+|  | │              │ | | │              │ | | │              │ |      |
+|  | │  cover image │ | | │  cover image │ | | │  cover image │ |      |
+|  | │              │ | | │              │ | | │              │ |      |
+|  | └──────────────┘ | | └──────────────┘ | | └──────────────┘ |      |
+|  | [SAT, MAR 28]    | | [SUN, MAR 29]    | | [FRI, APR 4]    |      |
+|  | Jazz Night       | | Sunday Open Mic  | | Pottery Workshop |      |
+|  | @ Cafe Blend     | | @ The Roast      | | @ Clay & Coffee  |      |
+|  | Banjara Hills    | | Jubilee Hills    | | Kondapur         |      |
+|  | [Live Music]     | | [Open Mic]       | | [Workshop]       |      |
+|  | ₹299             | | Free Entry       | | ₹499             |      |
+|  +------------------+ +------------------+ +------------------+       |
+|                                                                       |
+|  +------------------+ +------------------+ +------------------+       |
+|  | ...more events   | | ...              | | ...              |      |
+|  +------------------+ +------------------+ +------------------+       |
+|                                                                       |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
+
+EMPTY STATE:
++----------------------------------------------------------------------+
+|                                                                       |
+|    No upcoming Live Music events right now -- check back soon!        |
+|                                                                       |
+|                     [Browse All Events]                                |
+|                                                                       |
++----------------------------------------------------------------------+
+```
+
+```text
+MOBILE:
++----------------------------+
+| GoOut Hyd             [☰]  |
++----------------------------+
+| Events                     |
+|                            |
+| [All] [🎸 Live] [🎤 Mic]  |
+| [🎨 Work] [😂 Com] [🎮]   |
+|  <- horizontal scroll ->   |
++----------------------------+
+| +------------------------+ |
+| | ┌────────────────────┐ | |
+| | │   cover image      │ | |
+| | └────────────────────┘ | |
+| | [SAT, MAR 28]          | |
+| | Jazz Night             | |
+| | @ Cafe Blend           | |
+| | [Live Music]  ₹299     | |
+| +------------------------+ |
+| +------------------------+ |
+| | ┌────────────────────┐ | |
+| | │   cover image      │ | |
+| | └────────────────────┘ | |
+| | [SUN, MAR 29]          | |
+| | Sunday Open Mic        | |
+| | @ The Roast            | |
+| | [Open Mic]  Free Entry | |
+| +------------------------+ |
++----------------------------+
+| FOOTER                     |
++----------------------------+
+```
+
+---
+
+**Event Detail -- `/events/[slug]`**
+
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+| ████████████████████████████████████████████████████████████████████  |
+| ██                                                                ██ |
+| ██                    COVER IMAGE (full-width)                    ██ |
+| ██                                                                ██ |
+| ██                    Jazz Night Under the Stars                  ██ |
+| ██                    [Live Music]                                ██ |
+| ██                                                                ██ |
+| ████████████████████████████████████████████████████████████████████  |
++----------------------------------------------------------------------+
+|                                                                       |
+|  +----------------------------------------------------------------+  |
+|  |                                                                |  |
+|  |  📅  Saturday, March 28, 2026 at 7:00 PM                      |  |
+|  |  📍  Cafe Blend, Banjara Hills                                 |  |
+|  |  🎵  Live Music                                                |  |
+|  |  🎟️  ₹299                                                     |  |
+|  |                                                                |  |
+|  +----------------------------------------------------------------+  |
+|                                                        (foam card)    |
++----------------------------------------------------------------------+
+|                                                                       |
+|  About This Event                                        (cream bg)   |
+|                                                                       |
+|  Full event description written by Wilson. Multiple paragraphs        |
+|  describing the performers, what to expect, and the vibe.             |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Venue                                                   (milk bg)    |
+|                                                                       |
+|  +----------------------------------------------------------------+  |
+|  | ┌──────────┐  Cafe Blend                                       |  |
+|  | │  cover   │  Banjara Hills                                    |  |
+|  | │  image   │                                                   |  |
+|  | └──────────┘  [📞 Call]  [📍 Directions]  [📸 Instagram]       |  |
+|  |                                                                |  |
+|  |               [View Full Cafe Profile ->]                      |  |
+|  +----------------------------------------------------------------+  |
+|                                                                       |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
+```
+
+```text
+MOBILE:
++----------------------------+
+| GoOut Hyd             [☰]  |
++----------------------------+
+| ██████████████████████████ |
+| ██                      ██ |
+| ██  COVER IMAGE         ██ |
+| ██  (full-width)        ██ |
+| ██                      ██ |
+| ██  Jazz Night Under    ██ |
+| ██  the Stars           ██ |
+| ██  [Live Music]        ██ |
+| ██                      ██ |
+| ██████████████████████████ |
++----------------------------+
+| +------------------------+ |
+| | 📅 Sat, Mar 28, 7 PM  | |
+| | 📍 Cafe Blend          | |
+| |    Banjara Hills       | |
+| | 🎟️ ₹299               | |
+| +------------------------+ |
++----------------------------+
+| About This Event           |
+|                            |
+| Description text...        |
++----------------------------+
+| Venue                      |
+| +------------------------+ |
+| | ┌────────┐ Cafe Blend  | |
+| | │ cover  │ Banjara     | |
+| | └────────┘ Hills       | |
+| | [📞] [📍] [📸]         | |
+| | View Cafe Profile ->   | |
+| +------------------------+ |
++----------------------------+
+| FOOTER                     |
++----------------------------+
+```
+
+---
+
+**Partner Page -- `/partner`**
+
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+| ████████████████████████████████████████████████████████████████████  |
+| ██                                                                ██ |
+| ██         Your Cafe Deserves to Be Discovered                    ██ |
+| ██         Join Hyderabad's only platform built                    ██ |
+| ██         for independent cafes                                  ██ |
+| ██                                                                ██ |
+| ████████████████████████████████████████████████████████████████████  |
++----------------------------------------------------------------------+
+|                                                                       |
+|  +---------------+ +---------------+ +---------------+ +-----------+ |
+|  |  🔍           | |  📈           | |  🎵           | | 💰        | |
+|  |  Get          | |  Fill Empty   | |  Host Events  | | From      | |
+|  |  Discovered   | |  Tables       | |  Effortlessly | | ₹999/mo   | |
+|  |               | |               | |               | |           | |
+|  |  Photos, menu | |  Reach 1000s  | |  We bring the | | No long   | |
+|  |  & contact    | |  of customers | |  bands, you   | | term      | |
+|  |  where they   | |  in your area | |  just host    | | contracts | |
+|  |  are looking  | |               | |               | |           | |
+|  +---------------+ +---------------+ +---------------+ +-----------+ |
+|                                                          (cream bg)   |
++----------------------------------------------------------------------+
+|                                                                       |
+|  How It Works                                            (milk bg)    |
+|                                                                       |
+|     (1)                    (2)                    (3)                  |
+|  [📝 Form]     ->     [📞 Call]      ->     [🚀 Live]                |
+|  Fill the form         We call you           Your cafe goes           |
+|  below                 within 24 hrs         live in days             |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|               +----------------------------------+                    |
+|               |  Get Started                     |                    |
+|               |                                  |       (foam card)  |
+|               |  Owner Name      [____________]  |                    |
+|               |  Cafe Name       [____________]  |                    |
+|               |  Phone Number    [____________]  |                    |
+|               |  Area/Location   [▼ dropdown  ]  |                    |
+|               |                                  |                    |
+|               |         [Request a Callback]     |                    |
+|               |                                  |                    |
+|               +----------------------------------+                    |
+|                                                          (cream bg)   |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
+```
+
+```text
+MOBILE:
++----------------------------+
+| GoOut Hyd             [☰]  |
++----------------------------+
+| ██████████████████████████ |
+| ██ Your Cafe Deserves   ██ |
+| ██ to Be Discovered     ██ |
+| ██                      ██ |
+| ██ Hyderabad's only     ██ |
+| ██ platform for indie   ██ |
+| ██ cafes                ██ |
+| ██████████████████████████ |
++----------------------------+
+| +------------------------+ |
+| | 🔍 Get Discovered      | |
+| | Photos, menu & contact | |
+| +------------------------+ |
+| +------------------------+ |
+| | 📈 Fill Empty Tables   | |
+| | Reach 1000s of         | |
+| | customers              | |
+| +------------------------+ |
+| +------------------------+ |
+| | 🎵 Host Events         | |
+| | We bring the bands     | |
+| +------------------------+ |
+| +------------------------+ |
+| | 💰 From ₹999/mo        | |
+| | No long-term contracts | |
+| +------------------------+ |
++----------------------------+
+| How It Works               |
+|                            |
+| (1) Fill the form          |
+|       ↓                    |
+| (2) We call in 24 hrs     |
+|       ↓                    |
+| (3) Your cafe goes live    |
++----------------------------+
+| +------------------------+ |
+| | Get Started            | |
+| |                        | |
+| | Owner Name             | |
+| | [__________________]   | |
+| | Cafe Name              | |
+| | [__________________]   | |
+| | Phone Number           | |
+| | [__________________]   | |
+| | Area/Location          | |
+| | [▼ dropdown        ]  | |
+| |                        | |
+| | [Request a Callback]   | |
+| +------------------------+ |
++----------------------------+
+| FOOTER                     |
++----------------------------+
+```
+
+---
+
+**About Page -- `/about`**
+
+```text
+DESKTOP:
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+| ████████████████████████████████████████████████████████████████████  |
+| ██                                                                ██ |
+| ██           Built in Hyderabad, for Hyderabad                    ██ |
+| ██                                                                ██ |
+| ████████████████████████████████████████████████████████████████████  |
++----------------------------------------------------------------------+
+|                                                                       |
+|  The Story                                               (cream bg)   |
+|                                                                       |
+|  Paragraph about Wilson's background as an event manager.             |
+|  His relationships with local bands and cafes in Hyderabad.           |
+|                                                                       |
+|  The problem: independent cafes have no marketing                     |
+|  infrastructure and no way to organize events on their own.           |
+|                                                                       |
+|  The solution: GoOut Hyd -- a platform that handles both              |
+|  discovery and event logistics so cafe owners can focus                |
+|  on what they do best.                                                |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  "We believe Hyderabad's best experiences happen at                   |
+|   independent cafes, not chains. GoOut Hyd exists                     |
+|   to make sure you never miss them."                  (milk bg)       |
+|                                                                       |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Want to partner with us?                                (cream bg)   |
+|                                                                       |
+|  [List Your Cafe]         [📸 Instagram]                              |
+|                                                                       |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
+```
+
+---
+
+**Privacy / Terms -- `/privacy`, `/terms`**
+
+```text
++----------------------------------------------------------------------+
+| NAVBAR                                                                |
++----------------------------------------------------------------------+
+|                                                                       |
+|  Privacy Policy  (or "Terms of Service")                 (cream bg)   |
+|                                                                       |
+|  Last updated: [date]                                                 |
+|                                                                       |
+|  1. Information We Collect                                            |
+|     Body text...                                                      |
+|                                                                       |
+|  2. How We Use Your Information                                       |
+|     Body text...                                                      |
+|                                                                       |
+|  3. ...                                                               |
+|                                                                       |
++----------------------------------------------------------------------+
+| FOOTER                                                                |
++----------------------------------------------------------------------+
+```
+
+---
+
+### Navigation Flow Map
+
+```text
+CUSTOMER JOURNEY:
+Landing (/)
+├── [Explore Cafes] -> /cafes
+│   ├── [Area pill] -> /cafes?area=banjara-hills (filtered)
+│   └── [Cafe card] -> /cafes/[slug]
+│       ├── [📞] -> tel: (phone call)
+│       ├── [📍] -> Google Maps (external)
+│       ├── [📸] -> Instagram (external)
+│       └── [Event card] -> /events/[slug]
+│           └── [View Cafe Profile] -> /cafes/[slug]
+├── [Browse Events] -> /events
+│   ├── [Category card] -> /events?category=live_music (filtered)
+│   └── [Event card] -> /events/[slug]
+│       └── [View Cafe Profile] -> /cafes/[slug]
+├── [Area pill] -> /cafes?area=... (filtered)
+├── [Cafe card] -> /cafes/[slug]
+├── [Event card] -> /events/[slug]
+└── [List Your Cafe] -> /partner
+    └── [Submit form] -> success toast (stays on page)
+
+NAVBAR (present on all pages):
+[GoOut Hyd] -> /
+[Cafes] -> /cafes
+[Events] -> /events
+[About] -> /about
+[List Your Cafe] -> /partner
+
+FOOTER (present on all pages):
+[Cafes] -> /cafes
+[Events] -> /events
+[List Your Cafe] -> /partner
+[About] -> /about
+[Privacy] -> /privacy
+[Terms] -> /terms
+[Instagram] -> external
+
+CROSS-LINKS:
+/cafes/[slug] <-> /events/[slug]  (bidirectional via event cards and venue section)
+/about -> /partner               (CTA at bottom)
+/partner -> (email to Wilson)    (backend, on form submit)
 ```

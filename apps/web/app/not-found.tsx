@@ -1,54 +1,39 @@
+import type { ReactElement } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { MessageCircle, Home } from "lucide-react";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
-export default function NotFound() {
+export default function NotFound(): ReactElement {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="max-w-md w-full text-center space-y-8">
-        {/* Icon and illustration */}
-        <div className="space-y-4">
-          <div className="mx-auto w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-            <MessageCircle className="w-10 h-10 text-primary" />
-          </div>
-
-          {/* 404 Message */}
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-foreground">404</h1>
-            <h2 className="text-xl font-semibold text-foreground">
-              Page Not Found
-            </h2>
-            <p className="text-muted-foreground">
-              The page you&rsquo;re looking for doesn&rsquo;t exist. It might
-              have been deleted or the link is incorrect.
-            </p>
-          </div>
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex flex-grow flex-col items-center justify-center bg-cream px-4 py-20 text-center">
+        <p className="font-body text-sm font-medium uppercase tracking-widest text-caramel">
+          404
+        </p>
+        <h1 className="font-heading mt-4 text-4xl leading-tight text-espresso sm:text-5xl">
+          Page not found
+        </h1>
+        <p className="font-body mt-4 max-w-md text-base leading-relaxed text-roast">
+          The page you&apos;re looking for doesn&apos;t exist or may have moved.
+          Try browsing cafes or upcoming events instead.
+        </p>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+          <Link
+            href="/cafes"
+            className="inline-flex min-h-11 w-40 items-center justify-center rounded-md bg-caramel px-6 py-2.5 text-sm font-medium text-foam transition-colors hover:bg-caramel/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+          >
+            Browse Cafes
+          </Link>
+          <Link
+            href="/events"
+            className="inline-flex min-h-11 w-40 items-center justify-center rounded-md border border-caramel px-6 py-2.5 text-sm font-medium text-caramel transition-colors hover:bg-caramel/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+          >
+            See Events
+          </Link>
         </div>
-
-        {/* Action buttons */}
-        <div className="space-y-4">
-          <Button asChild className="w-full" size="lg">
-            <Link href="/chat">
-              <MessageCircle className="w-4 h-4" />
-              Start New Conversation
-            </Link>
-          </Button>
-
-          <Button asChild variant="outline" className="w-full" size="lg">
-            <Link href="/">
-              <Home className="w-4 h-4" />
-              Go to Home
-            </Link>
-          </Button>
-        </div>
-
-        {/* Additional help text */}
-        <div className="pt-4 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            Need help? Contact our support team or check your chat history.
-          </p>
-        </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -1,281 +1,381 @@
-# App Pages & Functionality Blueprint
+## App Pages & Functionality Blueprint
 
-## App Summary
+### App Summary
 
-**End Goal:** Help knowledge workers and researchers achieve instant, intelligent access to insights from their documents using RAG-powered AI that understands their uploaded content.
-
-**Core Value Proposition:** Save users 3-5 hours per week by eliminating manual document searching through AI-powered document intelligence and natural language querying.
-
-**Target Users:** Knowledge workers, researchers, analysts, consultants, students, legal professionals, and medical professionals who work with extensive documentation.
-
-**Template Type:** rag-saas (RAG-powered SaaS with subscription billing)
-
----
-
-## 🌐 Universal SaaS Foundation
-
-### Public Marketing Pages
-
-- **Landing Page** — `/`
-  - Hero: "Chat with Your Documents Using RAGI"
-  - Features: Document Intelligence, Instant Smart Search, Multimedia Support
-  - Problem section highlighting document search inefficiency
-  - RAG Demo with interactive preview
-  - Pricing: Free, Basic ($29), Pro ($99) tiers
-  - FAQ section addressing common concerns
-  - CTA driving to sign-up and chat functionality
-
-- **Legal Pages** — `/privacy`, `/terms`, `/cookies`
-  - Privacy policy with GDPR compliance
-  - Terms of service for SaaS operations
-  - Cookie policy for tracking compliance
-  - Professional legal layout with navigation
-
-### Authentication Flow
-
-- **Login** — `/auth/login` (Email/password with Supabase Auth)
-- **Sign Up** — `/auth/sign-up` (Account creation with email verification)
-- **Forgot Password** — `/auth/forgot-password` (Password reset flow)
-- **Update Password** — `/auth/update-password` (Secure password changes)
-- **Sign Up Success** — `/auth/sign-up-success` (Email confirmation page)
-- **Email Confirmation** — `/auth/confirm` (Email verification handler)
-- **Auth Error** — `/auth/error` (Authentication error handling)
+**App Name:** GoOut Hyd
+**Domain:** goouthyd.in
+**End Goal:** Help independent cafe owners in Hyderabad fill tables and generate event revenue by giving them a managed digital presence, while giving customers aged 20-35 a single place to discover cafes and live experiences across the city.
+**Core Value Proposition:** The only platform that combines cafe discovery WITH managed event infrastructure for Hyderabad's independent cafe scene.
+**Target Users:** Customers (20-35, experience seekers), Cafe Owners (indie cafes, no marketing team), Wilson (platform operator/event manager)
+**Phase 1 Scope:** Public-only. No authentication, no payments, no admin UI. Wilson manages all data via Supabase.
 
 ---
 
-## ⚡ Core Application Pages
+## Pages & Functionality
 
-### Chat Interface — `/chat/[[...conversationId]]`
+### Landing Page -- `/`
 
-**Core Purpose:** AI-powered document conversation - the heart of the time-saving value proposition
+**Purpose:** First impression. Sell the vibe, show what's happening, and funnel both customers and cafe owners deeper into the platform.
 
-**Key Functionality:**
+**Sections (top to bottom):**
 
-- **Multimodal AI Chat** - Google Gemini 2.5 Pro/Flash with thinking capabilities
-- **Document Context Integration** - RAG-powered responses with accurate source citations
-- **Real-time Streaming** - Live AI responses with thinking indicators and stop controls
-- **Multi-format Attachments** - Support for images, PDFs, videos, audio files
-- **Usage Limit Tracking** - Real-time request counting with upgrade prompts when approaching limits
-- **Conversation Management** - Auto-save conversations, resume sessions, organize by date
-- **Welcome Experience** - Interactive onboarding with example prompts and feature highlights
-- **Mobile Optimization** - Touch-friendly interface with responsive chat bubbles
-- **Model Selection** - Choose between different Gemini models based on needs
-- **Message History** - Persistent conversation storage with fast retrieval
+- **Hero Section** (dark espresso background, full-width)
+  - Headline in DM Serif Display (e.g., "Your Weekend Starts Here")
+  - Subtitle: "Discover Hyderabad's best independent cafes, live music nights, open mics, and more"
+  - Two CTAs: "Explore Cafes" (primary, caramel) + "Browse Events" (secondary, outlined)
+  - Atmospheric background image or subtle gradient
 
-### Documents Management — `/documents`
+- **Browse by Area** (cream background)
+  - Section heading: "Find Your Spot"
+  - Clickable area pills/cards: Banjara Hills, Jubilee Hills, Kondapur, Gachibowli, Madhapur
+  - Each pill links to `/cafes?area=banjara-hills` (filtered view)
+  - Expandable as Wilson adds more areas
 
-**Core Purpose:** Document upload and processing pipeline that enables intelligent conversations
+- **Featured Cafes** (milk background)
+  - Section heading: "Cafes Worth the Drive"
+  - Grid of 4-6 cafe cards (cover image, cafe name, area tag, one-line description)
+  - Each card links to `/cafes/[slug]`
+  - "See All Cafes" link at bottom
 
-**Key Functionality:**
+- **Upcoming Events** (cream background)
+  - Section heading: "What's Happening This Week"
+  - Row of 4 event cards (cover image, event name, date badge, cafe name, event type badge)
+  - Each card links to `/events/[slug]`
+  - "See All Events" link at bottom
 
-- **Bulk Upload System** - Drag-and-drop multi-file upload with real-time progress tracking
-- **Multi-format Support** - PDFs, images, videos, audio, text files (up to 50MB per file)
-- **Real-time Processing Status** - Live updates on document embedding generation
-- **Storage Management** - Visual storage usage with tier-based limits (5GB Basic, 50GB Pro)
-- **Document Organization** - List view with metadata (filename, size, type, upload date)
-- **Usage Warnings** - Proactive alerts for storage and document count limits
-- **Optimistic UI Updates** - Immediate feedback during upload process
-- **Error Handling** - Graceful handling of file type, size, and storage limit errors
-- **Document Deletion** - Remove documents with confirmation dialogs
-- **Processing Pipeline** - Automatic vector embedding generation for RAG functionality
+- **Partner CTA Banner** (espresso background)
+  - Headline: "Own a Cafe? Let Hyderabad Find You"
+  - Subtitle: "Plans starting at ₹999/month"
+  - CTA button: "List Your Cafe" linking to `/partner`
 
-### Conversation History — `/history`
+- **Footer**
 
-**Core Purpose:** Browse, manage, and resume past AI conversations for continued productivity
+**Functionality:**
 
-**Key Functionality:**
-
-- **Chronological Organization** - Auto-grouped by Today, Yesterday, This Week, Older
-- **Conversation Management** - Rename conversations with inline editing
-- **Conversation Deletion** - Delete conversations with confirmation dialogs
-- **Model Tracking** - Display which AI model was used for each conversation
-- **Quick Resume** - One-click return to any conversation for continued work
-- **Date Formatting** - User-friendly date display for easy browsing
-- **Empty State Guidance** - Clear onboarding for new users with "Start Chatting" CTA
-- **Responsive Design** - Grid layout adapting to mobile and desktop
-- **Error Handling** - Graceful fallback when conversation data fails to load
-
-### User Profile & Account — `/profile`
-
-**Core Purpose:** Account management and subscription control that drives revenue growth
-
-**Key Functionality:**
-**Account Management**
-
-- **Profile Settings** - Editable full name with inline editing
-- **Account Information** - Display email, member since date, current subscription status
-- **Usage Analytics** - Real-time tracking of documents uploaded, storage used, requests made
-- **Progress Indicators** - Visual progress bars for usage limits with tier-specific caps
-
-**Subscription Management**
-
-- **Current Plan Display** - Show active subscription with billing period and status
-- **Tier Comparison** - Free (10 docs, 100MB, 10 requests/day), Basic ($29/month), Pro ($99/month)
-- **Feature Breakdown** - Detailed comparison of limits and capabilities per tier
-- **Upgrade Flows** - Stripe Checkout integration for seamless plan changes
-- **Billing Portal Access** - Direct link to Stripe Customer Portal for payment management
-- **Cancellation Handling** - Cancel at period end with confirmation dialogs
-- **Usage-Based Prompts** - Contextual upgrade suggestions when approaching limits
+- Fetch all active cafes from database, display as cards (Frontend)
+- Fetch next 4 upcoming events sorted by date (Frontend)
+- Area pills link to `/cafes` with area query parameter (Frontend)
+- All content server-rendered for SEO (Backend)
 
 ---
 
-## 🔧 API Infrastructure & Backend
+### Cafe Listing -- `/cafes`
 
-### Document Processing APIs
+**Purpose:** Let customers browse all cafes, filterable by area. The main discovery page.
 
-- **Upload Management** — `/api/documents` (POST: Handle bulk file uploads)
-- **Upload URL Generation** — `/api/documents/upload-url` (GET: Generate presigned S3 URLs)
-- **Document Operations** — `/api/documents/[id]` (GET/DELETE: Document CRUD operations)
-- **Document Completion** — `/api/documents/[id]/complete` (POST: Mark processing complete)
-- **Processing Status** — `/api/documents/processing-status` (GET: Real-time processing updates)
+**Sections:**
 
-### Chat & AI APIs
+- **Page Header**
+  - Heading: "Cafes" (or "Cafes in Banjara Hills" when filtered)
+  - Area filter pills at top (same areas as landing page). Active area highlighted in caramel. "All Areas" option to reset.
 
-- **Streaming Chat** — `/api/chat` (POST: Real-time AI responses with RAG integration)
+- **Cafe Grid**
+  - Responsive card grid (2 cols on mobile, 3 on desktop)
+  - Each card shows: cover image, cafe name (DM Serif Display), area tag, short description (2 lines max)
+  - Cards link to `/cafes/[slug]`
 
-### Business Model APIs
+- **Empty State**
+  - If no cafes in selected area: "No cafes in [Area] yet -- check back soon!" with a CTA to browse all areas
 
-- **Stripe Webhooks** — `/api/webhooks/stripe` (POST: Handle subscription events, invoice updates)
+**Functionality:**
 
----
-
-## 💰 Business Model Pages
-
-### Subscription Billing Integration
-
-- **Stripe Checkout** - Embedded in profile page with multiple tier options
-- **Customer Portal** - Direct access to Stripe billing management
-- **Usage Tracking** - Real-time monitoring of document, storage, and request usage
-- **Tier Enforcement** - Hard limits enforced at API level with upgrade prompts
-- **Webhook Processing** - Automatic subscription status updates via Stripe webhooks
-- **Cancellation Management** - Cancel at period end with retention messaging
+- Fetch all active cafes, optionally filtered by area query param (Backend)
+- Area filtering updates URL (`/cafes?area=kondapur`) for shareability (Frontend)
+- Server-rendered for SEO with proper meta titles per area (Backend)
 
 ---
 
-## 📱 Navigation Structure
+### Cafe Profile -- `/cafes/[slug]`
 
-### Main Sidebar (Responsive)
+**Purpose:** The cafe's digital home. Everything a customer needs to decide to visit. Also the URL Wilson shares with cafe owners during pitches as proof of work.
 
-- **Chat** - 💬 Main AI conversation interface (primary feature)
-- **Documents** - 📄 Upload and manage document collections
-- **History** - 🕐 Browse and search past conversations
-- **Profile** - 👤 Account settings and subscription management
+**Sections (single scrollable page):**
 
-### Role-Based Access
+- **Cover Photo** (full-width, hero-style with gradient overlay)
+  - Cafe name overlaid in DM Serif Display
+  - Area tag badge
 
-- **All Authenticated Users:** Full access to Chat, Documents, History, Profile
-- **Admin Users:** Additional access to system administration (admin routes ready but not implemented in current version)
+- **Quick Contact Bar** (prominent, always visible)
+  - Phone icon + number (tap to call on mobile)
+  - Google Maps icon (opens directions in new tab)
+  - Instagram icon + handle (opens profile in new tab)
+  - Full address displayed below
 
-### Mobile Navigation
+- **About This Cafe**
+  - Cafe description (2-3 paragraphs, written by Wilson)
 
-- **Collapsible Sidebar** - Icon-only view saves screen space on mobile
-- **Touch Optimization** - Adequate spacing for mobile interaction
-- **Auto-Collapse** - Sidebar closes after navigation selection on mobile devices
-- **Header Integration** - Mobile header shows current page context and user status
+- **Photo Gallery**
+  - Grid of images (2x2 on mobile, 3-column on desktop)
+  - Tap/click opens lightbox for full-screen viewing with swipe navigation
+
+- **Menu Highlights**
+  - Organized by category (Coffee, Food, Desserts, Drinks, etc.)
+  - Each item: name, price (₹), optional short description
+  - Unavailable items hidden via is_available flag
+  - Not a full menu -- just highlights and signature items
+
+- **Upcoming Events at This Cafe**
+  - List of upcoming events tied to this cafe
+  - Each event card shows: event name, date, event type badge, ticket price
+  - Links to `/events/[slug]`
+  - If no events: "No upcoming events -- follow us on Instagram for updates"
+
+**Functionality:**
+
+- Fetch cafe by slug with related images, menu items, and upcoming events (Backend)
+- Phone number rendered as `tel:` link for mobile tap-to-call (Frontend)
+- Google Maps URL opens in new tab (Frontend)
+- Instagram handle rendered as external link (Frontend)
+- Photo lightbox with keyboard/swipe navigation (Frontend -- client component)
+- SEO meta tags with cafe name, area, description, and cover image as OG image (Backend)
 
 ---
 
-## 🔧 Next.js App Router Structure
+### Events Listing -- `/events`
+
+**Purpose:** Single destination for discovering all upcoming events across Hyderabad cafes.
+
+**Sections:**
+
+- **Page Header**
+  - Heading: "Events" (or "Live Music Events" when filtered by category)
+
+- **Category Filter Cards**
+  - Horizontal scrollable row of category cards with icons
+  - Categories: All, Live Music (guitar icon), Open Mic (mic icon), Workshop (palette icon), Comedy Night (laugh icon), Gaming (gamepad icon)
+  - Active category highlighted in caramel. "All" resets filter.
+
+- **Events Grid**
+  - Event cards in a responsive grid
+  - Each card: cover image, event name, date + time badge, cafe name + area, event type badge, ticket price (e.g., "₹299" or "Free Entry")
+  - Cards link to `/events/[slug]`
+  - Sorted chronologically (soonest first)
+  - Only shows future events (past events hidden)
+
+- **Empty State**
+  - "No upcoming [category] events right now -- check back soon!" with CTA to browse all events
+
+**Functionality:**
+
+- Fetch all upcoming events, optionally filtered by category query param (Backend)
+- Category filtering updates URL (`/events?category=live_music`) for shareability (Frontend)
+- Past events excluded from query (Backend)
+- Server-rendered for SEO (Backend)
+
+---
+
+### Event Detail -- `/events/[slug]`
+
+**Purpose:** Full event details. Shareable URL that Wilson can send to customers or post on social media.
+
+**Sections:**
+
+- **Cover Image** (full-width with gradient overlay)
+  - Event name in DM Serif Display
+  - Event type badge
+
+- **Event Info Card**
+  - Date and time (formatted: "Saturday, March 28, 2026 at 7:00 PM")
+  - Venue: cafe name (linked to `/cafes/[cafe-slug]`) + area
+  - Ticket price: "₹299" or "Free Entry" (display only, no purchase flow)
+  - Event type badge
+
+- **Event Description**
+  - Full description written by Wilson (supports longer text)
+
+- **Venue Section**
+  - Mini cafe card with cover image, name, area
+  - Contact info: phone, Google Maps, Instagram
+  - "View Full Cafe Profile" link to `/cafes/[cafe-slug]`
+
+**Functionality:**
+
+- Fetch event by slug with related cafe data (Backend)
+- Cafe name links to cafe profile page (Frontend)
+- Contact info for the venue displayed for quick access (Frontend)
+- SEO meta tags with event name, date, cafe, and cover image as OG image (Backend)
+
+---
+
+### Partner Page -- `/partner`
+
+**Purpose:** Pitch page for cafe owners + lead capture form. The URL Wilson sends to potential partners before or after a pitch meeting.
+
+**Sections:**
+
+- **Hero Section** (espresso background)
+  - Headline: "Your Cafe Deserves to Be Discovered"
+  - Subtitle: "Join Hyderabad's only platform built for independent cafes"
+
+- **Value Proposition Section** (cream background)
+  - 3-4 value cards with icons:
+    - "Get Discovered" -- Your cafe listed with photos, menu, and contact info where customers are looking
+    - "Fill Empty Tables" -- Reach thousands of experience-seeking customers in your area
+    - "Host Events Effortlessly" -- We bring the bands, manage the logistics, you just host
+    - "Plans Starting at ₹999/month" -- Affordable digital presence with no long-term contracts
+
+- **How It Works** (milk background)
+  - Step 1: "Fill the form below" (form icon)
+  - Step 2: "We'll call you within 24 hours" (phone icon)
+  - Step 3: "Your cafe goes live in days" (rocket icon)
+
+- **Interest Form** (foam background card)
+  - Heading: "Get Started"
+  - Fields: Owner Name, Cafe Name, Phone Number, Area/Location (dropdown with known areas + "Other")
+  - Submit button: "Request a Callback" (caramel)
+  - Success state: toast "Thanks! Wilson will reach out within 24 hours" + form resets
+
+- **Footer**
+
+**Functionality:**
+
+- Form validates all fields with Zod before submission (Frontend)
+- Server Action saves lead to cafe_leads table in Supabase (Backend)
+- Email notification sent to Wilson on new submission (Backend)
+- Form resets and shows success toast on completion (Frontend)
+- No auth required -- completely public form (Frontend)
+
+---
+
+### About Page -- `/about`
+
+**Purpose:** Build credibility. Tell the story behind GoOut Hyd. Important for cafe owners evaluating whether to partner.
+
+**Sections:**
+
+- **Hero Section** (espresso background)
+  - Headline: "Built in Hyderabad, for Hyderabad"
+
+- **The Story** (cream background)
+  - 2-3 paragraphs about Wilson's background as an event manager, his relationships with local bands and cafes, and why he built GoOut Hyd
+  - The problem: independent cafes have no marketing infrastructure and no way to organize events
+  - The solution: a platform that handles both discovery and event logistics
+
+- **Mission Statement**
+  - "We believe Hyderabad's best experiences happen at independent cafes, not chains. GoOut Hyd exists to make sure you never miss them."
+
+- **Contact / CTA**
+  - "Want to partner with us?" CTA linking to `/partner`
+  - Social links (Instagram placeholder)
+
+**Functionality:**
+
+- Static content page, server-rendered (Backend)
+- SEO meta tags (Backend)
+
+---
+
+### Privacy Policy -- `/privacy`
+
+- Standard privacy policy covering data collection (partner form submissions, no user accounts in Phase 1)
+- Static page, server-rendered
+
+### Terms of Service -- `/terms`
+
+- Standard terms of service for platform usage
+- Static page, server-rendered
+
+---
+
+## Navigation Structure
+
+### Top Navigation Bar (all pages)
+
+- **Left:** GoOut Hyd wordmark (DM Serif Display, links to `/`)
+- **Right (desktop):** Cafes | Events | About | List Your Cafe (caramel CTA button linking to `/partner`)
+- **Right (mobile):** Hamburger menu icon, opens slide-out menu with same links
+- **Background:** Espresso on all pages
+- **Text:** Cream, with caramel on hover/active
+
+### Footer (all pages)
+
+- **Left column:** GoOut Hyd wordmark + "Discover Hyderabad's best independent cafes and events"
+- **Center column:** Quick Links -- Cafes, Events, List Your Cafe, About, Privacy, Terms
+- **Right column:** Social links (Instagram icon placeholder) + "Made with love in Hyderabad"
+- **Background:** Espresso. Text: Cream/Foam.
+
+---
+
+## Next.js App Router Structure
 
 ### Layout Groups
 
 ```
 app/
-├── (public)/          # Marketing and legal pages with public layout
-├── (auth)/             # Authentication flow with centered auth layout
-├── (protected)/        # Main authenticated app with sidebar layout
-└── api/                # Backend API endpoints
+├── (public)/              # All pages (no auth in Phase 1)
+│   ├── layout.tsx         # Shared layout: nav + footer
+│   ├── page.tsx           # Landing page (/)
+│   ├── cafes/
+│   │   ├── page.tsx       # Cafe listing (/cafes)
+│   │   └── [slug]/
+│   │       └── page.tsx   # Cafe profile (/cafes/[slug])
+│   ├── events/
+│   │   ├── page.tsx       # Events listing (/events)
+│   │   └── [slug]/
+│   │       └── page.tsx   # Event detail (/events/[slug])
+│   ├── partner/
+│   │   └── page.tsx       # Partner pitch + form (/partner)
+│   ├── about/
+│   │   └── page.tsx       # About page (/about)
+│   ├── privacy/
+│   │   └── page.tsx       # Privacy policy (/privacy)
+│   └── terms/
+│       └── page.tsx       # Terms of service (/terms)
+└── layout.tsx             # Root layout: fonts, metadata, Toaster
 ```
 
-### Complete Route Mapping
+### Server Actions
 
-**🌐 Public Routes**
+```
+app/actions/
+└── leads.ts               # submitPartnerForm() -- validate, save to DB, send email to Wilson
+```
 
-- `/` → Landing page (Hero, Features, Problem, Demo, Pricing, FAQ, CTA)
-- `/privacy` → Privacy policy (GDPR compliant)
-- `/terms` → Terms of service (SaaS legal requirements)
-- `/cookies` → Cookie policy (Tracking compliance)
+### Lib Queries (Database Access)
 
-**🔐 Auth Routes**
+```
+lib/queries/
+├── cafes.ts               # getAllCafes(), getCafeBySlug(), getCafesByArea()
+├── events.ts              # getUpcomingEvents(), getEventBySlug(), getEventsByCategory(), getEventsByCafe()
+└── areas.ts               # getActiveAreas() -- areas that have at least one listed cafe
+```
 
-- `/auth/login` → User login with Supabase Auth
-- `/auth/sign-up` → User registration with email verification
-- `/auth/forgot-password` → Password reset flow
-- `/auth/update-password` → Secure password change
-- `/auth/sign-up-success` → Registration confirmation page
-- `/auth/confirm` → Email verification handler
-- `/auth/error` → Authentication error handling
+### Architecture Flow
 
-**🛡️ Protected Routes** (Require Authentication)
-
-- `/chat` → New conversation interface
-- `/chat/[conversationId]` → Resume specific conversation
-- `/documents` → Document upload and management dashboard
-- `/history` → Conversation history browser with search
-- `/profile` → User settings, billing, and account management
-
-**🔧 API Routes**
-
-- `/api/documents` → Document upload and management
-- `/api/documents/[id]` → Individual document operations
-- `/api/documents/upload-url` → Presigned upload URL generation
-- `/api/documents/processing-status` → Real-time processing updates
-- `/api/documents/[id]/complete` → Mark document processing complete
-- `/api/chat` → Streaming AI chat with RAG integration
-- `/api/webhooks/stripe` → Stripe subscription webhook handling
+- **Page renders:** Server Component -> Lib Query -> Database -> Rendered HTML (SSR)
+- **Partner form:** Client Component -> Server Action (leads.ts) -> Lib Query -> Database + Email Service
+- **No API routes needed in Phase 1:** All data fetched server-side, only user interaction is the partner form
 
 ---
 
-## 🎯 Technical Implementation Details
+## MVP Functionality Summary
 
-### Database Schema (Drizzle ORM)
+This blueprint delivers the core value proposition: **Give customers a reason to discover cafes, and give cafe owners a reason to get listed.**
 
-- **users** - User profiles with Stripe integration and subscription tracking
-- **ai_models** - Available Gemini models with provider information and pricing
-- **conversations** - Chat conversations with titles, metadata, and user association
-- **messages** - Individual chat messages with content, role, and conversation linking
-- **subscriptions** - User subscription status and usage tracking data
+**Phase 1 (Launch Ready):**
 
-### AI Integration Stack
+- 8 public pages (Landing, Cafes, Cafe Profile, Events, Event Detail, Partner, About, Privacy/Terms)
+- Cafe discovery by area with card-based browsing
+- Individual cafe profiles with photos, menu highlights, contact info, and events
+- Event discovery by category with chronological listing
+- Individual event pages with venue info and shareable URLs
+- Partner lead capture with email notification to Wilson
+- Responsive top navigation (desktop + mobile hamburger)
+- SEO-optimized with proper meta tags and OG images on every page
+- Zero authentication, zero payments, zero admin UI
 
-- **Google Gemini 2.5 Pro** - Most advanced reasoning with native multimodal capabilities
-- **Google Gemini 2.5 Flash** - Best price-performance balance with thinking capabilities
-- **Google Gemini 2.5 Flash-Lite** - Cost-effective model for high throughput tasks
-- **Vector Search** - 1408-dimensional embeddings for document RAG retrieval
-- **Multimodal Processing** - Handle text, images, audio, video, and PDF content
+**Phase 2 (Growth Features):**
 
-### Business Logic Implementation
+- WhatsApp CTA buttons on cafe profiles
+- Event ticketing with Razorpay and QR codes
+- Cafe owner self-serve dashboard
+- Customer accounts and authentication
+- Cafe tags and advanced filtering (rooftop, pet-friendly, aesthetic, coworking-friendly)
+- Admin UI for Wilson
+- Content engine (reels, posts, influencer management)
+- Wilson's weekly curated list
+- 3D animated landing page
+- Venue expansion (bars, clubs, rooftops)
+- Compliance shield (FSSAI, IPRS, PPL guidance)
 
-- **Usage Tracking** - Real-time monitoring with tier-based limits enforcement
-- **Subscription Management** - Full Stripe integration with webhook automation
-- **Document Processing** - Async pipeline with status tracking and error recovery
-- **Error Handling** - Comprehensive error boundaries and graceful degradation
-
----
-
-## 🚀 MVP Functionality Summary
-
-This blueprint delivers the core value proposition: **Help knowledge workers save 3-5 hours per week by providing instant, intelligent access to insights from their documents through RAG-powered AI conversations.**
-
-**Phase 1 (Current Implementation - Launch Ready):**
-
-- ✅ Universal SaaS foundation (auth, legal, responsive design)
-- ✅ RAG-powered document intelligence with multi-format support
-- ✅ Real-time AI chat with Google Gemini models
-- ✅ Document upload and processing pipeline
-- ✅ Conversation history and management
-- ✅ User account and profile management
-- ✅ Subscription billing with Stripe integration
-- ✅ Usage tracking and tier enforcement
-- ✅ Mobile-responsive design throughout
-
-**Phase 2 (Growth Features - Future):**
-
-- 🔄 Admin dashboard for system management
-- 🔄 Advanced analytics and reporting
-- 🔄 Team collaboration features
-- 🔄 API access for enterprise integration
-- 🔄 Custom AI model selection
-- 🔄 Bulk document processing workflows
-
-> **Status:** Complete implementation ready for production deployment. All core functionality tested and validated through actual app usage.
+> **Next Step:** Ready for wireframe design with this blueprint as the foundation

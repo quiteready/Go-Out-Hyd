@@ -1,0 +1,132 @@
+# GoOut Hyd -- Project Rules
+
+## What This Project Is
+
+GoOut Hyd (goouthyd.in) is a venue discovery and experience platform for Hyderabad, India. It helps independent cafe owners get discovered and fill tables through curated listings and events managed by Wilson (the platform operator). Built to expand beyond cafes to bars, clubs, and rooftops.
+
+This is NOT an AI application. The codebase was repurposed from a RAG app. Ignore any leftover RAG/AI references in template files, shipkit configs, or old code. Adapt only the infrastructure patterns (Next.js, Supabase, Drizzle, Tailwind, shadcn/ui).
+
+## Phase 1 Boundaries -- Enforced
+
+These constraints are non-negotiable for Phase 1. Never add, suggest, or scaffold code for any of these:
+
+- No user authentication or login flows
+- No payment processing (no Razorpay, no Stripe)
+- No cafe owner dashboard or self-serve features
+- No admin panel UI
+- No WhatsApp integration or WhatsApp Business API
+- No AI, LLM, or chatbot features
+- No cafe tag/attribute filtering (area browsing only)
+- No embedded maps (Google Maps as external clickable links only)
+- No push notifications
+- No mobile app
+
+## Contact Methods (Phase 1)
+
+Customer-facing cafe contact info uses these methods only:
+- Phone number (displayed, clickable tel: link)
+- Google Maps (clickable link that opens directions externally)
+- Instagram handle (clickable link to Instagram profile)
+- Physical address (displayed as text)
+
+Do NOT add WhatsApp buttons, contact forms, or booking systems.
+
+## Tech Stack Reference
+
+- Next.js 15 (App Router) with React 19
+- TypeScript 5 in strict mode
+- Tailwind CSS 3.4 with tailwindcss-animate
+- shadcn/ui (Radix primitives, CVA, clsx, tailwind-merge)
+- Supabase (PostgreSQL, auth dormant in Phase 1)
+- Drizzle ORM with drizzle-zod for schema validation
+- @t3-oss/env-nextjs for environment variable validation
+- lucide-react for icons
+- sonner for toast notifications
+- Zod for form validation
+- Vercel for deployment
+
+## Database Rules
+
+- All tables are defined in `apps/web/lib/drizzle/schema/` using Drizzle ORM
+- Never create tables directly in Supabase dashboard
+- Always use `npm run db:generate` after schema changes, never `npx drizzle-kit`
+- Use Drizzle's type-safe query builders, never raw SQL for basic operations
+- Use `drizzle-zod` to generate Zod schemas from Drizzle tables for form validation
+
+## Component Rules
+
+- Use shadcn/ui components for all UI elements. Install with `npx shadcn@latest add <component>`
+- Server Components by default. Add `"use client"` only when the component needs interactivity, hooks, or browser APIs
+- Use `cn()` from `@/lib/utils` for conditional class merging. Never use inline style objects
+- Use Next.js `Image` component for all images
+- Use lucide-react for icons, never raw SVGs unless a custom icon is unavoidable
+
+## Route Groups
+
+All Phase 1 routes are public (no auth middleware):
+- `(public)/` -- Landing, cafes, events, partner page
+- `api/` -- Data endpoints for leads, cafes, events
+
+Do NOT create `(auth)/` or `(protected)/` route groups in Phase 1.
+
+## Event Types
+
+The platform supports these event categories:
+- live_music
+- open_mic
+- workshop
+- comedy_night
+- gaming
+
+Store as a string enum in the database. The events page displays these as category cards that filter the event list when clicked.
+
+## Partner Form
+
+The `/partner` page has an interest form with exactly these fields:
+- Owner name
+- Cafe name
+- Phone number
+- Area/location (from priority areas list)
+
+On submission: save to `cafe_leads` table and send email notification to Wilson. No SMS, no WhatsApp, no complex workflows.
+
+## Geography
+
+- City: Hyderabad, India
+- Priority areas: Banjara Hills, Jubilee Hills, Kondapur, Gachibowli, Madhapur
+- The area list must be expandable (not hardcoded as an enum in the database)
+- Currency: INR (₹)
+- Phone format: Indian (+91)
+
+## Design System
+
+**Mode:** Light-only for MVP. No dark mode toggle.
+
+**Colors (Tailwind tokens):**
+- `espresso` (#1C1008) -- dark base: hero bg, footer, nav, heading text
+- `roast` (#4A2C17) -- secondary text, subtitles
+- `caramel` (#C4813A) -- primary accent: CTA buttons, links, highlights
+- `gold` (#D4956A) -- hover states, secondary highlights
+- `cream` (#F5ECD7) -- page background, section backgrounds
+- `milk` (#FAF5EC) -- alternate section backgrounds
+- `foam` (#FFFCF7) -- card surfaces, input backgrounds
+
+**Typography:**
+- Headings: DM Serif Display (Google Fonts, weight 400)
+- Body: DM Sans (Google Fonts, weights 300/400/500)
+
+**Layout principle:** Dark hero + footer, light content areas. Photography does the heavy lifting. Cards use foam backgrounds with warm border (#E8DCC8).
+
+## Naming
+
+- Consumer-facing brand: **GoOut Hyd** (goouthyd.in)
+- The platform is built to expand beyond cafes (bars, clubs, rooftops) in future phases. Use generic terms like "venue" in code architecture where it makes sense, but display "cafe" in the consumer-facing UI for Phase 1
+
+## SEO
+
+SEO is a priority for organic discovery. All public pages should:
+- Use semantic HTML and proper heading hierarchy
+- Include relevant meta titles and descriptions
+- Use dynamic metadata for cafe and event pages
+- Generate proper Open Graph tags for social sharing
+- Use clean, readable URL slugs
