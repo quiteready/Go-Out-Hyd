@@ -31,6 +31,10 @@
     "format": "prettier --write .",
     "clean": "npm run clean --workspaces --if-present"
   },
+  "overrides": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
   "devDependencies": {
     "prettier": "^3.6.2",
     "eslint": "^9",
