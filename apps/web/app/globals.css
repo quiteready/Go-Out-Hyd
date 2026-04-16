@@ -5,39 +5,39 @@
 @layer base {
   :root {
     /* GoOut Hyd color system — mapped to shadcn CSS variable tokens */
-    /* foam #FFFCF7 */
-    --background: 37 100% 99%;
-    /* espresso #1C1008 */
-    --foreground: 24 56% 7%;
+    /* cream #FEFCF8 */
+    --background: 38 77% 98%;
+    /* espresso #1A1A2E */
+    --foreground: 240 28% 14%;
+    /* foam #FFFFFF */
+    --card: 0 0% 100%;
+    --card-foreground: 240 28% 14%;
     /* foam */
-    --card: 37 100% 99%;
-    --card-foreground: 24 56% 7%;
-    /* foam */
-    --popover: 37 100% 99%;
-    --popover-foreground: 24 56% 7%;
-    /* caramel #C4813A */
-    --primary: 31 54% 50%;
-    /* foam */
-    --primary-foreground: 37 100% 99%;
-    /* cream #F5ECD7 */
-    --secondary: 42 60% 90%;
-    /* roast #4A2C17 */
-    --secondary-foreground: 25 53% 19%;
-    /* milk #FAF5EC */
-    --muted: 39 58% 95%;
-    --muted-foreground: 25 30% 45%;
-    /* cream */
-    --accent: 42 60% 90%;
-    --accent-foreground: 25 53% 19%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 28% 14%;
+    /* caramel #E8602A */
+    --primary: 17 80% 54%;
+    /* white */
+    --primary-foreground: 0 0% 100%;
+    /* milk #F8F6F2 */
+    --secondary: 40 31% 96%;
+    /* roast #374151 */
+    --secondary-foreground: 217 19% 27%;
+    /* milk */
+    --muted: 40 31% 96%;
+    --muted-foreground: 217 15% 45%;
+    /* milk */
+    --accent: 40 31% 96%;
+    --accent-foreground: 217 19% 27%;
     /* error #C43A3A */
     --destructive: 0 54% 50%;
-    --destructive-foreground: 37 100% 99%;
-    /* border #E8DCC8 */
-    --border: 38 41% 85%;
-    /* input-border #D4C9B5 */
-    --input: 39 26% 77%;
-    /* caramel */
-    --ring: 31 54% 50%;
+    --destructive-foreground: 0 0% 100%;
+    /* warm light gray */
+    --border: 35 25% 88%;
+    /* warm light gray */
+    --input: 35 20% 80%;
+    /* caramel #E8602A */
+    --ring: 17 80% 54%;
     --radius: 0.5rem;
   }
 

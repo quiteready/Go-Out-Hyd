@@ -1,0 +1,3158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoOut Hyd — Discover Cafes & Events in Hyderabad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B4A;
+            --primary-dark: #E85A3A;
+            --secondary: #7C3AED;
+            --accent: #F59E0B;
+            --dark: #1A1A2E;
+            --darker: #0F0F1A;
+            --light: #F8F7F4;
+            --cream: #FEFCF8;
+            --gray: #6B7280;
+            --success: #10B981;
+            --gradient-1: linear-gradient(135deg, #FF6B4A 0%, #FF8E53 100%);
+            --gradient-2: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(254, 252, 248, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(255, 107, 74, 0.45);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--dark);
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--gray);
+        }
+
+        .btn-ghost:hover {
+            color: var(--dark);
+            background: rgba(0,0,0,0.05);
+        }
+
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 2rem 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            opacity: 0.08;
+            filter: blur(80px);
+        }
+
+        .hero-bg-2 {
+            position: absolute;
+            bottom: -10%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: var(--gradient-2);
+            border-radius: 50%;
+            opacity: 0.06;
+            filter: blur(60px);
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 107, 74, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .hero-title span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            transform: rotate(-5deg);
+        }
+
+        .hero-img {
+            width: 200px;
+            height: 250px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-img:hover {
+            transform: scale(1.05) rotate(0deg);
+        }
+
+        .hero-img:nth-child(2) {
+            margin-top: 2rem;
+        }
+
+        .hero-img:nth-child(3) {
+            margin-top: -2rem;
+        }
+
+        /* Search Bar */
+        .search-section {
+            padding: 0 2rem 4rem;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-input::placeholder {
+            color: var(--gray);
+        }
+
+        .search-divider {
+            width: 1px;
+            height: 30px;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .search-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--gray);
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-all:hover {
+            gap: 0.75rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-badge.workshop {
+            background: var(--gradient-2);
+        }
+
+        .card-badge.comedy {
+            background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+        }
+
+        .card-badge.music {
+            background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+        }
+
+        .card-favorite {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-favorite:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .card-location {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .card-price span {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .card-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Category Tabs */
+        .tabs-container {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: white;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Events Section */
+        .events-section {
+            padding: 4rem 2rem;
+        }
+
+        /* Cafe Card Specific */
+        .cafe-card .card-image {
+            height: 220px;
+        }
+
+        .cafe-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .cafe-tag {
+            background: rgba(124, 58, 237, 0.1);
+            color: var(--secondary);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Filter Sidebar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: white;
+            color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        /* Event Detail Page */
+        .event-detail {
+            padding: 2rem;
+        }
+
+        .event-hero {
+            position: relative;
+            height: 500px;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .event-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .event-hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+        }
+
+        .event-hero-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .event-hero-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-hero-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 1rem;
+        }
+
+        .event-hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+
+        .event-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .event-info p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .event-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .highlight-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 107, 74, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .highlight-text {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .highlight-subtext {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Booking Card */
+        .booking-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+        }
+
+        .booking-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .booking-price-note {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-label {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 0.5rem;
+            width: fit-content;
+        }
+
+        .qty-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(0,0,0,0.05);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .qty-value {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .booking-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .booking-total span:last-child {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .booking-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 1rem;
+        }
+
+        .booking-note i {
+            color: var(--success);
+            margin-right: 0.25rem;
+        }
+
+        /* Host Info */
+        .host-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            margin-top: 2rem;
+        }
+
+        .host-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .host-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .host-info p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        .host-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        /* Cafe Profile Page */
+        .cafe-profile {
+            padding: 2rem;
+        }
+
+        .cafe-header {
+            position: relative;
+            height: 400px;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .cafe-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cafe-header-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .cafe-header-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cafe-header-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .cafe-header-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cafe-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cafe-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .cafe-btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .cafe-btn-secondary {
+            background: white;
+            color: var(--dark);
+        }
+
+        .cafe-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+
+        .cafe-about h3,
+        .cafe-events h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cafe-about p {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .cafe-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 107, 74, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .cafe-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-img {
+            height: 150px;
+            border-radius: 12px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-img:first-child {
+            grid-column: span 2;
+            grid-row: span 2;
+            height: 100%;
+        }
+
+        /* Info Sidebar */
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            font-size: 0.9rem;
+        }
+
+        .info-text strong {
+            display: block;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-text span {
+            color: var(--gray);
+        }
+
+        /* Partner Page */
+        .partner-page {
+            padding: 4rem 2rem;
+        }
+
+        .partner-hero {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .partner-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .partner-hero h1 span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .partner-hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+        }
+
+        .partner-benefits {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .benefit-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .benefit-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .benefit-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .partner-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .partner-form-container h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            grid-column: span 2;
+            margin-top: 1rem;
+        }
+
+        /* About Page */
+        .about-page {
+            padding: 4rem 2rem;
+        }
+
+        .about-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .about-hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .about-hero-content h1 span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-hero-content p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        .about-hero-image {
+            position: relative;
+        }
+
+        .about-hero-image img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .about-story {
+            background: white;
+            border-radius: 24px;
+            padding: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .story-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-content p {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .story-quote {
+            padding: 1.5rem;
+            background: rgba(255, 107, 74, 0.05);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            margin-top: 1.5rem;
+        }
+
+        .story-quote p {
+            font-style: italic;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .story-quote cite {
+            display: block;
+            margin-top: 0.75rem;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .story-image img {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 3rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .stat-label {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .team-section {
+            text-align: center;
+        }
+
+        .team-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-section > p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        .team-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .team-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .team-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            transition: all 0.3s ease;
+        }
+
+        .team-social a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand .logo {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+        }
+
+        .footer-links h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-container,
+            .event-content-grid,
+            .cafe-content,
+            .story-grid,
+            .about-hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-image-grid {
+                transform: none;
+            }
+
+            .hero-img {
+                width: 150px;
+                height: 180px;
+            }
+
+            .partner-benefits,
+            .about-stats,
+            .team-grid,
+            .cafe-features {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width,
+            .form-submit {
+                grid-column: span 1;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-hero-title {
+                font-size: 2rem;
+            }
+
+            .event-highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-container {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--dark);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            color: var(--success);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <div class="logo-icon">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                GoOut Hyd
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+                <li><a href="#" onclick="showPage('cafes')" id="nav-cafes">Cafes</a></li>
+                <li><a href="#" onclick="showPage('events')" id="nav-events">Events</a></li>
+                <li><a href="#" onclick="showPage('about')" id="nav-about">About</a></li>
+                <li><a href="#" onclick="showPage('partner')" id="nav-partner">Partner</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <button class="btn btn-ghost">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="btn btn-primary" onclick="showPage('events')">
+                    Explore Events
+                </button>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE 1: HOME -->
+    <section class="page active" id="home">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-bg-2"></div>
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-fire"></i>
+                        Hyderabad's #1 Cafe Discovery Platform
+                    </div>
+                    <h1 class="hero-title">
+                        Discover <span>Hidden Gems</span> & Unforgettable Events
+                    </h1>
+                    <p class="hero-subtitle">
+                        Explore independent cafes, attend live music nights, comedy shows, pottery workshops, and open mics across Hyderabad.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large" onclick="showPage('events')">
+                            <i class="fas fa-compass"></i>
+                            Explore Events
+                        </button>
+                        <button class="btn btn-secondary btn-large" onclick="showPage('cafes')">
+                            <i class="fas fa-coffee"></i>
+                            Browse Cafes
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Partner Cafes</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">200+</div>
+                            <div class="stat-label">Monthly Events</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label">Happy Explorers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-image-grid">
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=500&fit=crop" alt="Cafe Interior" class="hero-img">
+                        <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=400&h=500&fit=crop" alt="Live Event" class="hero-img">
+                        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=500&fit=crop" alt="Coffee Art" class="hero-img">
+                        <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=400&h=500&fit=crop" alt="Workshop" class="hero-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <i class="fas fa-search" style="color: var(--gray); margin-left: 0.5rem;"></i>
+                <input type="text" class="search-input" placeholder="Search cafes, events, or neighborhoods...">
+                <div class="search-divider"></div>
+                <div class="search-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Banjara Hills</span>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </div>
+                <button class="btn btn-primary">Search</button>
+            </div>
+        </div>
+
+        <!-- Featured Cafes -->
+        <section class="featured-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Cafes</h2>
+                    <a href="#" class="view-all" onclick="showPage('cafes')">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="cards-grid">
+                    <div class="card cafe-card" onclick="showPage('cafe-profile')">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop" alt="Clay & Coffee">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Pottery Studio</span>
+                                <span class="cafe-tag">Cafe</span>
+                            </div>
+                            <h3 class="card-title">Clay & Coffee</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Jubilee Hills, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.8 (124 reviews)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=600&h=400&fit=crop" alt="The Roastery">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Specialty Coffee</span>
+                                <span class="cafe-tag">Live Music</span>
+                            </div>
+                            <h3 class="card-title">The Roastery</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Banjara Hills, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.9 (89 reviews)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&h=400&fit=crop" alt="Ink & Brew">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Open Mic</span>
+                                <span class="cafe-tag">Art Space</span>
+                            </div>
+                            <h3 class="card-title">Ink & Brew</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Gachibowli, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.7 (156 reviews)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop" alt="Brew & Board">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Gaming</span>
+                                <span class="cafe-tag">Board Games</span>
+                            </div>
+                            <h3 class="card-title">Brew & Board</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Hitech City, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.6 (203 reviews)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Events -->
+        <section class="events-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Upcoming Events</h2>
+                    <a href="#" class="view-all" onclick="showPage('events')">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="cards-grid">
+                    <div class="card" onclick="showPage('event-detail')">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&h=400&fit=crop" alt="Live Music Night">
+                            <span class="card-badge music">Live Music</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 20, 2026</span>
+                                <span><i class="fas fa-clock"></i> 7:00 PM</span>
+                            </div>
+                            <h3 class="card-title">Acoustic Nights with Arjun</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                The Roastery, Banjara Hills
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹499 <span>onwards</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.9
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1582560475093-d31e3f5b76d7?w=600&h=400&fit=crop" alt="Pottery Workshop">
+                            <span class="card-badge workshop">Workshop</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 22, 2026</span>
+                                <span><i class="fas fa-clock"></i> 11:00 AM</span>
+                            </div>
+                            <h3 class="card-title">Weekend Pottery Workshop</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Clay & Coffee, Jubilee Hills
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹1,299 <span>per person</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.8
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1585699324551-f6c309eedeca?w=600&h=400&fit=crop" alt="Comedy Night">
+                            <span class="card-badge comedy">Comedy Night</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 24, 2026</span>
+                                <span><i class="fas fa-clock"></i> 8:00 PM</span>
+                            </div>
+                            <h3 class="card-title">Stand-up Comedy Special</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Ink & Brew, Gachibowli
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹399 <span>onwards</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.7
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600&h=400&fit=crop" alt="Open Mic">
+                            <span class="card-badge">Open Mic</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 25, 2026</span>
+                                <span><i class="fas fa-clock"></i> 6:30 PM</span>
+                            </div>
+                            <h3 class="card-title">Poetry & Storytelling Open Mic</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Brew & Board, Hitech City
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹199 <span>entry</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.6
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- PAGE 2: CAFES LISTING -->
+    <section class="page" id="cafes">
+        <div class="featured-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Discover Cafes</h2>
+                        <p style="color: var(--gray); margin-top: 0.5rem;">Explore independent cafes across Hyderabad</p>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select">
+                        <option>All Areas</option>
+                        <option>Banjara Hills</option>
+                        <option>Jubilee Hills</option>
+                        <option>Gachibowli</option>
+                        <option>Hitech City</option>
+                        <option>Kondapur</option>
+                        <option>Madhapur</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Categories</option>
+                        <option>Specialty Coffee</option>
+                        <option>Live Music Venue</option>
+                        <option>Art Space</option>
+                        <option>Gaming Cafe</option>
+                        <option>Workshop Space</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Sort by: Recommended</option>
+                        <option>Rating: High to Low</option>
+                        <option>Most Reviewed</option>
+                        <option>Newest First</option>
+                    </select>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card cafe-card" onclick="showPage('cafe-profile')">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop" alt="Clay & Coffee">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Pottery Studio</span>
+                                <span class="cafe-tag">Cafe</span>
+                                <span class="cafe-tag">Workshop Space</span>
+                            </div>
+                            <h3 class="card-title">Clay & Coffee</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Road No. 36, Jubilee Hills, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.8 (124 reviews)
+                                </div>
+                                <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-check-circle"></i> Open Now</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=600&h=400&fit=crop" alt="The Roastery">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Specialty Coffee</span>
+                                <span class="cafe-tag">Live Music</span>
+                            </div>
+                            <h3 class="card-title">The Roastery</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Road No. 12, Banjara Hills, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.9 (89 reviews)
+                                </div>
+                                <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-check-circle"></i> Open Now</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&h=400&fit=crop" alt="Ink & Brew">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Open Mic</span>
+                                <span class="cafe-tag">Art Space</span>
+                            </div>
+                            <h3 class="card-title">Ink & Brew</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Financial District, Gachibowli, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.7 (156 reviews)
+                                </div>
+                                <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-check-circle"></i> Open Now</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop" alt="Brew & Board">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Gaming</span>
+                                <span class="cafe-tag">Board Games</span>
+                            </div>
+                            <h3 class="card-title">Brew & Board</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Cyber Towers, Hitech City, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.6 (203 reviews)
+                                </div>
+                                <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-check-circle"></i> Open Now</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop" alt="The Reading Room">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Library Cafe</span>
+                                <span class="cafe-tag">Quiet Space</span>
+                            </div>
+                            <h3 class="card-title">The Reading Room</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Kondapur Main Road, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.9 (178 reviews)
+                                </div>
+                                <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-check-circle"></i> Open Now</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card cafe-card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=600&h=400&fit=crop" alt="Bean There">
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="cafe-tags">
+                                <span class="cafe-tag">Rooftop</span>
+                                <span class="cafe-tag">Date Spot</span>
+                            </div>
+                            <h3 class="card-title">Bean There</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Madhapur, Hyderabad
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.5 (92 reviews)
+                                </div>
+                                <span style="color: var(--gray); font-size: 0.85rem;"><i class="fas fa-clock"></i> Opens 5 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <button class="btn btn-secondary btn-large">
+                        <i class="fas fa-spinner"></i> Load More Cafes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE 3: EVENTS LISTING -->
+    <section class="page" id="events">
+        <div class="events-section">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Upcoming Events</h2>
+                        <p style="color: var(--gray); margin-top: 0.5rem;">Discover workshops, live music, comedy nights & more</p>
+                    </div>
+                </div>
+
+                <div class="tabs-container">
+                    <button class="tab active" onclick="filterEvents('all', this)">All Events</button>
+                    <button class="tab" onclick="filterEvents('music', this)">Live Music</button>
+                    <button class="tab" onclick="filterEvents('openmic', this)">Open Mic</button>
+                    <button class="tab" onclick="filterEvents('workshop', this)">Workshop</button>
+                    <button class="tab" onclick="filterEvents('comedy', this)">Comedy Night</button>
+                    <button class="tab" onclick="filterEvents('gaming', this)">Gaming</button>
+                </div>
+
+                <div class="cards-grid" id="events-grid">
+                    <div class="card event-card" data-category="music" onclick="showPage('event-detail')">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&h=400&fit=crop" alt="Live Music Night">
+                            <span class="card-badge music">Live Music</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 20, 2026</span>
+                                <span><i class="fas fa-clock"></i> 7:00 PM</span>
+                            </div>
+                            <h3 class="card-title">Acoustic Nights with Arjun</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                The Roastery, Banjara Hills
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹499 <span>onwards</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.9
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="workshop">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1582560475093-d31e3f5b76d7?w=600&h=400&fit=crop" alt="Pottery Workshop">
+                            <span class="card-badge workshop">Workshop</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 22, 2026</span>
+                                <span><i class="fas fa-clock"></i> 11:00 AM</span>
+                            </div>
+                            <h3 class="card-title">Weekend Pottery Workshop</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Clay & Coffee, Jubilee Hills
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹1,299 <span>per person</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.8
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="comedy">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1585699324551-f6c309eedeca?w=600&h=400&fit=crop" alt="Comedy Night">
+                            <span class="card-badge comedy">Comedy Night</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 24, 2026</span>
+                                <span><i class="fas fa-clock"></i> 8:00 PM</span>
+                            </div>
+                            <h3 class="card-title">Stand-up Comedy Special</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Ink & Brew, Gachibowli
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹399 <span>onwards</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.7
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="openmic">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=600&h=400&fit=crop" alt="Open Mic">
+                            <span class="card-badge">Open Mic</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 25, 2026</span>
+                                <span><i class="fas fa-clock"></i> 6:30 PM</span>
+                            </div>
+                            <h3 class="card-title">Poetry & Storytelling Open Mic</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Brew & Board, Hitech City
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹199 <span>entry</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.6
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="gaming">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop" alt="Gaming Tournament">
+                            <span class="card-badge workshop">Gaming</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 26, 2026</span>
+                                <span><i class="fas fa-clock"></i> 4:00 PM</span>
+                            </div>
+                            <h3 class="card-title">FIFA 26 Tournament</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Brew & Board, Hitech City
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹299 <span>entry</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.8
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="music">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop" alt="Jazz Night">
+                            <span class="card-badge music">Live Music</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 27, 2026</span>
+                                <span><i class="fas fa-clock"></i> 8:00 PM</span>
+                            </div>
+                            <h3 class="card-title">Jazz & Blues Evening</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                The Roastery, Banjara Hills
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹699 <span>onwards</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.9
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="workshop">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&h=400&fit=crop" alt="Art Workshop">
+                            <span class="card-badge workshop">Workshop</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 28, 2026</span>
+                                <span><i class="fas fa-clock"></i> 2:00 PM</span>
+                            </div>
+                            <h3 class="card-title">Coffee Painting Workshop</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Ink & Brew, Gachibowli
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹899 <span>per person</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.7
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card event-card" data-category="comedy">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=600&h=400&fit=crop" alt="Improv Comedy">
+                            <span class="card-badge comedy">Comedy Night</span>
+                            <button class="card-favorite"><i class="far fa-heart"></i></button>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 29, 2026</span>
+                                <span><i class="fas fa-clock"></i> 7:30 PM</span>
+                            </div>
+                            <h3 class="card-title">Improv Comedy Night</h3>
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Clay & Coffee, Jubilee Hills
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹499 <span>onwards</span></div>
+                                <div class="card-rating">
+                                    <i class="fas fa-star"></i> 4.8
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <button class="btn btn-secondary btn-large">
+                        <i class="fas fa-spinner"></i> Load More Events
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE 4: EVENT DETAIL -->
+    <section class="page" id="event-detail">
+        <div class="event-detail">
+            <div class="container">
+                <div class="event-hero">
+                    <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&h=600&fit=crop" alt="Acoustic Nights">
+                    <div class="event-hero-overlay">
+                        <span class="event-hero-badge">Live Music</span>
+                        <h1 class="event-hero-title">Acoustic Nights with Arjun</h1>
+                        <div class="event-hero-meta">
+                            <span><i class="fas fa-calendar"></i> Monday, January 20, 2026</span>
+                            <span><i class="fas fa-clock"></i> 7:00 PM - 10:00 PM</span>
+                            <span><i class="fas fa-map-marker-alt"></i> The Roastery, Banjara Hills</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-content-grid">
+                    <div class="event-info">
+                        <h3>About This Event</h3>
+                        <p>
+                            Join us for an enchanting evening of acoustic melodies with the incredibly talented Arjun. 
+                            Known for his soulful renditions of classic hits and original compositions, Arjun brings 
+                            a unique blend of indie, folk, and contemporary music that resonates with audiences of all ages.
+                        </p>
+                        <p>
+                            This intimate setting at The Roastery provides the perfect ambiance for a memorable musical 
+                            experience. Enjoy specialty coffee and artisanal snacks while immersing yourself in the 
+                            soothing sounds of live acoustic guitar and vocals.
+                        </p>
+
+                        <h3>Event Highlights</h3>
+                        <div class="event-highlights">
+                            <div class="highlight-item">
+                                <div class="highlight-icon"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <div class="highlight-text">3 Hours Live Music</div>
+                                    <div class="highlight-subtext">Non-stop acoustic session</div>
+                                </div>
+                            </div>
+                            <div class="highlight-item">
+                                <div class="highlight-icon"><i class="fas fa-coffee"></i></div>
+                                <div>
+                                    <div class="highlight-text">Complimentary Drink</div>
+                                    <div class="highlight-subtext">Included with ticket</div>
+                                </div>
+                            </div>
+                            <div class="highlight-item">
+                                <div class="highlight-icon"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <div class="highlight-text">Limited Seats</div>
+                                    <div class="highlight-subtext">Only 50 spots available</div>
+                                </div>
+                            </div>
+                            <div class="highlight-item">
+                                <div class="highlight-icon"><i class="fas fa-camera"></i></div>
+                                <div>
+                                    <div class="highlight-text">Photo Op</div>
+                                    <div class="highlight-subtext">Meet & greet after show</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>What's Included</h3>
+                        <ul style="color: var(--gray); line-height: 2; margin-bottom: 2rem;">
+                            <li><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Entry to the live music session</li>
+                            <li><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> One complimentary specialty coffee or mocktail</li>
+                            <li><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> 15% discount on food menu</li>
+                            <li><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Priority seating</li>
+                            <li><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Digital photo with the artist</li>
+                        </ul>
+
+                        <h3>About the Venue</h3>
+                        <p>
+                            <strong>The Roastery</strong> is a specialty coffee shop located in the heart of Banjara Hills. 
+                            Known for their single-origin brews and cozy ambiance, they've been hosting live music nights 
+                            every weekend for the past 3 years.
+                        </p>
+
+                        <div class="host-card">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Arjun" class="host-avatar">
+                            <div class="host-info">
+                                <h4>Arjun Reddy</h4>
+                                <p>Singer-Songwriter</p>
+                                <div class="host-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span style="color: var(--gray); margin-left: 0.5rem;">4.9 (45 events)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-sidebar">
+                        <div class="booking-card">
+                            <div class="booking-price">₹499</div>
+                            <div class="booking-price-note">per person • Includes 1 drink</div>
+
+                            <div class="ticket-selector">
+                                <label class="ticket-label">Number of Tickets</label>
+                                <div class="quantity-selector">
+                                    <button class="qty-btn" onclick="updateQuantity(-1)"><i class="fas fa-minus"></i></button>
+                                    <span class="qty-value" id="ticket-qty">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity(1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="booking-total">
+                                <span>Total Amount</span>
+                                <span id="total-price">₹499</span>
+                            </div>
+
+                            <button class="btn btn-primary btn-full" onclick="bookTickets()">
+                                <i class="fas fa-ticket-alt"></i> Book Now
+                            </button>
+
+                            <div class="booking-note">
+                                <i class="fas fa-shield-alt"></i> Secure payment via Razorpay
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Event Details</h4>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-calendar"></i></div>
+                                <div class="info-text">
+                                    <strong>Date</strong>
+                                    <span>Monday, January 20, 2026</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                                <div class="info-text">
+                                    <strong>Time</strong>
+                                    <span>7:00 PM - 10:00 PM IST</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="info-text">
+                                    <strong>Venue</strong>
+                                    <span>The Roastery, Road No. 12, Banjara Hills</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-user-friends"></i></div>
+                                <div class="info-text">
+                                    <strong>Age Limit</strong>
+                                    <span>18+ years</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Refund Policy</h4>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-undo"></i></div>
+                                <div class="info-text">
+                                    <span>Full refund available up to 24 hours before the event. No refunds for cancellations within 24 hours.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE 5: CAFE PROFILE (Clay & Coffee) -->
+    <section class="page" id="cafe-profile">
+        <div class="cafe-profile">
+            <div class="container">
+                <div class="cafe-header">
+                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&h=600&fit=crop" alt="Clay & Coffee">
+                    <div class="cafe-header-overlay">
+                        <div class="cafe-header-info">
+                            <h1>Clay & Coffee</h1>
+                            <div class="cafe-header-meta">
+                                <span><i class="fas fa-star"></i> 4.8 (124 reviews)</span>
+                                <span><i class="fas fa-map-marker-alt"></i> Jubilee Hills, Hyderabad</span>
+                                <span><i class="fas fa-clock"></i> Open until 10 PM</span>
+                            </div>
+                        </div>
+                        <div class="cafe-actions">
+                            <button class="cafe-btn cafe-btn-secondary">
+                                <i class="far fa-heart"></i> Save
+                            </button>
+                            <button class="cafe-btn cafe-btn-primary">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cafe-content">
+                    <div class="cafe-main">
+                        <div class="cafe-about">
+                            <h3>About</h3>
+                            <p>
+                                Clay & Coffee is a unique pottery studio and cafe that brings together the joy of 
+                                creating art with the comfort of great coffee. Founded in 2020, we've become a 
+                                beloved community space where creativity flows as freely as our freshly brewed coffee.
+                            </p>
+                            <p>
+                                Our studio offers guided pottery workshops for all skill levels, from beginners 
+                                trying their hand at the wheel for the first time to experienced artists looking 
+                                to refine their craft. After a creative session, unwind at our cafe with 
+                                artisanal coffee and homemade treats.
+                            </p>
+
+                            <div class="cafe-features">
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-wifi"></i></div>
+                                    <div class="feature-title">Free WiFi</div>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-parking"></i></div>
+                                    <div class="feature-title">Parking</div>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-wheelchair"></i></div>
+                                    <div class="feature-title">Accessible</div>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-paw"></i></div>
+                                    <div class="feature-title">Pet Friendly</div>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                                    <div class="feature-title">Group Friendly</div>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-mug-hot"></i></div>
+                                    <div class="feature-title">Outdoor Seating</div>
+                                </div>
+                            </div>
+
+                            <h3>Gallery</h3>
+                            <div class="cafe-gallery">
+                                <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&h=400&fit=crop" alt="Pottery" class="gallery-img">
+                                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=150&fit=crop" alt="Coffee" class="gallery-img">
+                                <img src="https://images.unsplash.com/photo-1493106641515-6b5631de4bb9?w=300&h=150&fit=crop" alt="Workshop" class="gallery-img">
+                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=150&fit=crop" alt="Cafe Interior" class="gallery-img">
+                                <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=300&h=150&fit=crop" alt="Art" class="gallery-img">
+                            </div>
+                        </div>
+
+                        <div class="cafe-events">
+                            <h3>Upcoming Events at Clay & Coffee</h3>
+                            <div class="cards-grid" style="grid-template-columns: repeat(2, 1fr);">
+                                <div class="card">
+                                    <div class="card-image">
+                                        <img src="https://images.unsplash.com/photo-1582560475093-d31e3f5b76d7?w=400&h=250&fit=crop" alt="Pottery Workshop">
+                                        <span class="card-badge workshop">Workshop</span>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-meta">
+                                            <span><i class="fas fa-calendar"></i> Jan 22</span>
+                                            <span><i class="fas fa-clock"></i> 11:00 AM</span>
+                                        </div>
+                                        <h3 class="card-title">Weekend Pottery Workshop</h3>
+                                        <div class="card-footer">
+                                            <div class="card-price">₹1,299</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-image">
+                                        <img src="https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=400&h=250&fit=crop" alt="Comedy Night">
+                                        <span class="card-badge comedy">Comedy</span>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-meta">
+                                            <span><i class="fas fa-calendar"></i> Jan 29</span>
+                                            <span><i class="fas fa-clock"></i> 7:30 PM</span>
+                                        </div>
+                                        <h3 class="card-title">Improv Comedy Night</h3>
+                                        <div class="card-footer">
+                                            <div class="card-price">₹499</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cafe-sidebar">
+                        <div class="info-card">
+                            <h4>Location</h4>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="info-text">
+                                    <span>Plot 45, Road No. 36, Jubilee Hills, Hyderabad, Telangana 500033</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-full" style="margin-top: 1rem;">
+                                <i class="fas fa-directions"></i> Get Directions
+                            </button>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Opening Hours</h4>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                                <div class="info-text">
+                                    <strong>Monday - Friday</strong>
+                                    <span>9:00 AM - 10:00 PM</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                                <div class="info-text">
+                                    <strong>Saturday - Sunday</strong>
+                                    <span>8:00 AM - 11:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Contact</h4>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-phone"></i></div>
+                                <div class="info-text">
+                                    <span>+91 98765 43210</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                                <div class="info-text">
+                                    <span>hello@clayandcoffee.in</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-globe"></i></div>
+                                <div class="info-text">
+                                    <span>www.clayandcoffee.in</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Social Media</h4>
+                            <div class="team-social" style="justify-content: flex-start;">
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE 6: PARTNER PAGE -->
+    <section class="page" id="partner">
+        <div class="partner-page">
+            <div class="container">
+                <div class="partner-hero">
+                    <h1>Partner With <span>GoOut Hyd</span></h1>
+                    <p>Join Hyderabad's fastest-growing cafe and events community. Reach thousands of experience-seekers and grow your business.</p>
+                </div>
+
+                <div class="partner-benefits">
+                    <div class="benefit-card">
+                        <div class="benefit-icon"><i class="fas fa-users"></i></div>
+                        <h3>Reach New Customers</h3>
+                        <p>Connect with 10,000+ active users looking for unique cafe experiences in Hyderabad.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h3>Host Events</h3>
+                        <p>List your workshops, live music nights, and special events. We handle bookings and payments.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Grow Your Business</h3>
+                        <p>Get insights, reviews, and visibility. Our partners see an average 40% increase in footfall.</p>
+                    </div>
+                </div>
+
+                <div class="partner-form-container">
+                    <h2>Submit Your Cafe</h2>
+                    <form id="partner-form" onsubmit="submitPartnerForm(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Cafe Name *</label>
+                                <input type="text" class="form-input" placeholder="Your cafe name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Your Name *</label>
+                                <input type="text" class="form-input" placeholder="Your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-input" placeholder="you@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-input" placeholder="+91 98765 43210" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Cafe Address *</label>
+                                <input type="text" class="form-input" placeholder="Complete address with landmark" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Area/Neighborhood *</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Area</option>
+                                    <option>Banjara Hills</option>
+                                    <option>Jubilee Hills</option>
+                                    <option>Gachibowli</option>
+                                    <option>Hitech City</option>
+                                    <option>Kondapur</option>
+                                    <option>Madhapur</option>
+                                    <option>Secunderabad</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cafe Category *</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Category</option>
+                                    <option>Specialty Coffee Shop</option>
+                                    <option>Cafe & Restaurant</option>
+                                    <option>Art Space / Gallery</option>
+                                    <option>Workshop Space</option>
+                                    <option>Gaming Cafe</option>
+                                    <option>Book Cafe / Library</option>
+                                    <option>Rooftop Cafe</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Tell us about your cafe *</label>
+                                <textarea class="form-textarea" placeholder="Describe your cafe, what makes it unique, the ambiance, specialties, etc." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Instagram Handle</label>
+                                <input type="text" class="form-input" placeholder="@yourcafe">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Website (if any)</label>
+                                <input type="url" class="form-input" placeholder="https://yourcafe.com">
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">What type of events are you interested in hosting?</label>
+                                <textarea class="form-textarea" placeholder="Live music, workshops, comedy nights, open mics, etc."></textarea>
+                            </div>
+                            <div class="form-submit">
+                                <button type="submit" class="btn btn-primary btn-full btn-large">
+                                    <i class="fas fa-paper-plane"></i> Submit Application
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE 7: ABOUT -->
+    <section class="page" id="about">
+        <div class="about-page">
+            <div class="container">
+                <div class="about-hero">
+                    <div class="about-hero-content">
+                        <h1>We're Building <span>Hyderabad's</span> Creative Community</h1>
+                        <p>
+                            GoOut Hyd was born from a simple idea: to connect people with experiences that matter. 
+                            We believe that the best moments happen when you step out, explore, and engage with 
+                            your city's vibrant creative culture.
+                        </p>
+                    </div>
+                    <div class="about-hero-image">
+                        <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&h=600&fit=crop" alt="Community Event">
+                    </div>
+                </div>
+
+                <div class="about-story">
+                    <div class="story-grid">
+                        <div class="story-content">
+                            <h2>Our Story</h2>
+                            <p>
+                                It all started in 2023 when Wilson, a Hyderabad native with a passion for live events, 
+                                noticed a gap. The city had incredible independent cafes and talented artists, but 
+                                there was no easy way for people to discover them.
+                            </p>
+                            <p>
+                                Wilson began organizing small live music nights at local cafes. As the events grew 
+                                in popularity, cafe owners started reaching out, asking him to host events at their 
+                                venues too. That's when the idea for GoOut Hyd took shape.
+                            </p>
+                            <div class="story-quote">
+                                <p>"I wanted to create a platform where cafe owners could thrive, artists could find their audience, and people could discover experiences that make life more colorful."</p>
+                                <cite>— Wilson, Founder</cite>
+                            </div>
+                        </div>
+                        <div class="story-image">
+                            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=500&fit=crop" alt="Friends at cafe">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Partner Cafes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">Events Monthly</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Happy Explorers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Artists Hosted</div>
+                    </div>
+                </div>
+
+                <div class="team-section">
+                    <h2>Meet the Team</h2>
+                    <p>The passionate people behind GoOut Hyd working to bring you the best experiences.</p>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop" alt="Wilson" class="team-avatar">
+                            <h4>Wilson</h4>
+                            <p>Founder & CEO</p>
+                            <div class="team-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop" alt="Priya" class="team-avatar">
+                            <h4>Priya Sharma</h4>
+                            <p>Head of Operations</p>
+                            <div class="team-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop" alt="Rahul" class="team-avatar">
+                            <h4>Rahul Reddy</h4>
+                            <p>Events Manager</p>
+                            <div class="team-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo" onclick="showPage('home')">
+                        <div class="logo-icon">
+                            <i class="fas fa-mug-hot"></i>
+                        </div>
+                        GoOut Hyd
+                    </a>
+                    <p>
+                        Discover independent cafes and unforgettable events in Hyderabad. 
+                        Your city's creative community is waiting for you.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Discover</h4>
+                    <ul>
+                        <li><a href="#" onclick="showPage('cafes')">Cafes</a></li>
+                        <li><a href="#" onclick="showPage('events')">Events</a></li>
+                        <li><a href="#">Neighborhoods</a></li>
+                        <li><a href="#">Collections</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#" onclick="showPage('about')">About Us</a></li>
+                        <li><a href="#" onclick="showPage('partner')">Partner with Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 GoOut Hyd. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart" style="color: var(--primary);"></i> in Hyderabad</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <script>
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            const selectedPage = document.getElementById(pageId);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+
+            // Update nav active state
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const navMap = {
+                'home': 'nav-home',
+                'cafes': 'nav-cafes',
+                'events': 'nav-events',
+                'about': 'nav-about',
+                'partner': 'nav-partner'
+            };
+
+            if (navMap[pageId]) {
+                const navLink = document.getElementById(navMap[pageId]);
+                if (navLink) navLink.classList.add('active');
+            }
+
+            return false;
+        }
+
+        // Event Category Filter
+        function filterEvents(category, tabElement) {
+            // Update active tab
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tabElement.classList.add('active');
+
+            // Filter events
+            const events = document.querySelectorAll('.event-card');
+            events.forEach(event => {
+                if (category === 'all' || event.dataset.category === category) {
+                    event.style.display = 'block';
+                } else {
+                    event.style.display = 'none';
+                }
+            });
+        }
+
+        // Ticket Quantity
+        let ticketQty = 1;
+        const ticketPrice = 499;
+
+        function updateQuantity(change) {
+            ticketQty += change;
+            if (ticketQty < 1) ticketQty = 1;
+            if (ticketQty > 10) ticketQty = 10;
+
+            document.getElementById('ticket-qty').textContent = ticketQty;
+            document.getElementById('total-price').textContent = '₹' + (ticketQty * ticketPrice);
+        }
+
+        // Book Tickets
+        function bookTickets() {
+            showToast(`Redirecting to Razorpay for ${ticketQty} ticket(s)...`);
+        }
+
+        // Partner Form Submission
+        function submitPartnerForm(event) {
+            event.preventDefault();
+            showToast('Thank you! Your application has been submitted. We\'ll contact you within 48 hours.');
+            document.getElementById('partner-form').reset();
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Card Favorite Toggle
+        document.querySelectorAll('.card-favorite').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const icon = btn.querySelector('i');
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    btn.style.background = '#FF6B4A';
+                    btn.style.color = 'white';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    btn.style.background = 'white';
+                    btn.style.color = 'inherit';
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>

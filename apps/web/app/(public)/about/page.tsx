@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Instagram } from "lucide-react";
+import { TeamSection } from "@/components/about/TeamSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -53,14 +54,16 @@ export default function AboutPage(): ReactElement {
         </blockquote>
       </section>
 
-      <section className="bg-cream px-4 py-14 sm:px-6 sm:pb-20">
+      <TeamSection />
+
+      <section className="bg-milk px-4 py-14 sm:px-6 sm:pb-20">
         <div className="mx-auto flex max-w-lg flex-col items-center text-center">
           <h2 className="font-heading text-2xl text-espresso sm:text-3xl">
             Want to partner with us?
           </h2>
           <Link
             href="/partner"
-            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-md bg-caramel px-8 py-2.5 text-sm font-medium text-foam transition-colors hover:bg-caramel/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-md bg-caramel px-8 py-2.5 text-sm font-medium text-foam transition-colors hover:bg-caramel/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-milk"
           >
             List Your Cafe
           </Link>
@@ -68,7 +71,7 @@ export default function AboutPage(): ReactElement {
             href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-caramel transition-colors hover:text-caramel/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-caramel transition-colors hover:text-caramel/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-milk"
             aria-label="GoOut Hyd on Instagram"
           >
             <Instagram className="h-5 w-5 shrink-0" aria-hidden />

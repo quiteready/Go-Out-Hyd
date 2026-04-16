@@ -33,6 +33,8 @@ export async function submitPartnerForm(
     cafe_name: getString(formData, "cafe_name"),
     phone: getString(formData, "phone"),
     area: getString(formData, "area"),
+    description: getString(formData, "description") || undefined,
+    instagram_handle: getString(formData, "instagram_handle") || undefined,
     honeypot: "",
   };
 
@@ -45,6 +47,14 @@ export async function submitPartnerForm(
   const data = parsed.data;
 
   try {
+    const noteParts: string[] = [];
+    if (data.instagram_handle) {
+      noteParts.push(`Instagram: ${data.instagram_handle}`);
+    }
+    if (data.description) {
+      noteParts.push(`About: ${data.description}`);
+    }
+
     const [row] = await db
       .insert(cafeLeads)
       .values({
@@ -52,6 +62,7 @@ export async function submitPartnerForm(
         cafeName: data.cafe_name,
         phone: data.phone,
         area: data.area,
+        notes: noteParts.length > 0 ? noteParts.join("\n") : undefined,
       })
       .returning({ createdAt: cafeLeads.createdAt });
 
@@ -65,6 +76,8 @@ export async function submitPartnerForm(
         cafe_name: data.cafe_name,
         phone: data.phone,
         area: data.area,
+        description: data.description,
+        instagram_handle: data.instagram_handle,
         created_at: row.createdAt,
       });
     } catch {

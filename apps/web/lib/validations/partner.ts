@@ -19,6 +19,8 @@ export const partnerFormSchema = z.object({
     .trim()
     .regex(/^[+]?[0-9\s-]{10,15}$/),
   area: z.enum(partnerAreaEnumTuple),
+  description: z.string().trim().max(500).optional(),
+  instagram_handle: z.string().trim().max(50).optional(),
   honeypot: z.preprocess(
     (v) => (v == null ? "" : String(v)),
     z.string().max(0),

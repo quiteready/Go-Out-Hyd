@@ -5,7 +5,7 @@ import {
   getEventTypeLabel,
   isValidEventType,
 } from "@/lib/constants/events";
-import { CategoryFilterCards } from "@/components/events/CategoryFilterCards";
+import { CategoryFilterTabs } from "@/components/events/CategoryFilterTabs";
 import { EventCard } from "@/components/events/EventCard";
 import { EventEmptyState } from "@/components/events/EventEmptyState";
 
@@ -52,10 +52,10 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         </p>
       </div>
 
-      {/* Category filter cards — Suspense required because CategoryFilterCards reads useSearchParams */}
+      {/* Category filter tabs — Suspense required because CategoryFilterTabs reads useSearchParams */}
       <div className="mb-8">
-        <Suspense fallback={<div className="h-16" />}>
-          <CategoryFilterCards />
+        <Suspense fallback={<div className="h-9" />}>
+          <CategoryFilterTabs />
         </Suspense>
       </div>
 

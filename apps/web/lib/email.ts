@@ -7,6 +7,8 @@ export type LeadNotificationPayload = {
   cafe_name: string;
   phone: string;
   area: string;
+  description?: string;
+  instagram_handle?: string;
   created_at: Date;
 };
 
@@ -46,6 +48,12 @@ function buildLeadEmailHtml(lead: LeadNotificationPayload, dashboardUrl: string)
     ["Cafe name", lead.cafe_name],
     ["Phone", lead.phone],
     ["Area", lead.area],
+    ...(lead.instagram_handle
+      ? ([["Instagram", lead.instagram_handle]] as [string, string][])
+      : []),
+    ...(lead.description
+      ? ([["About the cafe", lead.description]] as [string, string][])
+      : []),
     [
       "Submitted at",
       lead.created_at.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),

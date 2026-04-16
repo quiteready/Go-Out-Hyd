@@ -12,13 +12,13 @@ export default {
     extend: {
       colors: {
         // GoOut Hyd brand palette
-        espresso: "#1C1008",
-        roast: "#4A2C17",
-        caramel: "#C4813A",
-        gold: "#D4956A",
-        cream: "#F5ECD7",
-        milk: "#FAF5EC",
-        foam: "#FFFCF7",
+        espresso: "#1A1A2E",
+        roast: "#374151",
+        caramel: "#E8602A",
+        gold: "#D4501F",
+        cream: "#FEFCF8",
+        milk: "#F8F6F2",
+        foam: "#FFFFFF",
         // GoOut Hyd UI system colors
         "brand-border": "#E8DCC8",
         "input-border": "#D4C9B5",

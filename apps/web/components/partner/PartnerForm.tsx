@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { PARTNER_AREA_OPTIONS, partnerFormSchema } from "@/lib/validations/partner";
 
 function getStringFromFormData(fd: FormData, key: string): string {
@@ -63,6 +64,8 @@ export function PartnerForm() {
       cafe_name: getStringFromFormData(fd, "cafe_name"),
       phone: getStringFromFormData(fd, "phone"),
       area: getStringFromFormData(fd, "area"),
+      description: getStringFromFormData(fd, "description") || undefined,
+      instagram_handle: getStringFromFormData(fd, "instagram_handle") || undefined,
       honeypot: getStringFromFormData(fd, "honeypot"),
     };
     const parsed = partnerFormSchema.safeParse(raw);
@@ -146,6 +149,34 @@ export function PartnerForm() {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="instagram_handle">
+              Instagram handle{" "}
+              <span className="text-roast/50 font-normal">(optional)</span>
+            </Label>
+            <Input
+              id="instagram_handle"
+              name="instagram_handle"
+              type="text"
+              placeholder="@yourcafe"
+              maxLength={50}
+              className="border-input-border"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="description">
+              Tell us about your cafe{" "}
+              <span className="text-roast/50 font-normal">(optional)</span>
+            </Label>
+            <Textarea
+              id="description"
+              name="description"
+              placeholder="What makes your cafe special? Ambiance, specialties, events you host..."
+              maxLength={500}
+              rows={4}
+              className="border-input-border resize-none"
+            />
           </div>
           <input
             type="text"

@@ -45,8 +45,8 @@ export default async function HomePage(): Promise<ReactElement> {
     <>
       <HeroSection />
       <BrowseByArea />
-      <FeaturedCafes cafes={cafes} />
       <UpcomingEventsSection events={events} />
+      <FeaturedCafes cafes={cafes} />
       <PartnerCTABanner />
     </>
   );
