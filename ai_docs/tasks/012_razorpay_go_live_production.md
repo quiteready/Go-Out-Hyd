@@ -320,11 +320,12 @@ const { error } = await resend.emails.send({
 ### Phase 5 (Step 5): Redeploy on Vercel — 👤 USER ACTION
 **Goal:** Trigger a new deployment so the updated env vars (and Step 2 code changes after push) take effect.
 
-- [ ] **Task 5.1:** (AI + User) Commit and push Step 2 code changes to main branch
-  - Commit message: `chore(prod): go-live — swap to @goouthyd.com email senders, update domain references`
-  - Push triggers auto-deploy on Vercel
+- [x] **Task 5.1:** Commit and push Phase 2 code changes to main branch ✓ 2026-04-18
+  - Commit: `8e84062` — "feat: Razorpay ticket booking + go-live on goouthyd.com"
+  - Scope: 40 files, +7,115 / −177 lines (Task 011 ticketing feature + Task 012 Phase 2 config)
+  - Pushed to `origin/main` — triggers Vercel auto-deploy
 - [ ] **Task 5.2:** (User) Watch Vercel dashboard for deployment to complete (~2–3 min)
-- [ ] **Task 5.3:** (User) If no code push needed (env-only change), manually trigger **Redeploy** on the latest production deployment with **"Use existing Build Cache" = OFF** to ensure fresh env var pickup
+- [ ] **Task 5.3:** Not needed — code push triggered fresh build, picks up new env vars automatically
 
 ### Phase 6 (Step 6): ₹1 End-to-End Smoke Test — 👤 USER ACTION
 **Goal:** Validate the full live-mode flow with a real card for ₹1 before opening to real users.
