@@ -1,6 +1,6 @@
 # GoOut Hyd Development Roadmap
 
-**App:** GoOut Hyd (goouthyd.in)
+**App:** GoOut Hyd (goouthyd.com)
 **Purpose:** Cafe discovery and event platform for Hyderabad, India
 **Phase:** 1 (MVP -- public-only, no auth/payments/admin)
 **Developer:** Solo
@@ -497,7 +497,7 @@
 - [ ] Update `app/(public)/privacy/page.tsx`:
   - Replace all RAG/template-specific content with GoOut Hyd context
   - Sections: Information We Collect (partner form: name, cafe name, phone, area), How We Use Your Information (lead follow-up, platform listing), Cookies & Analytics (Vercel Analytics), Data Retention, Contact Information
-  - Update company name to "GoOut Hyd", domain to "goouthyd.in"
+  - Update company name to "GoOut Hyd", domain to "goouthyd.com"
   - Update "Last updated" date
 - [ ] Update `app/(public)/terms/page.tsx`:
   - Replace RAG-specific content with GoOut Hyd context
@@ -544,16 +544,16 @@
 
 ## Phase 7: Launch Preparation
 
-**Goal:** Configure production infrastructure and deploy GoOut Hyd live at goouthyd.in with real cafe data.
+**Goal:** Configure production infrastructure and deploy GoOut Hyd live at goouthyd.com with real cafe data.
 
 ### 7.1 Domain & Hosting
 
-[Goal: Get goouthyd.in purchased, configured, and pointing to the Vercel deployment]
+[Goal: Get goouthyd.com purchased, configured, and pointing to the Vercel deployment]
 
-- [ ] Purchase `goouthyd.in` domain
+- [ ] Purchase `goouthyd.com` domain
 - [ ] Add custom domain in Vercel project settings
 - [ ] Configure DNS records (CNAME or A records as specified by Vercel)
-- [ ] Update `NEXT_PUBLIC_APP_URL` environment variable in Vercel to `https://goouthyd.in`
+- [ ] Update `NEXT_PUBLIC_APP_URL` environment variable in Vercel to `https://goouthyd.com`
 
 ### 7.2 Production Data
 

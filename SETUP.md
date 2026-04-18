@@ -1,6 +1,6 @@
 # GoOut Hyd — Developer Setup Guide
 
-> **GoOut Hyd** (goouthyd.in) is a venue discovery and experience platform for Hyderabad, India. This guide covers everything needed to run the project locally and deploy it to production.
+> **GoOut Hyd** (goouthyd.com) is a venue discovery and experience platform for Hyderabad, India. This guide covers everything needed to run the project locally and deploy it to production.
 
 ---
 
@@ -83,7 +83,7 @@ Navigate to **Project Settings → Connect → ORMs → Drizzle** and copy the `
 For production email delivery from your own domain:
 
 1. In Resend dashboard, go to **Domains → Add Domain**
-2. Enter your domain (e.g. `goouthyd.in`)
+2. Enter your domain (e.g. `goouthyd.com`)
 3. Add the DNS records shown (TXT, MX, DKIM) to your domain registrar
 4. Click **Verify** once DNS propagates (~24 hours)
 
@@ -113,7 +113,7 @@ LEAD_NOTIFICATION_EMAIL=wilson@example.com
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-> **Production note:** Set `NEXT_PUBLIC_APP_URL=https://goouthyd.in` in your Vercel environment variables.
+> **Production note:** Set `NEXT_PUBLIC_APP_URL=https://goouthyd.com` in your Vercel environment variables.
 
 ---
 
@@ -240,12 +240,12 @@ Never create or alter tables directly in the Supabase dashboard — always go th
 
 ### 10.2 Set Environment Variables
 
-In Vercel project settings → **Environment Variables**, add all values from your `.env.local` file. Set `NEXT_PUBLIC_APP_URL` to your production domain (e.g. `https://goouthyd.in`).
+In Vercel project settings → **Environment Variables**, add all values from your `.env.local` file. Set `NEXT_PUBLIC_APP_URL` to your production domain (e.g. `https://goouthyd.com`).
 
 ### 10.3 Custom Domain
 
 1. In Vercel project → **Settings → Domains**
-2. Add `goouthyd.in` and `www.goouthyd.in`
+2. Add `goouthyd.com` and `www.goouthyd.com`
 3. Update your domain registrar's DNS to point to Vercel's nameservers (or add A/CNAME records as shown by Vercel)
 
 ### 10.4 Production Database Migrations

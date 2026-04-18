@@ -197,7 +197,7 @@ The urgency is real. Urban cafes face an 18-month survival window where initial 
 ### Brand
 
 - **Name:** GoOut Hyd
-- **Domain:** goouthyd.in
+- **Domain:** goouthyd.com
 - **Target Feel:** Warm, premium, modern. Light-first design with espresso/caramel/cream palette.
 - **Typography:** DM Serif Display (headings) + DM Sans (body)
 - **Social Handles:** TBD (check @goouthyd on Instagram, Twitter)

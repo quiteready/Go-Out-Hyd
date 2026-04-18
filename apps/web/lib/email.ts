@@ -1,6 +1,8 @@
+import QRCode from "qrcode";
 import { Resend } from "resend";
 
 import { env } from "@/lib/env";
+import type { TicketWithEventAndCafe } from "@/lib/queries/tickets";
 
 export type LeadNotificationPayload = {
   owner_name: string;
@@ -90,11 +92,25 @@ export async function sendLeadNotification(
   lead: LeadNotificationPayload,
 ): Promise<SendLeadNotificationResult> {
   const apiKey = env.RESEND_API_KEY;
-  const to = env.LEAD_NOTIFICATION_EMAIL;
+  const rawTo = env.LEAD_NOTIFICATION_EMAIL;
 
-  if (!apiKey || !to) {
+  if (!apiKey || !rawTo) {
     console.warn(
       "[sendLeadNotification] Skipping email: set RESEND_API_KEY and LEAD_NOTIFICATION_EMAIL to enable notifications.",
+    );
+    return { ok: true };
+  }
+
+  // LEAD_NOTIFICATION_EMAIL may be a single address or a comma-separated list
+  // (e.g. business Gmail + personal Gmail). Trim whitespace and drop empty entries.
+  const toList = rawTo
+    .split(",")
+    .map((addr) => addr.trim())
+    .filter(Boolean);
+
+  if (toList.length === 0) {
+    console.warn(
+      "[sendLeadNotification] Skipping email: LEAD_NOTIFICATION_EMAIL parsed to empty recipient list.",
     );
     return { ok: true };
   }
@@ -105,10 +121,144 @@ export async function sendLeadNotification(
 
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({
-    from: "GoOut Hyd <onboarding@resend.dev>",
-    to: [to],
+    from: "GoOut Hyd <leads@goouthyd.com>",
+    to: toList,
     subject,
     html,
+  });
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}
+
+// ─── Ticket email ─────────────────────────────────────────────────────────────
+
+export type SendTicketEmailResult = { ok: true } | { ok: false; error: string };
+
+function formatEventDate(date: Date): string {
+  return date.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function buildTicketEmailHtml(
+  ticket: TicketWithEventAndCafe,
+  qrCidSrc: string,
+): string {
+  const venueLine = ticket.event.cafe
+    ? `${escapeHtml(ticket.event.cafe.name)}, ${escapeHtml(ticket.event.cafe.area)}`
+    : "Venue TBC";
+
+  const rows: [string, string][] = [
+    ["Event", ticket.event.title],
+    ["Date", formatEventDate(ticket.event.startTime)],
+    ["Venue", venueLine],
+    ["Name", ticket.customerName],
+    ["Tickets", String(ticket.quantity)],
+    ["Amount Paid", `₹${ticket.amountPaid}`],
+    ["Ticket Code", ticket.ticketCode],
+  ];
+
+  const tableRows = rows
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:8px 12px;border:1px solid #e5d5c0;font-weight:600;background:#fdf6ee;">${escapeHtml(label)}</td><td style="padding:8px 12px;border:1px solid #e5d5c0;">${escapeHtml(value)}</td></tr>`,
+    )
+    .join("");
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="utf-8" /></head>
+  <body style="font-family:system-ui,sans-serif;line-height:1.6;color:#1C1008;max-width:560px;margin:0 auto;padding:24px;">
+    <div style="background:#C4813A;padding:20px 24px;border-radius:8px 8px 0 0;">
+      <h1 style="margin:0;color:#FFFCF7;font-size:1.4rem;">Your ticket is confirmed!</h1>
+      <p style="margin:4px 0 0;color:#fde8cc;font-size:0.9rem;">GoOut Hyd</p>
+    </div>
+    <div style="border:1px solid #e5d5c0;border-top:none;padding:24px;border-radius:0 0 8px 8px;">
+      <p style="margin:0 0 16px;">Hi ${escapeHtml(ticket.customerName)}, your booking is confirmed. Show this QR code at the venue entrance.</p>
+      <div style="text-align:center;margin:24px 0;">
+        <img src="${qrCidSrc}" alt="Ticket QR Code" width="220" height="220" style="display:block;margin:0 auto;border:4px solid #C4813A;border-radius:8px;" />
+        <p style="margin:8px 0 0;font-size:0.75rem;color:#7a6a5a;font-family:monospace;">${escapeHtml(ticket.ticketCode)}</p>
+      </div>
+      <table style="border-collapse:collapse;width:100%;margin:16px 0;">${tableRows}</table>
+      <p style="margin-top:20px;font-size:0.85rem;color:#7a6a5a;">
+        Questions? Contact the venue directly. See you there!
+      </p>
+    </div>
+  </body>
+</html>`;
+}
+
+/**
+ * Sends a ticket confirmation email with an inline QR code to the customer.
+ * If Resend is not configured, logs a warning and returns ok — ticket is already saved.
+ */
+export async function sendTicketEmail(
+  ticket: TicketWithEventAndCafe,
+): Promise<SendTicketEmailResult> {
+  const apiKey = env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[sendTicketEmail] Skipping email: RESEND_API_KEY not set.");
+    return { ok: true };
+  }
+
+  let qrPngBuffer: Buffer;
+  let qrDataUrlFallback: string;
+  try {
+    qrPngBuffer = await QRCode.toBuffer(ticket.ticketCode, {
+      width: 300,
+      margin: 2,
+      color: {
+        dark: "#1C1008",
+        light: "#FFFCF7",
+      },
+    });
+    qrDataUrlFallback = await QRCode.toDataURL(ticket.ticketCode, {
+      width: 300,
+      margin: 2,
+      color: {
+        dark: "#1C1008",
+        light: "#FFFCF7",
+      },
+    });
+  } catch (err) {
+    console.error("[sendTicketEmail] QR generation failed:", err);
+    return { ok: false, error: "QR code generation failed." };
+  }
+
+  const qrContentId = "goouthyd-ticket-qr";
+  // CID reference renders inline in Gmail, Outlook, Apple Mail.
+  // The data-URL fallback is kept only for preview clients that strip CID.
+  const html = buildTicketEmailHtml(ticket, `cid:${qrContentId}`);
+  const htmlWithFallback = html.replace(
+    `src="cid:${qrContentId}"`,
+    `src="cid:${qrContentId}" data-fallback-src="${qrDataUrlFallback}"`,
+  );
+  const subject = `Your ticket for ${ticket.event.title} — GoOut Hyd`;
+
+  const resend = new Resend(apiKey);
+  const { error } = await resend.emails.send({
+    from: "GoOut Hyd <tickets@goouthyd.com>",
+    to: [ticket.customerEmail],
+    subject,
+    html: htmlWithFallback,
+    attachments: [
+      {
+        filename: "ticket-qr.png",
+        content: qrPngBuffer.toString("base64"),
+        contentId: qrContentId,
+      },
+    ],
   });
 
   if (error) {

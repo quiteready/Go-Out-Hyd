@@ -8,7 +8,7 @@
 **Title:** Phase 5 — Landing Page & Content Pages (Home, About, Privacy, Terms)
 
 ### Goal Statement
-**Goal:** Build the public landing page as the main entry point and complete all remaining static/content pages so that all eight GoOut Hyd routes are implemented and coherent. After this phase, `/` showcases featured cafes and upcoming events, surfaces browse-by-area and partner CTAs, and legal pages reflect GoOut Hyd (goouthyd.in) instead of legacy RAG/ShipKit copy.
+**Goal:** Build the public landing page as the main entry point and complete all remaining static/content pages so that all eight GoOut Hyd routes are implemented and coherent. After this phase, `/` showcases featured cafes and upcoming events, surfaces browse-by-area and partner CTAs, and legal pages reflect GoOut Hyd (goouthyd.com) instead of legacy RAG/ShipKit copy.
 
 ---
 
@@ -75,7 +75,7 @@ Visitors and cafe owners first encounter GoOut Hyd through `/` and credibility/l
 ### Functional Requirements
 - Landing: reuse `CafeCard` and `EventCard`; “See All Cafes →” / “See All Events →” links; area pills link to `/cafes?area={slug}` (align with existing cafes listing query param if present)
 - About: static sections; primary CTA to `/partner`
-- Privacy: sections covering partner form fields collected, use of data, cookies/analytics (Vercel Analytics), retention, contact — domain **goouthyd.in**, product name **GoOut Hyd**
+- Privacy: sections covering partner form fields collected, use of data, cookies/analytics (Vercel Analytics), retention, contact — domain **goouthyd.com**, product name **GoOut Hyd**
 - Terms: acceptance, platform usage, listings, event information (display only, no ticketing), IP, limitation of liability, contact
 
 ### Non-Functional Requirements
@@ -165,7 +165,7 @@ Not applicable unless schema changes are introduced (they should not be required
 **Goal:** Replace template content; simplify TOC to match new headings; set last updated date.
 
 - [x] **Task 4.1:** `privacy/page.tsx` ✓ 2026-04-13
-  - GoOut Hyd copy: partner form fields, use of data, Vercel Analytics, retention, security, rights, contact; domain **goouthyd.in**; `generateLegalMetadata`; last updated **2026-04-13**; `contactEmail` passed to wrapper
+  - GoOut Hyd copy: partner form fields, use of data, Vercel Analytics, retention, security, rights, contact; domain **goouthyd.com**; `generateLegalMetadata`; last updated **2026-04-13**; `contactEmail` passed to wrapper
 - [x] **Task 4.2:** `terms/page.tsx` ✓ 2026-04-13
   - Acceptance, platform usage, cafe listings, events (display-only, no ticketing), IP, limitation of liability, changes, contact + governing law (India / Hyderabad); same metadata pattern and date
 

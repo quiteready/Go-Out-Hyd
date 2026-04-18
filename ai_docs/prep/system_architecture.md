@@ -3,7 +3,7 @@
 ### App Summary
 
 **App Name:** GoOut Hyd
-**Domain:** goouthyd.in
+**Domain:** goouthyd.com
 **End Goal:** Help independent cafe owners in Hyderabad fill tables and generate event revenue by giving them a managed digital presence, while giving customers aged 20-35 a single place to discover cafes and live experiences across the city.
 **Template Foundation:** rag-simple (Next.js 15, Supabase, Drizzle ORM, Tailwind CSS, Vercel)
 **Required Extensions:** Email notifications (Resend), spam prevention (honeypot), Supabase Storage for images. No AI, no payments, no auth in Phase 1.
@@ -278,7 +278,7 @@ graph TB
 - Set up Resend account and verify sending domain
 - Enable Vercel Analytics
 - Seed production data (Wilson's initial cafes)
-- Deploy to production and point goouthyd.in domain
+- Deploy to production and point goouthyd.com domain
 
 ### Phase 2 - Add Extensions When Needed
 

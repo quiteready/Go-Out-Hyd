@@ -7,7 +7,7 @@ interface LegalPageWrapperProps {
   lastUpdated: string;
   children: ReactNode;
   description?: string;
-  /** Shown in the footer notice; e.g. hello@goouthyd.in */
+  /** Shown in the footer notice; e.g. hello@goouthyd.com */
   contactEmail?: string;
 }
 

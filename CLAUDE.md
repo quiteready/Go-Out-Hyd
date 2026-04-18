@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**GoOut Hyd** (goouthyd.in) is a venue discovery and experience platform for Hyderabad, India. It connects independent cafe owners with experience-seeking customers aged 20-35 through curated listings and event discovery, powered by Wilson's event management network. Built to expand beyond cafes to bars, clubs, and rooftops.
+**GoOut Hyd** (goouthyd.com) is a venue discovery and experience platform for Hyderabad, India. It connects independent cafe owners with experience-seeking customers aged 20-35 through curated listings and event discovery, powered by Wilson's event management network. Built to expand beyond cafes to bars, clubs, and rooftops.
 
 This is NOT an AI application. The codebase was repurposed from a RAG (document processing) app. All RAG-specific code (document upload, embeddings, vector search, AI chat) is being stripped. The infrastructure (Next.js, Supabase, Drizzle, Tailwind, Vercel) is retained.
 

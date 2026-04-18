@@ -8,7 +8,7 @@
 **Title:** Phase 1A — Strip RAG Code, Apply GoOut Hyd Design System, Create Schema & Seed Data
 
 ### Goal Statement
-**Goal:** Transform the existing RAG document-processing monorepo into a clean foundation for GoOut Hyd (goouthyd.in). This means removing every AI/RAG/payment dependency and piece of code that no longer applies, applying the espresso/caramel/cream brand identity, replacing the old multi-table RAG database schema with GoOut Hyd's 5-table schema (cafes, cafe_images, menu_items, events, cafe_leads), configuring Supabase Storage for images, and populating seed data with fictional sample cafes and events. After this phase the app boots clean, reflects GoOut Hyd branding, and renders realistic content from the database.
+**Goal:** Transform the existing RAG document-processing monorepo into a clean foundation for GoOut Hyd (goouthyd.com). This means removing every AI/RAG/payment dependency and piece of code that no longer applies, applying the espresso/caramel/cream brand identity, replacing the old multi-table RAG database schema with GoOut Hyd's 5-table schema (cafes, cafe_images, menu_items, events, cafe_leads), configuring Supabase Storage for images, and populating seed data with fictional sample cafes and events. After this phase the app boots clean, reflects GoOut Hyd branding, and renders realistic content from the database.
 
 ---
 

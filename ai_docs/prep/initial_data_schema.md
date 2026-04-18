@@ -3,7 +3,7 @@
 ### App Summary
 
 **App Name:** GoOut Hyd
-**Domain:** goouthyd.in
+**Domain:** goouthyd.com
 **Template Used:** rag-simple (repurposed -- all RAG code being stripped)
 **Core Features:** Cafe discovery by area, cafe profiles with photos/menu/contact, event discovery by category, event detail pages, partner lead capture form
 

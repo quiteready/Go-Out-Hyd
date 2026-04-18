@@ -11,7 +11,7 @@
 **Title:** Phase 7 Codebase Cleanup — Remove Dead Code & Validate Pre-Launch Quality
 
 ### Goal Statement
-**Goal:** Audit and clean up the `apps/web` Next.js/TypeScript codebase before the GoOut Hyd production launch. The codebase was repurposed from a RAG (document processing) app, so there is likely leftover RAG code, stale dependencies, unused imports, `console.log` debug statements, and TypeScript issues. This cleanup ensures the codebase is lean, type-safe, and production-ready before going live at goouthyd.in.
+**Goal:** Audit and clean up the `apps/web` Next.js/TypeScript codebase before the GoOut Hyd production launch. The codebase was repurposed from a RAG (document processing) app, so there is likely leftover RAG code, stale dependencies, unused imports, `console.log` debug statements, and TypeScript issues. This cleanup ensures the codebase is lean, type-safe, and production-ready before going live at goouthyd.com.
 
 ---
 

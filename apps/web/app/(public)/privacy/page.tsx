@@ -9,7 +9,7 @@ const lastUpdated = "2026-04-13";
 
 export const metadata: Metadata = generateLegalMetadata(
   "Privacy Policy",
-  "How GoOut Hyd collects, uses, and protects information when you use goouthyd.in and submit the cafe partner interest form.",
+  "How GoOut Hyd collects, uses, and protects information when you use goouthyd.com and submit the cafe partner interest form.",
 );
 
 const tocSections = [
@@ -30,14 +30,14 @@ export default function PrivacyPolicyPage(): ReactElement {
       <LegalPageWrapper
         title="Privacy Policy"
         lastUpdated={lastUpdated}
-        contactEmail="hello@goouthyd.in"
-        description="This Privacy Policy describes how GoOut Hyd (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) handles information when you visit goouthyd.in and when cafe owners submit interest through our partner form."
+        contactEmail="hello@goouthyd.com"
+        description="This Privacy Policy describes how GoOut Hyd (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) handles information when you visit goouthyd.com and when cafe owners submit interest through our partner form."
       >
         <section id="introduction">
           <h2>1. Introduction</h2>
           <p>
             GoOut Hyd operates the website{" "}
-            <a href="https://goouthyd.in">goouthyd.in</a> (the &ldquo;Site&rdquo;)
+            <a href="https://goouthyd.com">goouthyd.com</a> (the &ldquo;Site&rdquo;)
             to help people discover independent cafes and events in Hyderabad,
             India. We respect your privacy and want you to understand what we
             collect and why.
@@ -171,11 +171,11 @@ export default function PrivacyPolicyPage(): ReactElement {
           <ul>
             <li>
               Email:{" "}
-              <a href="mailto:hello@goouthyd.in">hello@goouthyd.in</a>
+              <a href="mailto:hello@goouthyd.com">hello@goouthyd.com</a>
             </li>
             <li>
               Website:{" "}
-              <a href="https://goouthyd.in">https://goouthyd.in</a>
+              <a href="https://goouthyd.com">https://goouthyd.com</a>
             </li>
           </ul>
         </section>

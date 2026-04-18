@@ -9,7 +9,7 @@ const lastUpdated = "2026-04-13";
 
 export const metadata: Metadata = generateLegalMetadata(
   "Terms of Service",
-  "Terms governing use of GoOut Hyd at goouthyd.in — cafe listings, event information, and platform rules.",
+  "Terms governing use of GoOut Hyd at goouthyd.com — cafe listings, event information, and platform rules.",
 );
 
 const tocSections = [
@@ -29,14 +29,14 @@ export default function TermsOfServicePage(): ReactElement {
       <LegalPageWrapper
         title="Terms of Service"
         lastUpdated={lastUpdated}
-        contactEmail="hello@goouthyd.in"
-        description="These Terms of Service govern your access to and use of GoOut Hyd at goouthyd.in, including browsing cafe listings and event information."
+        contactEmail="hello@goouthyd.com"
+        description="These Terms of Service govern your access to and use of GoOut Hyd at goouthyd.com, including browsing cafe listings and event information."
       >
         <section id="acceptance">
           <h2>1. Acceptance of Terms</h2>
           <p>
             By accessing or using the website{" "}
-            <a href="https://goouthyd.in">goouthyd.in</a> and related services
+            <a href="https://goouthyd.com">goouthyd.com</a> and related services
             (the &ldquo;Platform&rdquo;) operated by GoOut Hyd (&ldquo;we,&rdquo;
             &ldquo;us,&rdquo; or &ldquo;our&rdquo;), you agree to these Terms of
             Service (&ldquo;Terms&rdquo;). If you do not agree, do not use the
@@ -162,11 +162,11 @@ export default function TermsOfServicePage(): ReactElement {
           <ul>
             <li>
               Email:{" "}
-              <a href="mailto:hello@goouthyd.in">hello@goouthyd.in</a>
+              <a href="mailto:hello@goouthyd.com">hello@goouthyd.com</a>
             </li>
             <li>
               Website:{" "}
-              <a href="https://goouthyd.in">https://goouthyd.in</a>
+              <a href="https://goouthyd.com">https://goouthyd.com</a>
             </li>
           </ul>
           <p>

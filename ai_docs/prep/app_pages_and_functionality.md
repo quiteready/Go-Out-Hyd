@@ -3,7 +3,7 @@
 ### App Summary
 
 **App Name:** GoOut Hyd
-**Domain:** goouthyd.in
+**Domain:** goouthyd.com
 **End Goal:** Help independent cafe owners in Hyderabad fill tables and generate event revenue by giving them a managed digital presence, while giving customers aged 20-35 a single place to discover cafes and live experiences across the city.
 **Core Value Proposition:** The only platform that combines cafe discovery WITH managed event infrastructure for Hyderabad's independent cafe scene.
 **Target Users:** Customers (20-35, experience seekers), Cafe Owners (indie cafes, no marketing team), Wilson (platform operator/event manager)

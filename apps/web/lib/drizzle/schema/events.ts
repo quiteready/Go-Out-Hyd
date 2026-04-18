@@ -38,6 +38,7 @@ export const events = pgTable(
     startTime: timestamp("start_time", { withTimezone: true }).notNull(),
     endTime: timestamp("end_time", { withTimezone: true }),
     ticketPrice: integer("ticket_price"),
+    maxTickets: integer("max_tickets"),
     coverImage: text("cover_image"),
     status: eventStatusEnum("status").notNull().default("upcoming"),
     createdAt: timestamp("created_at", { withTimezone: true })

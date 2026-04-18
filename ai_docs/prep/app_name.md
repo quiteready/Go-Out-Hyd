@@ -19,7 +19,7 @@ CafeConnect is a cafe discovery and event platform for Hyderabad that helps inde
 ## Names Already Under Consideration
 
 - **CafeConnect** -- Working name. Clear, descriptive, immediately communicates what the platform does. Limitation: locks the brand to "cafe" when the vision includes bars, clubs, and rooftops.
-- **goouthyd.in** -- Domain under consideration. "Go Out Hyd" is broader and supports venue expansion. The `.in` domain is India-appropriate and affordable (~Rs.800/year).
+- **goouthyd.com** -- Domain under consideration. "Go Out Hyd" is broader and supports venue expansion. The `.in` domain is India-appropriate and affordable (~Rs.800/year).
 
 ## Analysis: CafeConnect vs GoOutHyd
 
@@ -31,7 +31,7 @@ CafeConnect is a cafe discovery and event platform for Hyderabad that helps inde
 | Local identity | Generic (could be any city) | Hyderabad-specific (strong local signal) |
 | SEO | Good for "cafe" searches | Good for "go out in Hyderabad" searches |
 | Memorability | Professional, clean | Catchy, action-oriented |
-| Domain | cafeconnect.in likely available (~Rs.800/year) | goouthyd.in (under consideration) |
+| Domain | cafeconnect.in likely available (~Rs.800/year) | goouthyd.com (under consideration) |
 | Social handles | @cafeconnect likely taken | @goouthyd more likely available |
 | Hindi/Telugu audience | Neutral | "Go Out" is universally understood in urban India |
 
@@ -166,7 +166,7 @@ CafeConnect is a cafe discovery and event platform for Hyderabad that helps inde
 
 # PHASE 4: Final Strategic Recommendations
 
-## FIRST PICK: GoOutHyd (goouthyd.in)
+## FIRST PICK: GoOutHyd (goouthyd.com)
 
 **Why This Wins:**
 
@@ -207,7 +207,7 @@ Based on the Master Idea Document, the answer is clear. Phase 1 starts with cafe
 # Final Decision
 
 **Chosen Name:** GoOut Hyd
-**Domain:** goouthyd.in
+**Domain:** goouthyd.com
 **Status:** Active -- all project references updated to GoOut Hyd
 **Social Handles:** TBD (check @goouthyd on Instagram, Twitter, etc.)
 

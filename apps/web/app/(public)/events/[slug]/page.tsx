@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getEventBySlug } from "@/lib/queries/events";
 import { getEventTypeLabel } from "@/lib/constants/events";
+import { BookButton } from "@/components/events/BookButton";
 import { EventInfoCard } from "@/components/events/EventInfoCard";
 import { VenueSection } from "@/components/events/VenueSection";
 
@@ -82,6 +83,16 @@ export default async function EventDetailPage({ params }: PageProps) {
           {/* Info card */}
           <div className="lg:col-span-1">
             <EventInfoCard event={event} />
+            {event.ticketPrice !== null && event.ticketPrice > 0 && (
+              <BookButton
+                event={{
+                  id: event.id,
+                  title: event.title,
+                  ticketPrice: event.ticketPrice,
+                  slug: event.slug,
+                }}
+              />
+            )}
           </div>
 
           {/* Description */}

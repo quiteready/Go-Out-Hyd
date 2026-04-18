@@ -8,6 +8,13 @@
       "when": 1774186169285,
       "tag": "0000_charming_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776433480938,
+      "tag": "0001_breezy_peter_quill",
+      "breakpoints": true
     }
   ]
 }
