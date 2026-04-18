@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 
 import { Button } from "@/components/ui/button";
 import { getTicketByCode } from "@/lib/queries/tickets";
+import { buildVerifyUrl } from "@/lib/tickets-qr";
 
 export const metadata: Metadata = {
   title: "Booking Confirmation | GoOut Hyd",
@@ -29,7 +30,7 @@ function formatEventDate(date: Date): string {
 
 async function generateQrDataUrl(ticketCode: string): Promise<string | null> {
   try {
-    return await QRCode.toDataURL(ticketCode, {
+    return await QRCode.toDataURL(buildVerifyUrl(ticketCode), {
       width: 300,
       margin: 2,
       color: {

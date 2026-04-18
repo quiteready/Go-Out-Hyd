@@ -3,6 +3,7 @@ import { Resend } from "resend";
 
 import { env } from "@/lib/env";
 import type { TicketWithEventAndCafe } from "@/lib/queries/tickets";
+import { buildVerifyUrl } from "@/lib/tickets-qr";
 
 export type LeadNotificationPayload = {
   owner_name: string;
@@ -212,10 +213,11 @@ export async function sendTicketEmail(
     return { ok: true };
   }
 
+  const verifyUrl = buildVerifyUrl(ticket.ticketCode);
   let qrPngBuffer: Buffer;
   let qrDataUrlFallback: string;
   try {
-    qrPngBuffer = await QRCode.toBuffer(ticket.ticketCode, {
+    qrPngBuffer = await QRCode.toBuffer(verifyUrl, {
       width: 300,
       margin: 2,
       color: {
@@ -223,7 +225,7 @@ export async function sendTicketEmail(
         light: "#FFFCF7",
       },
     });
-    qrDataUrlFallback = await QRCode.toDataURL(ticket.ticketCode, {
+    qrDataUrlFallback = await QRCode.toDataURL(verifyUrl, {
       width: 300,
       margin: 2,
       color: {
