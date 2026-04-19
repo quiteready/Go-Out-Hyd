@@ -7,28 +7,17 @@ export type EventWithCafe = typeof events.$inferSelect & {
     name: string;
     slug: string;
     area: string;
-  };
+  } | null;
 };
 
-export async function getUpcomingEvents(category?: string): Promise<EventWithCafe[]> {
+export async function getUpcomingEvents(
+  category?: string,
+): Promise<EventWithCafe[]> {
   const now = new Date();
 
   const rows = await db
     .select({
-      id: events.id,
-      cafeId: events.cafeId,
-      title: events.title,
-      slug: events.slug,
-      description: events.description,
-      eventType: events.eventType,
-      startTime: events.startTime,
-      endTime: events.endTime,
-      ticketPrice: events.ticketPrice,
-      maxTickets: events.maxTickets,
-      coverImage: events.coverImage,
-      status: events.status,
-      createdAt: events.createdAt,
-      updatedAt: events.updatedAt,
+      event: events,
       cafeName: cafes.name,
       cafeSlug: cafes.slug,
       cafeArea: cafes.area,
@@ -40,54 +29,36 @@ export async function getUpcomingEvents(category?: string): Promise<EventWithCaf
         ? and(
             gt(events.startTime, now),
             eq(events.status, "upcoming"),
-            eq(events.eventType, category as typeof events.$inferSelect["eventType"]),
+            eq(
+              events.eventType,
+              category as (typeof events.$inferSelect)["eventType"],
+            ),
           )
         : and(gt(events.startTime, now), eq(events.status, "upcoming")),
     )
     .orderBy(asc(events.startTime));
 
   return rows.map((row) => ({
-    id: row.id,
-    cafeId: row.cafeId,
-    title: row.title,
-    slug: row.slug,
-    description: row.description,
-    eventType: row.eventType,
-    startTime: row.startTime,
-    endTime: row.endTime,
-    ticketPrice: row.ticketPrice,
-    maxTickets: row.maxTickets,
-    coverImage: row.coverImage,
-    status: row.status,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-    cafe: {
-      name: row.cafeName ?? "",
-      slug: row.cafeSlug ?? "",
-      area: row.cafeArea ?? "",
-    },
+    ...row.event,
+    cafe:
+      row.cafeName !== null && row.cafeSlug !== null && row.cafeArea !== null
+        ? {
+            name: row.cafeName,
+            slug: row.cafeSlug,
+            area: row.cafeArea,
+          }
+        : null,
   }));
 }
 
-export async function getUpcomingEventsForLanding(limit = 4): Promise<EventWithCafe[]> {
+export async function getUpcomingEventsForLanding(
+  limit = 4,
+): Promise<EventWithCafe[]> {
   const now = new Date();
 
   const rows = await db
     .select({
-      id: events.id,
-      cafeId: events.cafeId,
-      title: events.title,
-      slug: events.slug,
-      description: events.description,
-      eventType: events.eventType,
-      startTime: events.startTime,
-      endTime: events.endTime,
-      ticketPrice: events.ticketPrice,
-      maxTickets: events.maxTickets,
-      coverImage: events.coverImage,
-      status: events.status,
-      createdAt: events.createdAt,
-      updatedAt: events.updatedAt,
+      event: events,
       cafeName: cafes.name,
       cafeSlug: cafes.slug,
       cafeArea: cafes.area,
@@ -99,25 +70,15 @@ export async function getUpcomingEventsForLanding(limit = 4): Promise<EventWithC
     .limit(limit);
 
   return rows.map((row) => ({
-    id: row.id,
-    cafeId: row.cafeId,
-    title: row.title,
-    slug: row.slug,
-    description: row.description,
-    eventType: row.eventType,
-    startTime: row.startTime,
-    endTime: row.endTime,
-    ticketPrice: row.ticketPrice,
-    maxTickets: row.maxTickets,
-    coverImage: row.coverImage,
-    status: row.status,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-    cafe: {
-      name: row.cafeName ?? "",
-      slug: row.cafeSlug ?? "",
-      area: row.cafeArea ?? "",
-    },
+    ...row.event,
+    cafe:
+      row.cafeName !== null && row.cafeSlug !== null && row.cafeArea !== null
+        ? {
+            name: row.cafeName,
+            slug: row.cafeSlug,
+            area: row.cafeArea,
+          }
+        : null,
   }));
 }
 
@@ -125,7 +86,9 @@ export type EventWithFullCafe = typeof events.$inferSelect & {
   cafe: typeof cafes.$inferSelect | null;
 };
 
-export async function getEventBySlug(slug: string): Promise<EventWithFullCafe | null> {
+export async function getEventBySlug(
+  slug: string,
+): Promise<EventWithFullCafe | null> {
   const rows = await db
     .select({
       event: events,
@@ -145,7 +108,9 @@ export async function getEventBySlug(slug: string): Promise<EventWithFullCafe | 
   };
 }
 
-export async function getEventsByCafe(cafeId: string): Promise<typeof events.$inferSelect[]> {
+export async function getEventsByCafe(
+  cafeId: string,
+): Promise<(typeof events.$inferSelect)[]> {
   const now = new Date();
 
   return db

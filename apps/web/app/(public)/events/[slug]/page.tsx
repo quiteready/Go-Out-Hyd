@@ -26,17 +26,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!event) return { title: "Event Not Found | GoOut Hyd" };
 
-  const cafeName = event.cafe?.name ?? "";
-  const cafeArea = event.cafe?.area ?? "";
+  const venueName = event.cafe?.name ?? event.venueName ?? "";
+  const venueArea = event.cafe?.area ?? event.venueAddress ?? "";
   const dateStr = formatDateShort(event.startTime);
   const descSnippet = event.description?.slice(0, 120) ?? "";
-  const descParts = [
-    `${dateStr} at ${cafeName}, ${cafeArea}.`,
-    descSnippet,
-  ].filter(Boolean);
+  const venueLine = venueName
+    ? `${dateStr} at ${venueName}${venueArea ? `, ${venueArea}` : ""}.`
+    : `${dateStr}.`;
+  const descParts = [venueLine, descSnippet].filter(Boolean);
 
   return {
-    title: `${event.title} at ${cafeName} | GoOut Hyd`,
+    title: venueName
+      ? `${event.title} at ${venueName} | GoOut Hyd`
+      : `${event.title} | GoOut Hyd`,
     description: descParts.join(" ").trim(),
     openGraph: {
       images: event.coverImage ? [{ url: event.coverImage }] : [],
@@ -50,8 +52,27 @@ export default async function EventDetailPage({ params }: PageProps) {
 
   if (!event) notFound();
 
+  const isCancelled = event.status === "cancelled";
+  const customVenue =
+    !event.cafe && event.venueName
+      ? {
+          name: event.venueName,
+          address: event.venueAddress,
+          mapsUrl: event.venueMapsUrl,
+        }
+      : null;
+
   return (
     <div>
+      {isCancelled && (
+        <div
+          role="alert"
+          className="border-b border-red-300 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-800 sm:text-base"
+        >
+          This event has been cancelled.
+        </div>
+      )}
+
       {/* Hero — full-width cover image with name + type badge overlay */}
       <div className="relative h-72 w-full overflow-hidden sm:h-96">
         {event.coverImage ? (
@@ -83,16 +104,18 @@ export default async function EventDetailPage({ params }: PageProps) {
           {/* Info card */}
           <div className="lg:col-span-1">
             <EventInfoCard event={event} />
-            {event.ticketPrice !== null && event.ticketPrice > 0 && (
-              <BookButton
-                event={{
-                  id: event.id,
-                  title: event.title,
-                  ticketPrice: event.ticketPrice,
-                  slug: event.slug,
-                }}
-              />
-            )}
+            {!isCancelled &&
+              event.ticketPrice !== null &&
+              event.ticketPrice > 0 && (
+                <BookButton
+                  event={{
+                    id: event.id,
+                    title: event.title,
+                    ticketPrice: event.ticketPrice,
+                    slug: event.slug,
+                  }}
+                />
+              )}
           </div>
 
           {/* Description */}
@@ -110,7 +133,9 @@ export default async function EventDetailPage({ params }: PageProps) {
       </div>
 
       {/* Venue section — full-width milk background */}
-      {event.cafe !== null && <VenueSection cafe={event.cafe} />}
+      {(event.cafe || customVenue) && (
+        <VenueSection cafe={event.cafe} venue={customVenue} />
+      )}
     </div>
   );
 }

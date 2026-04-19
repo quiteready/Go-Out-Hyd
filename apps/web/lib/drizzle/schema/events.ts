@@ -28,9 +28,9 @@ export const events = pgTable(
   "events",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    cafeId: uuid("cafe_id")
-      .notNull()
-      .references(() => cafes.id, { onDelete: "cascade" }),
+    cafeId: uuid("cafe_id").references(() => cafes.id, {
+      onDelete: "set null",
+    }),
     title: text("title").notNull(),
     slug: text("slug").notNull().unique(),
     description: text("description"),
@@ -40,6 +40,11 @@ export const events = pgTable(
     ticketPrice: integer("ticket_price"),
     maxTickets: integer("max_tickets"),
     coverImage: text("cover_image"),
+    venueName: text("venue_name"),
+    venueAddress: text("venue_address"),
+    venueMapsUrl: text("venue_maps_url"),
+    earlyBirdPrice: integer("early_bird_price"),
+    earlyBirdEndsAt: timestamp("early_bird_ends_at", { withTimezone: true }),
     status: eventStatusEnum("status").notNull().default("upcoming"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

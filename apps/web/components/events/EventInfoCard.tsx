@@ -55,7 +55,7 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
         </div>
 
         {/* Venue */}
-        {cafe && (
+        {cafe ? (
           <div className="flex items-start gap-3">
             <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
             <span className="text-espresso">
@@ -68,6 +68,19 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
               {", "}
               {cafe.area}
             </span>
+          </div>
+        ) : event.venueName ? (
+          <div className="flex items-start gap-3">
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
+            <span className="text-espresso">
+              <span className="font-medium">{event.venueName}</span>
+              {event.venueAddress ? `, ${event.venueAddress}` : ""}
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-start gap-3">
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
+            <span className="text-roast/70">Venue TBC</span>
           </div>
         )}
 

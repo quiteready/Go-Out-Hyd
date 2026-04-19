@@ -15,6 +15,13 @@
       "when": 1776433480938,
       "tag": "0001_breezy_peter_quill",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776619908412,
+      "tag": "0002_public_wrecker",
+      "breakpoints": true
     }
   ]
 }

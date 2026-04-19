@@ -24,6 +24,12 @@ export function EventCard({ event }: EventCardProps) {
   const ticketLabel =
     event.ticketPrice !== null ? `₹${event.ticketPrice}` : "Free Entry";
 
+  const venueLabel = event.cafe
+    ? `@ ${event.cafe.name}, ${event.cafe.area}`
+    : event.venueName
+      ? `@ ${event.venueName}${event.venueAddress ? `, ${event.venueAddress}` : ""}`
+      : "Venue TBC";
+
   return (
     <Link
       href={`/events/${event.slug}`}
@@ -59,9 +65,7 @@ export function EventCard({ event }: EventCardProps) {
           {event.title}
         </h3>
 
-        <p className="mt-1 text-sm text-roast/70">
-          @ {event.cafe.name}, {event.cafe.area}
-        </p>
+        <p className="mt-1 text-sm text-roast/70 line-clamp-1">{venueLabel}</p>
 
         <div className="mt-3 flex items-center justify-between gap-2">
           <span className="rounded-full bg-caramel px-2.5 py-0.5 text-xs font-medium text-foam shrink-0">
