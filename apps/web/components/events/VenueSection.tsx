@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Phone, MapPin, Instagram } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { Cafe } from "@/lib/drizzle/schema";
 
 interface CustomVenue {
@@ -25,12 +25,6 @@ export function VenueSection({ cafe, venue }: VenueSectionProps) {
 }
 
 function CafeVenue({ cafe }: { cafe: Cafe }) {
-  const instagramUrl = cafe.instagramHandle
-    ? `https://instagram.com/${cafe.instagramHandle.replace(/^@/, "")}`
-    : null;
-
-  const hasContact = cafe.phone ?? cafe.googleMapsUrl ?? instagramUrl;
-
   return (
     <section className="bg-milk py-12">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -61,43 +55,17 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
           </div>
         </div>
 
-        {hasContact && (
-          <div className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
-            {cafe.phone && (
-              <a
-                href={`tel:${cafe.phone}`}
-                className="flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
-              >
-                <Phone className="h-4 w-4 text-caramel" />
-                {cafe.phone}
-              </a>
-            )}
-
-            {cafe.googleMapsUrl && (
-              <a
-                href={cafe.googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
-              >
-                <MapPin className="h-4 w-4 text-caramel" />
-                Get Directions
-              </a>
-            )}
-
-            {instagramUrl && (
-              <a
-                href={instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
-              >
-                <Instagram className="h-4 w-4 text-caramel" />
-                {cafe.instagramHandle?.startsWith("@")
-                  ? cafe.instagramHandle
-                  : `@${cafe.instagramHandle}`}
-              </a>
-            )}
+        {cafe.googleMapsUrl && (
+          <div className="mt-5">
+            <a
+              href={cafe.googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
+            >
+              <MapPin className="h-4 w-4 text-caramel" />
+              Get Directions
+            </a>
           </div>
         )}
 

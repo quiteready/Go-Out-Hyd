@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getEventTypeLabel } from "@/lib/constants/events";
+import {
+  getListPriceIfEarlyBirdActive,
+  getPayablePricePerTicketRupees,
+} from "@/lib/events/ticket-pricing";
 import type { EventWithCafe } from "@/lib/queries/events";
 
 interface EventCardProps {
@@ -21,8 +25,8 @@ function formatDateBadge(date: Date): string {
 
 export function EventCard({ event }: EventCardProps) {
   const dateBadge = formatDateBadge(event.startTime);
-  const ticketLabel =
-    event.ticketPrice !== null ? `₹${event.ticketPrice}` : "Free Entry";
+  const payable = getPayablePricePerTicketRupees(event);
+  const listStrike = getListPriceIfEarlyBirdActive(event);
 
   const venueLabel = event.cafe
     ? `@ ${event.cafe.name}, ${event.cafe.area}`
@@ -71,8 +75,22 @@ export function EventCard({ event }: EventCardProps) {
           <span className="rounded-full bg-caramel px-2.5 py-0.5 text-xs font-medium text-foam shrink-0">
             {getEventTypeLabel(event.eventType)}
           </span>
-          <span className="text-sm font-medium text-espresso">
-            {ticketLabel}
+          <span className="text-right text-sm font-medium text-espresso">
+            {payable === null ? (
+              "Free Entry"
+            ) : listStrike !== null ? (
+              <span className="inline-flex flex-wrap items-center justify-end gap-x-1.5 gap-y-0.5">
+                <span>₹{payable}</span>
+                <span className="text-xs font-normal text-roast/50 line-through">
+                  ₹{listStrike}
+                </span>
+                <span className="rounded bg-caramel/15 px-1 text-[10px] font-semibold uppercase tracking-wide text-caramel">
+                  Early
+                </span>
+              </span>
+            ) : (
+              `₹${payable}`
+            )}
           </span>
         </div>
       </div>

@@ -1,5 +1,10 @@
 import { Phone, MapPin, Instagram } from "lucide-react";
 import type { Cafe } from "@/lib/drizzle/schema";
+import {
+  displayInstagramLabel,
+  resolveInstagramHref,
+} from "@/lib/utils/instagram";
+import { telHrefFromPhone } from "@/lib/utils/phone";
 
 interface QuickContactBarProps {
   cafe: Cafe;
@@ -11,16 +16,15 @@ export function QuickContactBar({ cafe }: QuickContactBarProps) {
   const hasContact = phone ?? googleMapsUrl ?? instagramHandle ?? address;
   if (!hasContact) return null;
 
-  const instagramUrl = instagramHandle
-    ? `https://instagram.com/${instagramHandle.replace(/^@/, "")}`
-    : null;
+  const instagramUrl = resolveInstagramHref(instagramHandle);
+  const telHref = telHrefFromPhone(phone);
 
   return (
     <div className="mt-6 rounded-2xl border border-brand-border bg-foam p-5 shadow-sm">
       <div className="flex flex-wrap gap-x-8 gap-y-4">
-        {phone && (
+        {phone && telHref && (
           <a
-            href={`tel:${phone}`}
+            href={telHref}
             className="flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
           >
             <Phone className="h-4 w-4 shrink-0 text-caramel" />
@@ -48,9 +52,7 @@ export function QuickContactBar({ cafe }: QuickContactBarProps) {
             className="flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
           >
             <Instagram className="h-4 w-4 shrink-0 text-caramel" />
-            {instagramHandle?.startsWith("@")
-              ? instagramHandle
-              : `@${instagramHandle}`}
+            {displayInstagramLabel(instagramHandle)}
           </a>
         )}
       </div>

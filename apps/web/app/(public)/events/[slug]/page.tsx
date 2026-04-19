@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
+import {
+  getListPriceIfEarlyBirdActive,
+  getPayablePricePerTicketRupees,
+} from "@/lib/events/ticket-pricing";
 import { getEventBySlug } from "@/lib/queries/events";
+import { normalizeEventDescriptionForDisplay } from "@/lib/utils/event-description";
 import { getEventTypeLabel } from "@/lib/constants/events";
 import { BookButton } from "@/components/events/BookButton";
 import { EventInfoCard } from "@/components/events/EventInfoCard";
@@ -51,6 +56,9 @@ export default async function EventDetailPage({ params }: PageProps) {
   const event = await getEventBySlug(slug);
 
   if (!event) notFound();
+
+  const payablePerTicket = getPayablePricePerTicketRupees(event);
+  const listIfEarly = getListPriceIfEarlyBirdActive(event);
 
   const isCancelled = event.status === "cancelled";
   const customVenue =
@@ -105,14 +113,17 @@ export default async function EventDetailPage({ params }: PageProps) {
           <div className="lg:col-span-1">
             <EventInfoCard event={event} />
             {!isCancelled &&
-              event.ticketPrice !== null &&
-              event.ticketPrice > 0 && (
+              payablePerTicket !== null &&
+              payablePerTicket > 0 && (
                 <BookButton
                   event={{
                     id: event.id,
                     title: event.title,
-                    ticketPrice: event.ticketPrice,
                     slug: event.slug,
+                    payablePrice: payablePerTicket,
+                    ...(listIfEarly !== null
+                      ? { listPrice: listIfEarly }
+                      : {}),
                   }}
                 />
               )}
@@ -124,9 +135,9 @@ export default async function EventDetailPage({ params }: PageProps) {
               <h2 className="mb-4 font-heading text-2xl text-espresso">
                 About this event
               </h2>
-              <p className="leading-relaxed text-roast/80">
-                {event.description}
-              </p>
+              <div className="whitespace-pre-line text-base leading-relaxed text-roast/80">
+                {normalizeEventDescriptionForDisplay(event.description)}
+              </div>
             </div>
           )}
         </div>

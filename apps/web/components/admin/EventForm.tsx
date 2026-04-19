@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -60,6 +59,9 @@ function buildInitialValues(event: Event | undefined): EventFormValues {
     maxTickets: event?.maxTickets ?? undefined,
     coverImage: event?.coverImage ?? undefined,
     status: event?.status ?? "upcoming",
+    organizerDisplayName: event?.organizerDisplayName ?? undefined,
+    organizerPhone: event?.organizerPhone ?? undefined,
+    organizerInstagramHandle: event?.organizerInstagramHandle ?? undefined,
   };
 }
 
@@ -196,7 +198,10 @@ export function EventForm({ event, cafes }: EventFormProps) {
           </Select>
         </Field>
 
-        <Field label="Description" hint="Shown on the public event page.">
+        <Field
+          label="Description"
+          hint="Shown on the public event page. Use line breaks; bullet lines with • are formatted clearly on the site."
+        >
           <Textarea
             value={values.description ?? ""}
             onChange={(e) => update("description", e.target.value || undefined)}
@@ -294,41 +299,55 @@ export function EventForm({ event, cafes }: EventFormProps) {
             )}
           </Field>
         )}
+      </Section>
 
-        {useCustomVenue ? (
-          <div className="rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-700">
-            <p className="font-medium text-neutral-900">Phone & Instagram</p>
-            <p className="mt-1 leading-relaxed">
-              This form does not have separate phone or Instagram fields for a
-              custom venue. Add a WhatsApp number, @handle, or links in the{" "}
-              <strong>Description</strong> above so guests can reach you.
-            </p>
-          </div>
-        ) : values.cafeId ? (
-          <div className="rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-700">
-            <p className="font-medium text-neutral-900">Phone & Instagram</p>
-            <p className="mt-1 leading-relaxed">
-              They are not edited here — they come from the linked café and show
-              on the public event page.{" "}
-              <Link
-                href={`/admin/cafes/${values.cafeId}`}
-                className="font-medium text-neutral-900 underline-offset-2 hover:underline"
-              >
-                Edit café phone & Instagram
-              </Link>
-              .
-            </p>
-          </div>
-        ) : (
-          <div className="rounded-md border border-dashed border-neutral-300 bg-neutral-50/60 px-3 py-2 text-xs text-neutral-600">
-            <p className="font-medium text-neutral-800">Phone & Instagram</p>
-            <p className="mt-1 leading-relaxed">
-              Choose a <strong>café</strong> above to reuse its phone and Instagram
-              on the event page, or turn on <strong>custom venue</strong> and put
-              contact details in the description.
-            </p>
-          </div>
-        )}
+      <Section title="Organizer">
+        <p className="text-xs text-neutral-600">
+          Contact for the person or brand running this event (not necessarily the
+          venue). Shown on the public event page; when filled, these take priority over
+          the linked café&apos;s phone and Instagram.
+        </p>
+
+        <Field
+          label="Organizer name"
+          hint="Optional label (e.g. Srea Natural)."
+        >
+          <Input
+            value={values.organizerDisplayName ?? ""}
+            onChange={(e) =>
+              update("organizerDisplayName", e.target.value || undefined)
+            }
+            disabled={pending}
+            placeholder="Who is hosting?"
+          />
+        </Field>
+
+        <Field label="Phone" hint="Optional. Indian formats; shown as a tap-to-call link.">
+          <Input
+            value={values.organizerPhone ?? ""}
+            onChange={(e) =>
+              update("organizerPhone", e.target.value || undefined)
+            }
+            disabled={pending}
+            placeholder="+91 …"
+            inputMode="tel"
+            autoComplete="tel"
+          />
+        </Field>
+
+        <Field
+          label="Instagram"
+          hint="Optional. @handle or full profile URL."
+        >
+          <Input
+            value={values.organizerInstagramHandle ?? ""}
+            onChange={(e) =>
+              update("organizerInstagramHandle", e.target.value || undefined)
+            }
+            disabled={pending}
+            placeholder="@brand or https://instagram.com/…"
+          />
+        </Field>
       </Section>
 
       <Section title="When">

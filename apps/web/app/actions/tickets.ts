@@ -9,6 +9,7 @@ import { db } from "@/lib/drizzle/db";
 import { tickets, events } from "@/lib/drizzle/schema";
 import { sendTicketEmail } from "@/lib/email";
 import { env } from "@/lib/env";
+import { getPayablePricePerTicketRupees } from "@/lib/events/ticket-pricing";
 import { countSoldTickets, getTicketByCode } from "@/lib/queries/tickets";
 import { getRazorpayClient } from "@/lib/razorpay";
 
@@ -84,6 +85,11 @@ export async function createOrder(
     return { success: false, error: "This event does not require a ticket." };
   }
 
+  const unitRupees = getPayablePricePerTicketRupees(event);
+  if (unitRupees === null || unitRupees <= 0) {
+    return { success: false, error: "This event does not require a ticket." };
+  }
+
   // Capacity check
   if (event.maxTickets !== null) {
     const sold = await countSoldTickets(eventId);
@@ -99,7 +105,7 @@ export async function createOrder(
     }
   }
 
-  const amountRupees = event.ticketPrice * quantity;
+  const amountRupees = unitRupees * quantity;
   const amountPaise = amountRupees * 100;
   const ticketCode = crypto.randomUUID();
 

@@ -17,12 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type EventForBooking = {
-  id: string;
-  title: string;
-  ticketPrice: number;
-  slug: string;
-};
+import type { EventForBooking } from "@/components/events/BookButton";
 
 interface BookingModalProps {
   event: EventForBooking;
@@ -96,7 +91,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
     Number.isFinite(parsedQuantity) && parsedQuantity >= 1
       ? Math.min(10, parsedQuantity)
       : 1;
-  const total = event.ticketPrice * quantity;
+  const total = event.payablePrice * quantity;
 
   function resetForm(): void {
     setName("");
@@ -202,7 +197,16 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
           <DialogTitle className="font-heading text-2xl text-espresso">
             Book your ticket
           </DialogTitle>
-          <DialogDescription>{event.title}</DialogDescription>
+          <DialogDescription>
+            {event.title}
+            {event.listPrice !== undefined &&
+              event.listPrice > event.payablePrice && (
+                <span className="mt-2 block text-xs text-roast/80">
+                  Early bird: ₹{event.payablePrice} per ticket (regular ₹
+                  {event.listPrice})
+                </span>
+              )}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">

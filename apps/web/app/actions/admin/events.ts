@@ -66,6 +66,9 @@ function toRowPayload(data: EventFormValues): {
   maxTickets: number | null;
   coverImage: string | null;
   status: EventFormValues["status"];
+  organizerDisplayName: string | null;
+  organizerPhone: string | null;
+  organizerInstagramHandle: string | null;
 } {
   const usingCafe = Boolean(data.cafeId);
   return {
@@ -87,6 +90,9 @@ function toRowPayload(data: EventFormValues): {
     maxTickets: data.maxTickets ?? null,
     coverImage: data.coverImage ?? null,
     status: data.status,
+    organizerDisplayName: data.organizerDisplayName ?? null,
+    organizerPhone: data.organizerPhone ?? null,
+    organizerInstagramHandle: data.organizerInstagramHandle ?? null,
   };
 }
 

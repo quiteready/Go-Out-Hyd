@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 
 import { BookingModal } from "./BookingModal";
 
-type EventForBooking = {
+export type EventForBooking = {
   id: string;
   title: string;
-  ticketPrice: number;
   slug: string;
+  /** Per-ticket amount charged at checkout (early bird or regular). */
+  payablePrice: number;
+  /** Regular price when early bird is active (shown struck-through in UI). */
+  listPrice?: number;
 };
 
 interface BookButtonProps {
@@ -19,6 +22,8 @@ interface BookButtonProps {
 
 export function BookButton({ event }: BookButtonProps) {
   const [open, setOpen] = useState(false);
+  const showStrike =
+    event.listPrice !== undefined && event.listPrice > event.payablePrice;
 
   return (
     <>
@@ -27,7 +32,22 @@ export function BookButton({ event }: BookButtonProps) {
         className="mt-4 w-full bg-caramel text-foam hover:bg-caramel/90"
         onClick={() => setOpen(true)}
       >
-        Book Now — ₹{event.ticketPrice}
+        <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+          <span>Book Now —</span>
+          {showStrike ? (
+            <>
+              <span className="font-semibold">₹{event.payablePrice}</span>
+              <span className="text-sm text-foam/80 line-through">
+                ₹{event.listPrice}
+              </span>
+              <span className="rounded bg-foam/15 px-1.5 text-xs font-medium">
+                Early bird
+              </span>
+            </>
+          ) : (
+            <span className="font-semibold">₹{event.payablePrice}</span>
+          )}
+        </span>
       </Button>
       <BookingModal event={event} open={open} onOpenChange={setOpen} />
     </>

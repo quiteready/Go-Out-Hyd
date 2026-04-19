@@ -45,6 +45,9 @@ export const events = pgTable(
     venueMapsUrl: text("venue_maps_url"),
     earlyBirdPrice: integer("early_bird_price"),
     earlyBirdEndsAt: timestamp("early_bird_ends_at", { withTimezone: true }),
+    organizerDisplayName: text("organizer_display_name"),
+    organizerPhone: text("organizer_phone"),
+    organizerInstagramHandle: text("organizer_instagram_handle"),
     status: eventStatusEnum("status").notNull().default("upcoming"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

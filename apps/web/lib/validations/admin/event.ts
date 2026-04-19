@@ -69,6 +69,9 @@ export const eventFormSchema = z
     maxTickets: optionalPositiveInt,
     coverImage: optionalText(1000),
     status: z.enum(["upcoming", "cancelled", "completed"]),
+    organizerDisplayName: optionalNullableText(200),
+    organizerPhone: optionalNullableText(80),
+    organizerInstagramHandle: optionalNullableText(500),
   })
   .superRefine((data, ctx) => {
     // Either a cafe OR a custom venue must be provided.
