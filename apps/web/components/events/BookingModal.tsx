@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
@@ -111,12 +111,22 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
       ? Math.min(10, parsedQuantity)
       : 1;
 
+  const resetForm = useCallback((): void => {
+    setName("");
+    setEmail("");
+    setPhone("");
+    setQuantityText("1");
+    setStep("details");
+    setServerCheckout(null);
+  }, []);
+
+  // When closing for Razorpay, `open` is false but `isLoading` stays true until the
+  // sheet dismisses or verification finishes — skip reset so we do not drop state early.
   useEffect(() => {
-    if (!open) {
-      setServerCheckout(null);
-      setStep("details");
+    if (!open && !isLoading) {
+      resetForm();
     }
-  }, [open]);
+  }, [open, isLoading, resetForm]);
 
   const clientBreakdown = computeTicketCheckoutRupees(
     quantity,
@@ -128,14 +138,6 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
     quantity === 1
       ? "Tickets"
       : `Tickets (${quantity}) × ₹${event.payablePrice}`;
-
-  function resetForm(): void {
-    setName("");
-    setEmail("");
-    setPhone("");
-    setQuantityText("1");
-    setStep("details");
-  }
 
   function handleContinue(): void {
     if (!name.trim() || !email.trim() || !phone.trim()) {
@@ -205,6 +207,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
           });
 
           if (verifyResult.success) {
+            setIsLoading(false);
             resetForm();
             onOpenChange(false);
             router.push(`/booking-confirmation?code=${verifyResult.ticketCode}`);
@@ -232,7 +235,13 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
         toast.error("Payment failed. Please try again.");
         setIsLoading(false);
       });
-      rzp.open();
+
+      // Close our Radix dialog before opening Razorpay. The dialog overlay (z-50) can
+      // stay above Razorpay's checkout layer on mobile Safari/Chrome and swallow taps.
+      onOpenChange(false);
+      window.setTimeout(() => {
+        rzp.open();
+      }, 120);
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try again.");
