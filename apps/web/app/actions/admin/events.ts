@@ -10,6 +10,11 @@ import {
   type EventFormValues,
 } from "@/lib/validations/admin/event";
 import { countPaidTicketsForEvent } from "@/lib/queries/admin/events";
+import {
+  publicPathsForEventMutation,
+  requestProductionRevalidation,
+  warnIfProductionRevalidateFailed,
+} from "@/lib/revalidate-production";
 
 export type EventActionResult =
   | { success: true; id: string; slug: string }
@@ -125,6 +130,11 @@ export async function createEvent(
     }
 
     revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
     return { success: true, id: row.id, slug: row.slug };
   } catch (err) {
     return {
@@ -169,6 +179,11 @@ export async function updateEvent(
 
     revalidatePath(`/admin/events/${id}`);
     revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
     return { success: true, id: row.id, slug: row.slug };
   } catch (err) {
     return {
@@ -196,6 +211,11 @@ export async function cancelEvent(
 
     revalidatePath(`/admin/events/${id}`);
     revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
     return { success: true, id: row.id, slug: row.slug };
   } catch (err) {
     return {
@@ -228,6 +248,11 @@ export async function deleteEvent(id: string): Promise<DeleteEventResult> {
     }
 
     revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
     return { success: true };
   } catch (err) {
     return {

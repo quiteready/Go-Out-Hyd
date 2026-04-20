@@ -3,6 +3,9 @@ import { NextResponse, type NextRequest } from "next/server";
 const ADMIN_PATH_PREFIX = "/admin";
 const ADMIN_API_PREFIX = "/api/admin";
 
+// `/api/revalidate` is not matched below: it stays reachable on production and is
+// gated by `REVALIDATE_SECRET` inside the route handler (on-demand ISR purge).
+
 function isLocalhost(host: string | null): boolean {
   if (!host) return false;
   const hostOnly = host.split(":")[0];

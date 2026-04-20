@@ -10,6 +10,11 @@ import {
   type CafeFormValues,
 } from "@/lib/validations/admin/cafe";
 import { countPaidTicketsForCafe } from "@/lib/queries/admin/cafes";
+import {
+  publicPathsForCafeMutation,
+  requestProductionRevalidation,
+  warnIfProductionRevalidateFailed,
+} from "@/lib/revalidate-production";
 
 export type CafeActionResult =
   | { success: true; id: string; slug: string }
@@ -81,6 +86,11 @@ export async function createCafe(
     }
 
     revalidateCafePaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForCafeMutation(row.slug),
+      ),
+    );
     return { success: true, id: row.id, slug: row.slug };
   } catch (err) {
     return {
@@ -135,6 +145,11 @@ export async function updateCafe(
 
     revalidatePath(`/admin/cafes/${id}`);
     revalidateCafePaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForCafeMutation(row.slug),
+      ),
+    );
     return { success: true, id: row.id, slug: row.slug };
   } catch (err) {
     return {
@@ -167,6 +182,11 @@ export async function deleteCafe(id: string): Promise<DeleteResult> {
     }
 
     revalidateCafePaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForCafeMutation(row.slug),
+      ),
+    );
     return { success: true };
   } catch (err) {
     return {

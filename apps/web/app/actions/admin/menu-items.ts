@@ -9,6 +9,11 @@ import {
   menuItemSchema,
   type MenuItemFormValues,
 } from "@/lib/validations/admin/menu-item";
+import {
+  publicPathsForCafeDetailOnly,
+  requestProductionRevalidation,
+  warnIfProductionRevalidateFailed,
+} from "@/lib/revalidate-production";
 
 export type MenuItemActionResult =
   | { success: true; id: string }
@@ -27,6 +32,11 @@ async function revalidateForCafe(cafeId: string): Promise<void> {
     .limit(1);
   if (cafe) {
     revalidatePath(`/cafes/${cafe.slug}`);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForCafeDetailOnly(cafe.slug),
+      ),
+    );
   }
 }
 

@@ -11,6 +11,11 @@ import {
   type CafeImageCreateValues,
   type CafeImageUpdateValues,
 } from "@/lib/validations/admin/cafe-image";
+import {
+  publicPathsForCafeDetailOnly,
+  requestProductionRevalidation,
+  warnIfProductionRevalidateFailed,
+} from "@/lib/revalidate-production";
 
 export type CafeImageActionResult =
   | { success: true; id: string }
@@ -29,6 +34,11 @@ async function revalidateForCafe(cafeId: string): Promise<void> {
     .limit(1);
   if (cafe) {
     revalidatePath(`/cafes/${cafe.slug}`);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForCafeDetailOnly(cafe.slug),
+      ),
+    );
   }
 }
 

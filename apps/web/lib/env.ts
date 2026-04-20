@@ -63,6 +63,35 @@ export const env = createEnv({
       emptyToUndefined,
       z.string().min(1).optional(),
     ),
+    /**
+     * Shared secret for `POST /api/revalidate` (on-demand ISR purge). Generate with
+     * `openssl rand -hex 32` (64 hex chars) or another CSPRNG. When unset, the
+     * revalidate route must reject requests and the production-revalidation helper
+     * skips remote calls. Minimum 32 characters when set (defense-in-depth vs weak secrets).
+     */
+    REVALIDATE_SECRET: z.preprocess(
+      emptyToUndefined,
+      z
+        .string()
+        .min(32, "REVALIDATE_SECRET must be at least 32 characters when set")
+        .optional(),
+    ),
+    /**
+     * Base URL of the deployment whose cache to purge (e.g. https://www.goouthyd.com).
+     * Used from localhost admin when `DATABASE_URL` points at production: after a
+     * mutation, the app POSTs to `${REVALIDATE_BASE_URL}/api/revalidate`. Must be https.
+     * Omit in environments where remote purge is not needed.
+     */
+    REVALIDATE_BASE_URL: z.preprocess(
+      emptyToUndefined,
+      z
+        .string()
+        .url()
+        .refine((val) => val.startsWith("https://"), {
+          message: "REVALIDATE_BASE_URL must use https://",
+        })
+        .optional(),
+    ),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -83,6 +112,8 @@ export const env = createEnv({
     LEAD_NOTIFICATION_EMAIL: process.env.LEAD_NOTIFICATION_EMAIL,
     RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
     RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+    REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
+    REVALIDATE_BASE_URL: process.env.REVALIDATE_BASE_URL,
     NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
