@@ -9,6 +9,10 @@ import { db } from "@/lib/drizzle/db";
 import { tickets, events } from "@/lib/drizzle/schema";
 import { sendTicketEmail } from "@/lib/email";
 import { env } from "@/lib/env";
+import {
+  computeTicketCheckoutRupees,
+  totalRupeesToPaise,
+} from "@/lib/events/ticket-checkout-pricing";
 import { getPayablePricePerTicketRupees } from "@/lib/events/ticket-pricing";
 import { countSoldTickets, getTicketByCode } from "@/lib/queries/tickets";
 import { getRazorpayClient } from "@/lib/razorpay";
@@ -38,6 +42,9 @@ export type CreateOrderResult =
       ticketCode: string;
       amountPaise: number;
       keyId: string;
+      ticketSubtotalRupees: number;
+      convenienceFeeRupees: number;
+      totalRupees: number;
     }
   | { success: false; error: string };
 
@@ -105,8 +112,9 @@ export async function createOrder(
     }
   }
 
-  const amountRupees = unitRupees * quantity;
-  const amountPaise = amountRupees * 100;
+  const { ticketSubtotalRupees, convenienceFeeRupees, totalRupees } =
+    computeTicketCheckoutRupees(quantity, unitRupees);
+  const amountPaise = totalRupeesToPaise(totalRupees);
   const ticketCode = crypto.randomUUID();
 
   // Create Razorpay order
@@ -129,7 +137,7 @@ export async function createOrder(
       customerEmail,
       customerPhone,
       quantity,
-      amountPaid: amountRupees,
+      amountPaid: totalRupees,
       razorpayOrderId: razorpayOrder.id,
       ticketCode,
       status: "pending",
@@ -144,6 +152,9 @@ export async function createOrder(
     ticketCode,
     amountPaise,
     keyId,
+    ticketSubtotalRupees,
+    convenienceFeeRupees,
+    totalRupees,
   };
 }
 

@@ -8,9 +8,6 @@ export function PartnerCTABanner(): ReactElement {
         <h2 className="font-heading text-2xl text-cream sm:text-3xl md:text-4xl">
           Own a Cafe? Let Hyderabad Find You
         </h2>
-        <p className="mt-3 text-base text-foam/90 sm:text-lg">
-          Plans starting at ₹999/month
-        </p>
         <div className="mt-8">
           <Link
             href="/partner"

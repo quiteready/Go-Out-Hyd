@@ -1,11 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 import { createOrder, verifyPayment } from "@/app/actions/tickets";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +22,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 import type { EventForBooking } from "@/components/events/BookButton";
+import { computeTicketCheckoutRupees } from "@/lib/events/ticket-checkout-pricing";
 
 interface BookingModalProps {
   event: EventForBooking;
@@ -50,6 +58,14 @@ interface RazorpayInstance {
 }
 
 type RazorpayConstructor = new (options: RazorpayOptions) => RazorpayInstance;
+
+type ServerCheckoutBreakdown = {
+  ticketSubtotalRupees: number;
+  convenienceFeeRupees: number;
+  totalRupees: number;
+};
+
+type CheckoutStep = "details" | "payment";
 
 declare global {
   interface Window {
@@ -85,23 +101,51 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
   const [phone, setPhone] = useState("");
   const [quantityText, setQuantityText] = useState("1");
   const [isLoading, setIsLoading] = useState(false);
+  const [serverCheckout, setServerCheckout] =
+    useState<ServerCheckoutBreakdown | null>(null);
+  const [step, setStep] = useState<CheckoutStep>("details");
 
   const parsedQuantity = parseInt(quantityText, 10);
   const quantity =
     Number.isFinite(parsedQuantity) && parsedQuantity >= 1
       ? Math.min(10, parsedQuantity)
       : 1;
-  const total = event.payablePrice * quantity;
+
+  useEffect(() => {
+    if (!open) {
+      setServerCheckout(null);
+      setStep("details");
+    }
+  }, [open]);
+
+  const clientBreakdown = computeTicketCheckoutRupees(
+    quantity,
+    event.payablePrice,
+  );
+  const { ticketSubtotalRupees, convenienceFeeRupees, totalRupees } =
+    serverCheckout ?? clientBreakdown;
+  const ticketsRowLabel =
+    quantity === 1
+      ? "Tickets"
+      : `Tickets (${quantity}) × ₹${event.payablePrice}`;
 
   function resetForm(): void {
     setName("");
     setEmail("");
     setPhone("");
     setQuantityText("1");
+    setStep("details");
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
-    e.preventDefault();
+  function handleContinue(): void {
+    if (!name.trim() || !email.trim() || !phone.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    setStep("payment");
+  }
+
+  async function handlePay(): Promise<void> {
     if (isLoading) return;
 
     if (!name.trim() || !email.trim() || !phone.trim()) {
@@ -132,6 +176,12 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
         setIsLoading(false);
         return;
       }
+
+      setServerCheckout({
+        ticketSubtotalRupees: orderResult.ticketSubtotalRupees,
+        convenienceFeeRupees: orderResult.convenienceFeeRupees,
+        totalRupees: orderResult.totalRupees,
+      });
 
       const Razorpay = window.Razorpay;
       if (!Razorpay) {
@@ -190,6 +240,16 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
     }
   }
 
+  function onFormSubmit(e: React.FormEvent<HTMLFormElement>): void {
+    e.preventDefault();
+    if (isLoading) return;
+    if (step === "details") {
+      handleContinue();
+      return;
+    }
+    void handlePay();
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -209,7 +269,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={onFormSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="booking-name">Full name</Label>
             <Input
@@ -267,10 +327,71 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-md bg-milk px-4 py-3">
-            <span className="text-sm text-roast">Total</span>
-            <span className="font-heading text-xl text-espresso">₹{total}</span>
-          </div>
+          <Collapsible open={step === "payment"}>
+            <div className="overflow-hidden rounded-md bg-milk">
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                aria-expanded={step === "payment"}
+              >
+                <span className="text-sm font-medium text-roast">Total</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-heading text-xl text-espresso">
+                    ₹{totalRupees}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 shrink-0 text-roast/60 transition-transform duration-200",
+                      step === "payment" && "rotate-180",
+                    )}
+                    aria-hidden
+                  />
+                </div>
+              </div>
+
+              <CollapsibleContent>
+                <div className="space-y-2 border-t border-roast/10 px-4 pb-3 pt-2">
+                  <div className="flex items-center justify-between text-sm text-roast">
+                    <span>{ticketsRowLabel}</span>
+                    <span>₹{ticketSubtotalRupees}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-roast">
+                    <span>Booking fee</span>
+                    <span>₹{convenienceFeeRupees}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-roast/10 pt-2">
+                    <span className="text-sm font-medium text-roast">Total</span>
+                    <span className="font-heading text-xl text-espresso">
+                      ₹{totalRupees}
+                    </span>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
+
+          {step === "payment" && (
+            <p className="text-center text-xs leading-relaxed text-roast/90">
+              By completing this purchase you agree to our{" "}
+              <Link
+                href="/terms"
+                className="font-medium text-caramel underline underline-offset-2 hover:text-espresso"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/refunds"
+                className="font-medium text-caramel underline underline-offset-2 hover:text-espresso"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Refund Policy
+              </Link>
+              .
+            </p>
+          )}
 
           <DialogFooter className="gap-2">
             <Button
@@ -281,13 +402,23 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="bg-caramel text-foam hover:bg-caramel/90"
-            >
-              {isLoading ? "Processing…" : `Pay ₹${total}`}
-            </Button>
+            {step === "details" ? (
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="bg-caramel text-foam hover:bg-caramel/90"
+              >
+                Continue
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="bg-caramel text-foam hover:bg-caramel/90"
+              >
+                {isLoading ? "Processing…" : "Pay"}
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

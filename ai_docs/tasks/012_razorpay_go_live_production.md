@@ -324,7 +324,9 @@ const { error } = await resend.emails.send({
   - Commit: `8e84062` — "feat: Razorpay ticket booking + go-live on goouthyd.com"
   - Scope: 40 files, +7,115 / −177 lines (Task 011 ticketing feature + Task 012 Phase 2 config)
   - Pushed to `origin/main` — triggers Vercel auto-deploy
-- [ ] **Task 5.2:** (User) Watch Vercel dashboard for deployment to complete (~2–3 min)
+- [x] **Task 5.2:** Watch Vercel dashboard for deployment to complete ✓ 2026-04-18
+  - First build failed: missing `@types/qrcode` — fixed in commit `1a61ff8`
+  - Second build succeeded; production traffic now on live Razorpay keys + `@goouthyd.com` email senders
 - [ ] **Task 5.3:** Not needed — code push triggered fresh build, picks up new env vars automatically
 
 ### Phase 6 (Step 6): ₹1 End-to-End Smoke Test — 👤 USER ACTION
@@ -334,20 +336,23 @@ const { error } = await resend.emails.send({
   - **Option A — Temporary hidden event:** insert a row in `events` with `title: "GO-LIVE SMOKE TEST"`, `ticket_price: 100` (paise → ₹1), `status: "draft"` or an unpublished flag, slug like `smoke-test-2026-04-18`. Access directly by slug URL, don't list on /events.
   - **Option B — Edit existing event:** pick a low-traffic upcoming event, note its original price, change to ₹1 in Supabase, do the booking, revert immediately.
   - Option A is safer; Option B is faster. Decide together at this step.
-- [ ] **Task 6.2:** (User) On `https://goouthyd.com` → navigate to the test event → click **Book Tickets**
-- [ ] **Task 6.3:** (User) Fill booking modal with real name, real email (one you can check), real phone
-- [ ] **Task 6.4:** (User) Razorpay popup opens in live mode → pay ₹1 with a real card (UPI also works, often cleanest)
-- [ ] **Task 6.5:** (User) Verify the full success chain:
-  - [ ] Redirected to `/booking-confirmation?ticket_code=...` page
-  - [ ] Confirmation page shows correct event, name, ticket code, QR preview
-  - [ ] Ticket confirmation email arrives at the entered address from `tickets@goouthyd.com`
-  - [ ] QR code in email is scannable and contains the ticket code
-  - [ ] Check spam folder — if email lands in spam, note the cause (usually DMARC strictness)
-- [ ] **Task 6.6:** (User) Verify backend state:
-  - [ ] Supabase: new row in `tickets` table with `payment_status: "captured"`, `amount_paid: 100` (paise)
-  - [ ] Razorpay dashboard → Payments → see captured ₹1 payment (not authorized-only)
-  - [ ] Razorpay dashboard → Orders → see completed order
-- [ ] **Task 6.7:** (User) If any step fails, rollback: revert Vercel env vars to `rzp_test_*`, redeploy, debug, retry
+- [x] **Task 6.2:** Navigated to test event and clicked Book Tickets ✓ 2026-04-18
+  - Event: Stand-Up Night: Hyderabad Laughs (Filter House)
+  - Original price noted (reverted in Phase 7): 250 rupees
+- [x] **Task 6.3:** Filled booking modal ✓ 2026-04-18
+- [x] **Task 6.4:** Razorpay popup in live mode, ₹1 paid via UPI ✓ 2026-04-18
+  - Order: `order_Sez8pTldKP8HBH`, Payment: `pay_Sez969LnSXwYya`
+- [x] **Task 6.5:** Verified success chain (first attempt) ✓ 2026-04-18
+  - ✅ Redirect to `/booking-confirmation?code=5f5bb7ba-ae12-41a4-b860-e188ce1fe396`
+  - ✅ Confirmation page shows event + name + QR
+  - ❌ Ticket email DID NOT arrive — root cause: `RESEND_API_KEY` missing in Vercel Production scope
+  - Fix applied: added `RESEND_API_KEY` to Production, redeployed (`dpl_5U9dA5NHf`)
+  - Re-test after fix: ✅ Ticket email arrives from `tickets@goouthyd.com`
+- [x] **Task 6.6:** Verified backend state ✓ 2026-04-18
+  - ✅ Supabase `tickets` table: row exists with status `paid`, `amount_paid: 1` (rupees — NOT paise; spec had wrong unit)
+  - ✅ Razorpay dashboard: ₹1 captured via UPI, 100% in overview
+  - ✅ Order ID in DB matches Razorpay dashboard
+- [x] **Task 6.7:** No rollback needed — smoke test passed after env var fix ✓ 2026-04-18
 
 ### Phase 7 (Step 7): Refund the ₹1 Test Payment — 👤 USER ACTION
 **Goal:** Return the test rupee to yourself; leave books clean.

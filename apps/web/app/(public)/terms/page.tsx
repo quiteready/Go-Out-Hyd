@@ -1,22 +1,23 @@
 import type { ReactElement } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import LegalPageWrapper from "@/components/legal/LegalPageWrapper";
 import { generateLegalMetadata } from "@/lib/metadata";
 import TableOfContents from "@/components/legal/TableOfContents";
 import LegalLayout from "@/components/legal/LegalLayout";
 
-const lastUpdated = "2026-04-13";
+const lastUpdated = "2026-04-20";
 
 export const metadata: Metadata = generateLegalMetadata(
   "Terms of Service",
-  "Terms governing use of GoOut Hyd at goouthyd.com — cafe listings, event information, and platform rules.",
+  "Terms governing use of GoOut Hyd at goouthyd.com — cafe listings, events, ticket purchases, and platform rules.",
 );
 
 const tocSections = [
   { id: "acceptance", title: "Acceptance of Terms", level: 1 },
   { id: "platform-usage", title: "Platform Usage", level: 1 },
   { id: "cafe-listings", title: "Cafe Listings", level: 1 },
-  { id: "event-information", title: "Event Information", level: 1 },
+  { id: "ticket-purchases-events", title: "Ticket Purchases & Events", level: 1 },
   { id: "intellectual-property", title: "Intellectual Property", level: 1 },
   { id: "limitation-of-liability", title: "Limitation of Liability", level: 1 },
   { id: "changes", title: "Changes to These Terms", level: 1 },
@@ -30,7 +31,7 @@ export default function TermsOfServicePage(): ReactElement {
         title="Terms of Service"
         lastUpdated={lastUpdated}
         contactEmail="hello@goouthyd.com"
-        description="These Terms of Service govern your access to and use of GoOut Hyd at goouthyd.com, including browsing cafe listings and event information."
+        description="These Terms of Service govern your access to and use of GoOut Hyd at goouthyd.com, including browsing cafe listings, event discovery, and ticket purchases where available."
       >
         <section id="acceptance">
           <h2>1. Acceptance of Terms</h2>
@@ -96,19 +97,59 @@ export default function TermsOfServicePage(): ReactElement {
           </p>
         </section>
 
-        <section id="event-information">
-          <h2>4. Event Information</h2>
+        <section id="ticket-purchases-events">
+          <h2>4. Ticket Purchases &amp; Events</h2>
+
+          <h3>4.1 Platform role</h3>
           <p>
-            Events shown on the Platform are for <strong>display and discovery
-            only</strong>. GoOut Hyd does not sell tickets through the Site in
-            Phase 1, and we are not the organiser of third-party events. Dates,
-            times, prices, and entry rules may change; verify details with the
-            venue or organiser before attending.
+            GoOut Hyd acts as a <strong>platform</strong> connecting event
+            organisers and attendees. We are <strong>not</strong> the organiser
+            of listed events unless we say so explicitly on the event page.
           </p>
+
+          <h3>4.2 Pricing and fees</h3>
+          <p>
+            Ticket prices shown on the Site are <strong>inclusive of all
+            charges</strong> stated for the ticket itself. A separate{" "}
+            <strong>convenience fee</strong> (a platform fee) may apply and is
+            always shown <strong>before you pay</strong> at checkout. The total
+            you authorise is the amount charged by our payment partner.
+          </p>
+
+          <h3>4.3 Refunds and final sales</h3>
+          <p>
+            Unless an event is <strong>cancelled by the organiser</strong> (or
+            as described in our{" "}
+            <Link href="/refunds" className="text-caramel underline underline-offset-2 hover:text-espresso">
+              Refund &amp; Cancellation Policy
+            </Link>
+            ), ticket
+            sales are <strong>final</strong> and tickets are{" "}
+            <strong>non-refundable</strong>. Please read the Refund Policy before
+            completing your purchase.
+          </p>
+
+          <h3>4.4 Organiser cancellations</h3>
+          <p>
+            If an event is cancelled, we will use the email you provided at
+            checkout to notify you. Where a refund is due under our Refund
+            Policy, we aim to process it within <strong>7 business days</strong>{" "}
+            to your <strong>original payment method</strong>. Timing may also
+            depend on your bank or payment provider.
+          </p>
+
+          <h3>4.5 Changes to events</h3>
+          <p>
+            Organisers may change venue, time, line-up, or other details. GoOut
+            Hyd is <strong>not liable</strong> for those changes after you have
+            purchased a ticket. Where rescheduling or major changes affect your
+            rights, our Refund Policy may apply.
+          </p>
+
           <p>
             Your attendance at any event is at your own risk and subject to the
-            venue&apos;s policies and applicable law. We are not responsible for
-            cancellations, line-ups, or on-site conditions.
+            venue&apos;s rules and applicable law. We do not guarantee
+            third-party event quality or on-site conditions.
           </p>
         </section>
 

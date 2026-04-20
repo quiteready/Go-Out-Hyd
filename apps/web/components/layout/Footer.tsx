@@ -15,6 +15,7 @@ const COMPANY_LINKS = [
 const LEGAL_LINKS = [
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/terms", label: "Terms of Service" },
+  { href: "/refunds", label: "Refund Policy" },
 ] as const;
 
 function FooterLinkGroup({
@@ -66,6 +67,12 @@ export function Footer() {
               <Instagram className="h-4 w-4" strokeWidth={2} />
               Instagram
             </Link>
+            <a
+              href="mailto:hello@goouthyd.com"
+              className="text-sm text-cream/70 transition-colors hover:text-caramel"
+            >
+              hello@goouthyd.com
+            </a>
           </div>
 
           {/* Col 2 — explore */}

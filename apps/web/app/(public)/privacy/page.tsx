@@ -5,16 +5,17 @@ import { generateLegalMetadata } from "@/lib/metadata";
 import TableOfContents from "@/components/legal/TableOfContents";
 import LegalLayout from "@/components/legal/LegalLayout";
 
-const lastUpdated = "2026-04-13";
+const lastUpdated = "2026-04-20";
 
 export const metadata: Metadata = generateLegalMetadata(
   "Privacy Policy",
-  "How GoOut Hyd collects, uses, and protects information when you use goouthyd.com and submit the cafe partner interest form.",
+  "How GoOut Hyd collects, uses, and protects information when you use goouthyd.com, buy event tickets, and submit the partner interest form.",
 );
 
 const tocSections = [
   { id: "introduction", title: "Introduction", level: 1 },
   { id: "information-we-collect", title: "Information We Collect", level: 1 },
+  { id: "ticket-purchases-payments", title: "Ticket Purchases & Payments", level: 1 },
   { id: "how-we-use", title: "How We Use Your Information", level: 1 },
   { id: "cookies", title: "Cookies & Analytics", level: 1 },
   { id: "retention", title: "Data Retention", level: 1 },
@@ -31,7 +32,7 @@ export default function PrivacyPolicyPage(): ReactElement {
         title="Privacy Policy"
         lastUpdated={lastUpdated}
         contactEmail="hello@goouthyd.com"
-        description="This Privacy Policy describes how GoOut Hyd (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) handles information when you visit goouthyd.com and when cafe owners submit interest through our partner form."
+        description="This Privacy Policy describes how GoOut Hyd (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) handles information when you visit goouthyd.com, purchase event tickets, and when cafe owners submit interest through our partner form."
       >
         <section id="introduction">
           <h2>1. Introduction</h2>
@@ -74,8 +75,50 @@ export default function PrivacyPolicyPage(): ReactElement {
           </p>
         </section>
 
+        <section id="ticket-purchases-payments">
+          <h2>3. Ticket Purchases &amp; Payments</h2>
+
+          <h3>3.1 Ticket purchases</h3>
+          <p>
+            When you <strong>purchase a ticket</strong> through the Site, we
+            collect the details you provide at checkout, typically your{" "}
+            <strong>name</strong>, <strong>email address</strong>, and{" "}
+            <strong>phone number</strong>. We use this information to deliver
+            your ticket (including by email), send event-related or operational
+            messages, and provide customer support if you contact us.
+          </p>
+
+          <h3>3.2 Payment processing</h3>
+          <p>
+            Payments are processed by <strong>Razorpay</strong>, our payment
+            service provider. We <strong>do not</strong> store your full card
+            number, CVV, UPI PIN, netbanking credentials, or other payment
+            authentication secrets on our servers. Razorpay collects the data
+            needed to complete the transaction in line with its own policies — see{" "}
+            <a
+              href="https://razorpay.com/privacy/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Razorpay&rsquo;s Privacy Policy
+            </a>
+            . We retain references such as Razorpay order and payment identifiers
+            and our internal ticket reference so we can confirm your payment and
+            handle support requests.
+          </p>
+
+          <h3>3.3 Ticket records</h3>
+          <p>
+            We keep ticket purchase records (including contact details and
+            transaction references associated with your booking) for about{" "}
+            <strong>12 months</strong> after the related event date, unless a
+            longer period is required for legal, accounting, or dispute
+            resolution purposes.
+          </p>
+        </section>
+
         <section id="how-we-use">
-          <h2>3. How We Use Your Information</h2>
+          <h2>4. How We Use Your Information</h2>
           <p>We use personal information to:</p>
           <ul>
             <li>
@@ -84,6 +127,10 @@ export default function PrivacyPolicyPage(): ReactElement {
             </li>
             <li>
               Operate and improve cafe and event listings shown on the platform;
+            </li>
+            <li>
+              Fulfil ticket purchases (for example, sending your ticket by email)
+              and respond to ticketing support requests;
             </li>
             <li>
               Send operational emails (for example, acknowledging a partner
@@ -102,7 +149,7 @@ export default function PrivacyPolicyPage(): ReactElement {
         </section>
 
         <section id="cookies">
-          <h2>4. Cookies &amp; Analytics</h2>
+          <h2>5. Cookies &amp; Analytics</h2>
           <p>
             We use cookies and similar technologies that are necessary for the
             Site to function (for example, session and security cookies). We also
@@ -118,19 +165,20 @@ export default function PrivacyPolicyPage(): ReactElement {
         </section>
 
         <section id="retention">
-          <h2>5. Data Retention</h2>
+          <h2>6. Data Retention</h2>
           <p>
             We keep partner lead and contact information for as long as needed to
             follow up on your enquiry, manage listings, and meet legal or
-            operational requirements. Technical logs and analytics may be retained
-            for shorter periods according to our hosting and analytics providers.
-            When data is no longer needed, we delete or anonymise it where
-            practicable.
+            operational requirements. Ticket purchase records follow the
+            timeframes described in section 3.3 above. Technical logs and
+            analytics may be retained for shorter periods according to our hosting
+            and analytics providers. When data is no longer needed, we delete or
+            anonymise it where practicable.
           </p>
         </section>
 
         <section id="security">
-          <h2>6. Data Security</h2>
+          <h2>7. Data Security</h2>
           <p>
             We use industry-standard measures appropriate to the nature of our
             service, including encryption in transit (HTTPS), access controls on
@@ -141,7 +189,7 @@ export default function PrivacyPolicyPage(): ReactElement {
         </section>
 
         <section id="rights">
-          <h2>7. Your Rights</h2>
+          <h2>8. Your Rights</h2>
           <p>
             Depending on applicable law, you may have the right to request access
             to, correction of, or deletion of your personal information, or to
@@ -152,7 +200,7 @@ export default function PrivacyPolicyPage(): ReactElement {
         </section>
 
         <section id="changes">
-          <h2>8. Changes to This Policy</h2>
+          <h2>9. Changes to This Policy</h2>
           <p>
             We may update this Privacy Policy from time to time. The &ldquo;Last
             updated&rdquo; date at the top of this page will change when we do.
@@ -163,7 +211,7 @@ export default function PrivacyPolicyPage(): ReactElement {
         </section>
 
         <section id="contact">
-          <h2>9. Contact Information</h2>
+          <h2>10. Contact Information</h2>
           <p>
             GoOut Hyd is operated in Hyderabad, Telangana, India. For privacy
             questions or requests:
