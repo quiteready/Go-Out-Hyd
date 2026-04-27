@@ -1,9 +1,13 @@
 /**
  * Admin session JWT (HS256) — safe for Edge middleware: no `next/headers`.
  * Cookie read/write lives in `session-cookie.ts` (server-only).
+ *
+ * Import `jose/jwt/sign` and `jose/jwt/verify` only — the main `jose` entry pulls
+ * JWE code that webpack flags for Edge (`CompressionStream` in deflate).
  */
 
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT } from "jose/jwt/sign";
+import { jwtVerify } from "jose/jwt/verify";
 import { env } from "@/lib/env";
 
 export const COOKIE_NAME = "goouthyd_admin_session";
