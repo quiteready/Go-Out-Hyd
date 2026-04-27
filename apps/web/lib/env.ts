@@ -9,6 +9,16 @@ function emptyToUndefined(value: unknown): unknown {
   return value;
 }
 
+/** Trim accidental whitespace from `.env` lines (avoids auth mismatch on shared secrets). */
+function emptyToUndefinedTrimmed(value: unknown): unknown {
+  const u = emptyToUndefined(value);
+  if (typeof u !== "string") {
+    return u;
+  }
+  const trimmed = u.trim();
+  return trimmed === "" ? undefined : trimmed;
+}
+
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
@@ -70,7 +80,7 @@ export const env = createEnv({
      * skips remote calls. Minimum 32 characters when set (defense-in-depth vs weak secrets).
      */
     REVALIDATE_SECRET: z.preprocess(
-      emptyToUndefined,
+      emptyToUndefinedTrimmed,
       z
         .string()
         .min(32, "REVALIDATE_SECRET must be at least 32 characters when set")
@@ -83,7 +93,7 @@ export const env = createEnv({
      * Omit in environments where remote purge is not needed.
      */
     REVALIDATE_BASE_URL: z.preprocess(
-      emptyToUndefined,
+      emptyToUndefinedTrimmed,
       z
         .string()
         .url()
