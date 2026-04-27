@@ -19,6 +19,7 @@ import {
   Inbox,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { adminLogout } from "@/app/actions/admin/auth";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -98,6 +99,16 @@ export function AdminHeader() {
                 );
               })}
             </nav>
+            <div className="border-t border-neutral-200 p-3">
+              <form action={adminLogout}>
+                <button
+                  type="submit"
+                  className="w-full rounded-md px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+                >
+                  Sign out
+                </button>
+              </form>
+            </div>
           </SheetContent>
         </Sheet>
 

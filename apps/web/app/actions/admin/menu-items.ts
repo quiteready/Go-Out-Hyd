@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { menuItems, cafes } from "@/lib/drizzle/schema";
-import { assertLocalhost } from "@/lib/admin/auth";
+import { assertAdminSession } from "@/lib/admin/auth";
 import {
   menuItemSchema,
   type MenuItemFormValues,
@@ -44,7 +44,7 @@ export async function createMenuItem(
   cafeId: string,
   input: MenuItemFormValues,
 ): Promise<MenuItemActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = menuItemSchema.safeParse(input);
   if (!parsed.success) {
@@ -86,7 +86,7 @@ export async function updateMenuItem(
   id: string,
   input: MenuItemFormValues,
 ): Promise<SimpleResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = menuItemSchema.safeParse(input);
   if (!parsed.success) {
@@ -125,7 +125,7 @@ export async function updateMenuItem(
 }
 
 export async function deleteMenuItem(id: string): Promise<SimpleResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   try {
     const [row] = await db
@@ -150,7 +150,7 @@ export async function deleteMenuItem(id: string): Promise<SimpleResult> {
 export async function toggleMenuItemAvailability(
   id: string,
 ): Promise<SimpleResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   try {
     const [current] = await db

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq, and, ne } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { events } from "@/lib/drizzle/schema";
-import { assertLocalhost } from "@/lib/admin/auth";
+import { assertAdminSession } from "@/lib/admin/auth";
 import {
   eventFormSchema,
   type EventFormValues,
@@ -104,7 +104,7 @@ function toRowPayload(data: EventFormValues): {
 export async function createEvent(
   input: EventFormValues,
 ): Promise<EventActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = eventFormSchema.safeParse(input);
   if (!parsed.success) {
@@ -148,7 +148,7 @@ export async function updateEvent(
   id: string,
   input: EventFormValues,
 ): Promise<EventActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = eventFormSchema.safeParse(input);
   if (!parsed.success) {
@@ -196,7 +196,7 @@ export async function updateEvent(
 export async function cancelEvent(
   id: string,
 ): Promise<EventActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   try {
     const [row] = await db
@@ -226,7 +226,7 @@ export async function cancelEvent(
 }
 
 export async function deleteEvent(id: string): Promise<DeleteEventResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   // Guard: refuse delete if the event has paid tickets (cascade would wipe revenue records).
   const paidCount = await countPaidTicketsForEvent(id);

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq, asc, sql } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { cafeImages, cafes } from "@/lib/drizzle/schema";
-import { assertLocalhost } from "@/lib/admin/auth";
+import { assertAdminSession } from "@/lib/admin/auth";
 import {
   cafeImageCreateSchema,
   cafeImageUpdateSchema,
@@ -46,7 +46,7 @@ export async function addCafeImage(
   cafeId: string,
   input: CafeImageCreateValues,
 ): Promise<CafeImageActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = cafeImageCreateSchema.safeParse(input);
   if (!parsed.success) {
@@ -95,7 +95,7 @@ export async function updateCafeImage(
   id: string,
   input: CafeImageUpdateValues,
 ): Promise<SimpleResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = cafeImageUpdateSchema.safeParse(input);
   if (!parsed.success) {
@@ -127,7 +127,7 @@ export async function updateCafeImage(
 }
 
 export async function deleteCafeImage(id: string): Promise<SimpleResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   try {
     const [row] = await db
@@ -157,7 +157,7 @@ export async function reorderCafeImage(
   id: string,
   direction: "up" | "down",
 ): Promise<SimpleResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   try {
     const [target] = await db

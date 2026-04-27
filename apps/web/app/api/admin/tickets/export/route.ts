@@ -1,5 +1,9 @@
 import { type NextRequest } from "next/server";
 import {
+  COOKIE_NAME,
+  verifyAdminSessionToken,
+} from "@/lib/admin/session-token";
+import {
   getTicketsCsvRows,
   type TicketFilters,
   type TicketStatus,
@@ -21,14 +25,9 @@ const CSV_HEADER = [
 ] as const;
 
 /**
- * Defense in depth: middleware already 404s non-localhost requests to
- * /api/admin/*, but we re-check here in case the matcher ever drifts.
+ * Defense in depth: middleware gates `/api/admin/*` by session cookie; we
+ * re-verify the JWT here in case the matcher ever drifts.
  */
-function isLocalhost(host: string | null): boolean {
-  if (!host) return false;
-  const hostOnly = host.split(":")[0];
-  return hostOnly === "localhost" || hostOnly === "127.0.0.1";
-}
 
 function escapeCsvCell(value: string | number): string {
   const str = String(value);
@@ -47,8 +46,10 @@ function todayIstSlug(): string {
 }
 
 export async function GET(request: NextRequest): Promise<Response> {
-  if (!isLocalhost(request.headers.get("host"))) {
-    return new Response(null, { status: 404 });
+  const token = request.cookies.get(COOKIE_NAME)?.value;
+  const valid = token ? await verifyAdminSessionToken(token) : false;
+  if (!valid) {
+    return new Response(null, { status: 401 });
   }
 
   const url = new URL(request.url);

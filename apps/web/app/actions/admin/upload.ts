@@ -2,7 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { createSupabaseServerAdminClient } from "@/lib/supabase/admin";
-import { assertLocalhost } from "@/lib/admin/auth";
+import { assertAdminSession } from "@/lib/admin/auth";
 
 export type UploadBucket = "cafe-images" | "event-images";
 
@@ -47,7 +47,7 @@ export async function uploadImage(
   formData: FormData,
   bucket: UploadBucket,
 ): Promise<UploadImageResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   if (!ALLOWED_BUCKETS.has(bucket)) {
     return { success: false, error: "Invalid bucket" };

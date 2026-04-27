@@ -1,29 +1,43 @@
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  COOKIE_NAME,
+  verifyAdminSessionToken,
+} from "@/lib/admin/session-token";
 
 const ADMIN_PATH_PREFIX = "/admin";
 const ADMIN_API_PREFIX = "/api/admin";
+const ADMIN_LOGIN_PATH = "/admin/login";
 
 // `/api/revalidate` is not matched below: it stays reachable on production and is
 // gated by `REVALIDATE_SECRET` inside the route handler (on-demand ISR purge).
 
-function isLocalhost(host: string | null): boolean {
-  if (!host) return false;
-  const hostOnly = host.split(":")[0];
-  return hostOnly === "localhost" || hostOnly === "127.0.0.1";
-}
-
-// Phase 2: Re-enable Supabase session checks and auth redirects here when authentication is added.
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
   if (
     pathname.startsWith(ADMIN_PATH_PREFIX) ||
     pathname.startsWith(ADMIN_API_PREFIX)
   ) {
-    if (!isLocalhost(request.headers.get("host"))) {
-      // 404 (not 403) so we don't advertise the route exists.
-      return new NextResponse(null, { status: 404 });
+    if (pathname === ADMIN_LOGIN_PATH) {
+      return NextResponse.next();
     }
+
+    const token = request.cookies.get(COOKIE_NAME)?.value;
+    const valid = token ? await verifyAdminSessionToken(token) : false;
+
+    if (!valid) {
+      if (pathname.startsWith(ADMIN_API_PREFIX)) {
+        return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { "content-type": "application/json" },
+        });
+      }
+
+      const loginUrl = new URL(ADMIN_LOGIN_PATH, request.url);
+      loginUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
     return NextResponse.next();
   }
 
@@ -31,5 +45,9 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/api/admin/:path*",
+  ],
 };

@@ -102,6 +102,32 @@ export const env = createEnv({
         })
         .optional(),
     ),
+    /**
+     * Shared password for `/admin` login (task 019). Optional so public routes load
+     * when unset (e.g. CI); admin routes require both this and `ADMIN_COOKIE_SECRET`.
+     * When set, minimum 12 characters.
+     */
+    ADMIN_PASSWORD: z.preprocess(
+      emptyToUndefinedTrimmed,
+      z
+        .string()
+        .min(12, "ADMIN_PASSWORD must be at least 12 characters when set")
+        .optional(),
+    ),
+    /**
+     * HMAC secret for signing the admin session JWT cookie. Optional when admin is
+     * disabled; when set, minimum 32 characters (`openssl rand -hex 32`).
+     */
+    ADMIN_COOKIE_SECRET: z.preprocess(
+      emptyToUndefinedTrimmed,
+      z
+        .string()
+        .min(
+          32,
+          "ADMIN_COOKIE_SECRET must be at least 32 characters when set (use a CSPRNG)",
+        )
+        .optional(),
+    ),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -124,6 +150,8 @@ export const env = createEnv({
     RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
     REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
     REVALIDATE_BASE_URL: process.env.REVALIDATE_BASE_URL,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+    ADMIN_COOKIE_SECRET: process.env.ADMIN_COOKIE_SECRET,
     NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },

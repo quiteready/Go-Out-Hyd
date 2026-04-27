@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { cafeLeads } from "@/lib/drizzle/schema";
-import { assertLocalhost } from "@/lib/admin/auth";
+import { assertAdminSession } from "@/lib/admin/auth";
 import {
   leadNotesUpdateSchema,
   leadStatusUpdateSchema,
@@ -19,7 +19,7 @@ export async function updateLeadStatus(
   id: string,
   status: LeadStatusValue,
 ): Promise<LeadMutationResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = leadStatusUpdateSchema.safeParse({ id, status });
   if (!parsed.success) {
@@ -55,7 +55,7 @@ export async function updateLeadNotes(
   id: string,
   notes: string | undefined,
 ): Promise<LeadMutationResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = leadNotesUpdateSchema.safeParse({ id, notes });
   if (!parsed.success) {

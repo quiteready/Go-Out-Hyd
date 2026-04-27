@@ -10,6 +10,7 @@ import {
   Inbox,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { adminLogout } from "@/app/actions/admin/auth";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -31,7 +32,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-60 shrink-0 border-r border-neutral-200 bg-neutral-50 lg:block">
+    <aside className="hidden h-screen w-60 shrink-0 flex-col border-r border-neutral-200 bg-neutral-50 lg:flex">
       <div className="flex h-14 items-center border-b border-neutral-200 px-5">
         <Link
           href="/admin"
@@ -41,7 +42,7 @@ export function AdminSidebar() {
         </Link>
       </div>
 
-      <nav className="flex flex-col gap-0.5 p-3">
+      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-3">
         {NAV_ITEMS.map((item) => {
           const isActive = item.exact
             ? pathname === item.href
@@ -64,6 +65,17 @@ export function AdminSidebar() {
           );
         })}
       </nav>
+
+      <div className="border-t border-neutral-200 p-3">
+        <form action={adminLogout}>
+          <button
+            type="submit"
+            className="w-full rounded-md px-3 py-2 text-left text-sm text-neutral-500 hover:bg-neutral-200/70 hover:text-neutral-900"
+          >
+            Sign out
+          </button>
+        </form>
+      </div>
     </aside>
   );
 }

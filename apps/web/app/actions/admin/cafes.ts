@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq, and, ne } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { cafes } from "@/lib/drizzle/schema";
-import { assertLocalhost } from "@/lib/admin/auth";
+import { assertAdminSession } from "@/lib/admin/auth";
 import {
   cafeFormSchema,
   type CafeFormValues,
@@ -48,7 +48,7 @@ function revalidateCafePaths(slug?: string | null): void {
 export async function createCafe(
   input: CafeFormValues,
 ): Promise<CafeActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = cafeFormSchema.safeParse(input);
   if (!parsed.success) {
@@ -104,7 +104,7 @@ export async function updateCafe(
   id: string,
   input: CafeFormValues,
 ): Promise<CafeActionResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   const parsed = cafeFormSchema.safeParse(input);
   if (!parsed.success) {
@@ -160,7 +160,7 @@ export async function updateCafe(
 }
 
 export async function deleteCafe(id: string): Promise<DeleteResult> {
-  await assertLocalhost();
+  await assertAdminSession();
 
   // Guard: refuse delete if any related event has paid tickets (cascade would wipe revenue records).
   const paidCount = await countPaidTicketsForCafe(id);
