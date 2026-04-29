@@ -38,10 +38,11 @@ const IST_DATE_FORMATTER = new Intl.DateTimeFormat("en-IN", {
 });
 
 function statusVariant(
-  status: "upcoming" | "cancelled" | "completed",
-): "default" | "secondary" | "destructive" {
+  status: "pending" | "upcoming" | "cancelled" | "completed",
+): "default" | "secondary" | "destructive" | "outline" {
   if (status === "cancelled") return "destructive";
   if (status === "completed") return "secondary";
+  if (status === "pending") return "outline";
   return "default";
 }
 

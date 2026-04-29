@@ -7,7 +7,9 @@ export type AdminEventListRow = typeof events.$inferSelect & {
   ticketsSold: number;
 };
 
-export async function listEventsForAdmin(): Promise<AdminEventListRow[]> {
+export async function listEventsForAdmin(
+  statusFilter?: string,
+): Promise<AdminEventListRow[]> {
   const ticketCounts = db.$with("ticket_counts").as(
     db
       .select({
@@ -19,7 +21,7 @@ export async function listEventsForAdmin(): Promise<AdminEventListRow[]> {
       .groupBy(tickets.eventId),
   );
 
-  const rows = await db
+  const query = db
     .with(ticketCounts)
     .select({
       event: events,
@@ -33,6 +35,15 @@ export async function listEventsForAdmin(): Promise<AdminEventListRow[]> {
     .leftJoin(ticketCounts, eq(ticketCounts.eventId, events.id))
     .orderBy(desc(events.startTime));
 
+  const rows = await (statusFilter
+    ? query.where(
+        eq(
+          events.status,
+          statusFilter as "pending" | "upcoming" | "cancelled" | "completed",
+        ),
+      )
+    : query);
+
   return rows.map((row) => ({
     ...row.event,
     cafe:
@@ -42,6 +53,7 @@ export async function listEventsForAdmin(): Promise<AdminEventListRow[]> {
     ticketsSold: row.ticketsSold,
   }));
 }
+
 
 export type AdminEventDetail = typeof events.$inferSelect & {
   cafe: typeof cafes.$inferSelect | null;

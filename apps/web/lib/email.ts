@@ -135,6 +135,134 @@ export async function sendLeadNotification(
   return { ok: true };
 }
 
+// ─── Event submission notification ────────────────────────────────────────────
+
+export type EventSubmissionNotificationPayload = {
+  title: string;
+  eventType: string;
+  organizerName: string;
+  organizerPhone: string;
+  organizerInstagram?: string;
+  startTime: Date;
+  venueName?: string;
+  venueTba: boolean;
+  description?: string;
+  submittedAt: Date;
+};
+
+export type SendEventSubmissionNotificationResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+function buildEventSubmissionEmailHtml(
+  event: EventSubmissionNotificationPayload,
+  dashboardUrl: string,
+): string {
+  const venueDisplay = event.venueTba
+    ? "To Be Announced"
+    : (event.venueName ?? "Not specified");
+
+  const startTimeDisplay = event.startTime.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const rows: [string, string][] = [
+    ["Event title", event.title],
+    ["Event type", event.eventType],
+    ["Organizer name", event.organizerName],
+    ["Organizer phone", event.organizerPhone],
+    ...(event.organizerInstagram
+      ? ([["Instagram", event.organizerInstagram]] as [string, string][])
+      : []),
+    ["Start time (IST)", startTimeDisplay],
+    ["Venue", venueDisplay],
+    ...(event.description
+      ? ([["Description", event.description]] as [string, string][])
+      : []),
+    [
+      "Submitted at",
+      event.submittedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+    ],
+  ];
+
+  const tableRows = rows
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:8px 12px;border:1px solid #e5e7eb;font-weight:600;">${escapeHtml(label)}</td><td style="padding:8px 12px;border:1px solid #e5e7eb;">${escapeHtml(value)}</td></tr>`,
+    )
+    .join("");
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="utf-8" /></head>
+  <body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111827;">
+    <h1 style="font-size:1.25rem;">New event submission — approval required</h1>
+    <p style="color:#6b7280;margin:0 0 16px;">An organizer has submitted an event via the public form. Review it in the admin dashboard and approve or reject.</p>
+    <table style="border-collapse:collapse;margin:16px 0;">${tableRows}</table>
+    <p style="margin-top:16px;">
+      Review pending events in the admin dashboard:
+      <a href="${escapeHtml(dashboardUrl)}">${escapeHtml(dashboardUrl)}</a>
+    </p>
+  </body>
+</html>`;
+}
+
+/**
+ * Notifies Wilson when an organizer submits an event via the public /submit-event form.
+ * The event is saved with status 'pending' — this email is the trigger to review it.
+ * If Resend is not configured, returns { ok: true } after logging — submission is already saved.
+ */
+export async function sendEventSubmissionNotification(
+  event: EventSubmissionNotificationPayload,
+): Promise<SendEventSubmissionNotificationResult> {
+  const apiKey = env.RESEND_API_KEY;
+  const rawTo = env.LEAD_NOTIFICATION_EMAIL;
+
+  if (!apiKey || !rawTo) {
+    console.warn(
+      "[sendEventSubmissionNotification] Skipping email: set RESEND_API_KEY and LEAD_NOTIFICATION_EMAIL to enable notifications.",
+    );
+    return { ok: true };
+  }
+
+  const toList = rawTo
+    .split(",")
+    .map((addr) => addr.trim())
+    .filter(Boolean);
+
+  if (toList.length === 0) {
+    console.warn(
+      "[sendEventSubmissionNotification] Skipping email: LEAD_NOTIFICATION_EMAIL parsed to empty recipient list.",
+    );
+    return { ok: true };
+  }
+
+  const dashboardUrl = getSupabaseDashboardEditorUrl(env.SUPABASE_URL);
+  const html = buildEventSubmissionEmailHtml(event, dashboardUrl);
+  const subject = `New Event Submission: ${event.title}`;
+
+  const resend = new Resend(apiKey);
+  const { error } = await resend.emails.send({
+    from: "GoOut Hyd <leads@goouthyd.com>",
+    to: toList,
+    subject,
+    html,
+  });
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}
+
 // ─── Ticket email ─────────────────────────────────────────────────────────────
 
 export type SendTicketEmailResult = { ok: true } | { ok: false; error: string };

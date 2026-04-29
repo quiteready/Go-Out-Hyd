@@ -4,6 +4,7 @@ import {
   uuid,
   text,
   integer,
+  boolean,
   timestamp,
   index,
   uniqueIndex,
@@ -16,9 +17,12 @@ export const eventTypeEnum = pgEnum("event_type", [
   "workshop",
   "comedy_night",
   "gaming",
+  "jamming",
 ]);
 
+
 export const eventStatusEnum = pgEnum("event_status", [
+  "pending",    // Organizer-submitted events awaiting admin approval
   "upcoming",
   "cancelled",
   "completed",
@@ -48,6 +52,9 @@ export const events = pgTable(
     organizerDisplayName: text("organizer_display_name"),
     organizerPhone: text("organizer_phone"),
     organizerInstagramHandle: text("organizer_instagram_handle"),
+    venueTba: boolean("venue_tba").notNull().default(false),
+    // Marks GoOut Hyd's own curated events — shown with a "GoOut Official" badge publicly
+    isGooutOfficial: boolean("is_goout_official").notNull().default(false),
     status: eventStatusEnum("status").notNull().default("upcoming"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

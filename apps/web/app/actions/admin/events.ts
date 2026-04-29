@@ -63,6 +63,8 @@ function toRowPayload(data: EventFormValues): {
   venueName: string | null;
   venueAddress: string | null;
   venueMapsUrl: string | null;
+  venueTba: boolean;
+  isGooutOfficial: boolean;
   startTime: Date;
   endTime: Date | null;
   ticketPrice: number | null;
@@ -85,6 +87,8 @@ function toRowPayload(data: EventFormValues): {
     venueName: usingCafe ? null : (data.venueName ?? null),
     venueAddress: usingCafe ? null : (data.venueAddress ?? null),
     venueMapsUrl: usingCafe ? null : (data.venueMapsUrl ?? null),
+    venueTba: data.venueTba ?? false,
+    isGooutOfficial: data.isGooutOfficial ?? false,
     startTime: new Date(data.startTime),
     endTime: data.endTime ? new Date(data.endTime) : null,
     ticketPrice: data.ticketPrice ?? null,
@@ -258,6 +262,131 @@ export async function deleteEvent(id: string): Promise<DeleteEventResult> {
     return {
       success: false,
       error: err instanceof Error ? err.message : "Failed to delete event",
+    };
+  }
+}
+
+/**
+ * Void-returning wrapper around `approveEvent` for use as a form `action` prop.
+ * React's form action type requires `(formData: FormData) => Promise<void>`;
+ * `approveEvent` returns `Promise<EventActionResult>`. Bind this one instead.
+ */
+export async function approveEventVoid(id: string): Promise<void> {
+  await approveEvent(id);
+}
+
+/**
+ * Void-returning wrapper around `completeEvent` for use as a form `action` prop.
+ */
+export async function completeEventVoid(id: string): Promise<void> {
+  await completeEvent(id);
+}
+
+/**
+ * Marks an upcoming event as completed.
+ * Used by admins after an event has taken place to correctly reflect its state in the DB.
+ */
+export async function completeEvent(
+  id: string,
+): Promise<EventActionResult> {
+  await assertAdminSession();
+
+  try {
+    const [row] = await db
+      .update(events)
+      .set({ status: "completed", updatedAt: new Date() })
+      .where(eq(events.id, id))
+      .returning({ id: events.id, slug: events.slug });
+
+    if (!row) {
+      return { success: false, error: "Event not found" };
+    }
+
+    revalidatePath(`/admin/events/${id}`);
+    revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
+    return { success: true, id: row.id, slug: row.slug };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to complete event",
+    };
+  }
+}
+
+/**
+ * Approves a pending organizer-submitted event by setting its status to 'upcoming'.
+ * Only admin-accessible; used from the admin events list.
+ */
+export async function approveEvent(
+  id: string,
+): Promise<EventActionResult> {
+  await assertAdminSession();
+
+  try {
+    const [row] = await db
+      .update(events)
+      .set({ status: "upcoming", updatedAt: new Date() })
+      .where(eq(events.id, id))
+      .returning({ id: events.id, slug: events.slug });
+
+    if (!row) {
+      return { success: false, error: "Event not found" };
+    }
+
+    revalidatePath(`/admin/events/${id}`);
+    revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
+    return { success: true, id: row.id, slug: row.slug };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to approve event",
+    };
+  }
+}
+
+/**
+ * Toggles the GoOut Official badge on an event.
+ * Marked events are displayed with a 'GoOut Official' badge on public pages.
+ */
+export async function toggleGooutOfficial(
+  id: string,
+  value: boolean,
+): Promise<EventActionResult> {
+  await assertAdminSession();
+
+  try {
+    const [row] = await db
+      .update(events)
+      .set({ isGooutOfficial: value, updatedAt: new Date() })
+      .where(eq(events.id, id))
+      .returning({ id: events.id, slug: events.slug });
+
+    if (!row) {
+      return { success: false, error: "Event not found" };
+    }
+
+    revalidatePath(`/admin/events/${id}`);
+    revalidateEventPaths(row.slug);
+    warnIfProductionRevalidateFailed(
+      await requestProductionRevalidation(
+        publicPathsForEventMutation(row.slug),
+      ),
+    );
+    return { success: true, id: row.id, slug: row.slug };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to update event",
     };
   }
 }

@@ -4,6 +4,7 @@ export const EVENT_TYPE_LABELS: Record<string, string> = {
   workshop: "Workshop",
   comedy_night: "Comedy Night",
   gaming: "Gaming",
+  jamming: "Jamming Session",
 };
 
 export const VALID_EVENT_TYPES = [
@@ -12,6 +13,7 @@ export const VALID_EVENT_TYPES = [
   "workshop",
   "comedy_night",
   "gaming",
+  "jamming",
 ] as const;
 
 export type EventType = (typeof VALID_EVENT_TYPES)[number];
@@ -23,3 +25,4 @@ export function isValidEventType(value: string): value is EventType {
 export function getEventTypeLabel(type: string): string {
   return EVENT_TYPE_LABELS[type] ?? type;
 }
+

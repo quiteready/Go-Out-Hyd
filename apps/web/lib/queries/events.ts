@@ -1,4 +1,4 @@
-import { eq, asc, and, gt } from "drizzle-orm";
+import { eq, asc, and, gt, ne } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { events, cafes } from "@/lib/drizzle/schema";
 
@@ -96,7 +96,14 @@ export async function getEventBySlug(
     })
     .from(events)
     .leftJoin(cafes, eq(events.cafeId, cafes.id))
-    .where(eq(events.slug, slug))
+    .where(
+      and(
+        eq(events.slug, slug),
+        // Hide organizer-submitted events that haven't been approved yet.
+        // cancelled and completed events remain publicly accessible.
+        ne(events.status, "pending"),
+      ),
+    )
     .limit(1);
 
   const row = rows[0];

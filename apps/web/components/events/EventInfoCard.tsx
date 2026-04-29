@@ -8,6 +8,7 @@ import {
   Palette,
   Laugh,
   Gamepad2,
+  Guitar,
   Phone,
   Instagram,
 } from "lucide-react";
@@ -31,6 +32,7 @@ const EVENT_TYPE_ICONS: Record<string, LucideIcon> = {
   workshop: Palette,
   comedy_night: Laugh,
   gaming: Gamepad2,
+  jamming: Guitar,
 };
 
 function formatEventDateTime(date: Date): string {
@@ -74,7 +76,12 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
         </div>
 
         {/* Venue */}
-        {cafe ? (
+        {event.venueTba ? (
+          <div className="flex items-start gap-3">
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
+            <span className="text-roast/70 italic">Venue TBA — location coming soon</span>
+          </div>
+        ) : cafe ? (
           <div className="flex items-start gap-3">
             <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
             <span className="text-espresso">

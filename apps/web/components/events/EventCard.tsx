@@ -5,6 +5,7 @@ import {
   getListPriceIfEarlyBirdActive,
   getPayablePricePerTicketRupees,
 } from "@/lib/events/ticket-pricing";
+import { GooutOfficialBadge } from "@/components/events/GooutOfficialBadge";
 import type { EventWithCafe } from "@/lib/queries/events";
 
 interface EventCardProps {
@@ -28,11 +29,13 @@ export function EventCard({ event }: EventCardProps) {
   const payable = getPayablePricePerTicketRupees(event);
   const listStrike = getListPriceIfEarlyBirdActive(event);
 
-  const venueLabel = event.cafe
-    ? `@ ${event.cafe.name}, ${event.cafe.area}`
-    : event.venueName
-      ? `@ ${event.venueName}${event.venueAddress ? `, ${event.venueAddress}` : ""}`
-      : "Venue TBC";
+  const venueLabel = event.venueTba
+    ? "Venue TBA"
+    : event.cafe
+      ? `@ ${event.cafe.name}, ${event.cafe.area}`
+      : event.venueName
+        ? `@ ${event.venueName}${event.venueAddress ? `, ${event.venueAddress}` : ""}`
+        : "Venue TBC";
 
   return (
     <Link
@@ -65,6 +68,11 @@ export function EventCard({ event }: EventCardProps) {
 
       {/* Card body */}
       <div className="p-4">
+        {event.isGooutOfficial && (
+          <div className="mb-1.5">
+            <GooutOfficialBadge show size="sm" />
+          </div>
+        )}
         <h3 className="font-heading text-lg text-espresso transition-colors group-hover:text-caramel line-clamp-2">
           {event.title}
         </h3>

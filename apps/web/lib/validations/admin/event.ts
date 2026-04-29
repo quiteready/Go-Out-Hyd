@@ -68,18 +68,21 @@ export const eventFormSchema = z
     earlyBirdEndsAt: optionalIsoDateTime,
     maxTickets: optionalPositiveInt,
     coverImage: optionalText(1000),
-    status: z.enum(["upcoming", "cancelled", "completed"]),
+    status: z.enum(["pending", "upcoming", "cancelled", "completed"]),
     organizerDisplayName: optionalNullableText(200),
     organizerPhone: optionalNullableText(80),
     organizerInstagramHandle: optionalNullableText(500),
+    venueTba: z.boolean().default(false),
+    isGooutOfficial: z.boolean().default(false),
   })
   .superRefine((data, ctx) => {
-    // Either a cafe OR a custom venue must be provided.
-    if (!data.cafeId && !data.venueName) {
+    // Cafe, custom venue name, or venue TBA must be provided.
+    if (!data.cafeId && !data.venueName && !data.venueTba) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["venueName"],
-        message: "Either select a cafe or provide a custom venue name.",
+        message:
+          "Either select a cafe, provide a venue name, or mark venue as TBA.",
       });
     }
 

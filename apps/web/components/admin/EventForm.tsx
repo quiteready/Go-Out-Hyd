@@ -32,6 +32,7 @@ interface EventFormProps {
 }
 
 const STATUS_OPTIONS: { value: EventFormValues["status"]; label: string }[] = [
+  { value: "pending", label: "Pending (awaiting approval)" },
   { value: "upcoming", label: "Upcoming" },
   { value: "completed", label: "Completed" },
   { value: "cancelled", label: "Cancelled" },
@@ -47,6 +48,8 @@ function buildInitialValues(event: Event | undefined): EventFormValues {
     venueName: event?.venueName ?? undefined,
     venueAddress: event?.venueAddress ?? undefined,
     venueMapsUrl: event?.venueMapsUrl ?? undefined,
+    venueTba: event?.venueTba ?? false,
+    isGooutOfficial: event?.isGooutOfficial ?? false,
     startTime: event?.startTime
       ? event.startTime.toISOString()
       : new Date().toISOString(),
@@ -77,6 +80,9 @@ export function EventForm({ event, cafes }: EventFormProps) {
   const [useCustomVenue, setUseCustomVenue] = useState(
     Boolean(event && !event.cafeId),
   );
+  const [venueTba, setVenueTba] = useState<boolean>(
+    event?.venueTba ?? false,
+  );
 
   function update<K extends keyof EventFormValues>(
     key: K,
@@ -96,6 +102,9 @@ export function EventForm({ event, cafes }: EventFormProps) {
     setUseCustomVenue(custom);
     if (custom) {
       update("cafeId", undefined);
+      // Clear TBA when switching to custom venue
+      setVenueTba(false);
+      update("venueTba", false);
     } else {
       update("venueName", undefined);
       update("venueAddress", undefined);
@@ -230,7 +239,38 @@ export function EventForm({ event, cafes }: EventFormProps) {
           />
         </div>
 
-        {useCustomVenue ? (
+        <div className="flex items-center justify-between rounded-md border border-neutral-200 bg-neutral-50 p-3">
+          <div>
+            <p className="text-sm font-medium text-neutral-900">Venue TBA</p>
+            <p className="mt-0.5 text-xs text-neutral-500">
+              Check if the venue will be announced closer to the event date.
+            </p>
+          </div>
+          <Switch
+            checked={venueTba}
+            onCheckedChange={(checked) => {
+              setVenueTba(checked);
+              update("venueTba", checked);
+              if (checked) {
+                // Clear venue fields when TBA
+                setUseCustomVenue(false);
+                update("venueName", undefined);
+                update("venueAddress", undefined);
+                update("venueMapsUrl", undefined);
+                update("cafeId", undefined);
+              }
+            }}
+            disabled={pending}
+            aria-label="Venue to be announced"
+          />
+        </div>
+
+        {venueTba ? (
+          <p className="rounded-md border border-amber-200 bg-amber-50/80 px-3 py-2 text-sm text-amber-800">
+            Venue will be shown as <strong>Venue TBA</strong> on the public
+            page until updated.
+          </p>
+        ) : useCustomVenue ? (
           <>
             <Field label="Venue name" required>
               <Input
@@ -461,6 +501,26 @@ export function EventForm({ event, cafes }: EventFormProps) {
           alt={values.title}
           disabled={pending}
         />
+      </Section>
+
+      <Section title="GoOut Official">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-neutral-900">
+              Mark as GoOut Official
+            </p>
+            <p className="mt-0.5 text-xs text-neutral-500">
+              Shows a &quot;GoOut Official&quot; badge on the public event page
+              and listing. Use for events organised or curated by GoOut Hyd.
+            </p>
+          </div>
+          <Switch
+            checked={values.isGooutOfficial ?? false}
+            onCheckedChange={(checked) => update("isGooutOfficial", checked)}
+            disabled={pending}
+            aria-label="Mark as GoOut Official"
+          />
+        </div>
       </Section>
 
       <div className="flex items-center justify-end gap-3 border-t border-neutral-200 pt-4">

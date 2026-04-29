@@ -11,6 +11,7 @@ import { getEventTypeLabel } from "@/lib/constants/events";
 import { BookButton } from "@/components/events/BookButton";
 import { EventInfoCard } from "@/components/events/EventInfoCard";
 import { VenueSection } from "@/components/events/VenueSection";
+import { GooutOfficialBadge } from "@/components/events/GooutOfficialBadge";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -31,8 +32,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!event) return { title: "Event Not Found | GoOut Hyd" };
 
-  const venueName = event.cafe?.name ?? event.venueName ?? "";
-  const venueArea = event.cafe?.area ?? event.venueAddress ?? "";
+  // When venue is TBA, omit venue from SEO title and description
+  const venueName = event.venueTba ? "" : (event.cafe?.name ?? event.venueName ?? "");
+  const venueArea = event.venueTba ? "" : (event.cafe?.area ?? event.venueAddress ?? "");
   const dateStr = formatDateShort(event.startTime);
   const descSnippet = event.description?.slice(0, 120) ?? "";
   const venueLine = venueName
@@ -100,9 +102,12 @@ export default async function EventDetailPage({ params }: PageProps) {
           <h1 className="line-clamp-2 font-heading text-4xl text-foam sm:text-5xl">
             {event.title}
           </h1>
-          <span className="mt-3 inline-block rounded-full bg-caramel px-3 py-1 text-sm font-medium text-foam">
-            {getEventTypeLabel(event.eventType)}
-          </span>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="inline-block rounded-full bg-caramel px-3 py-1 text-sm font-medium text-foam">
+              {getEventTypeLabel(event.eventType)}
+            </span>
+            <GooutOfficialBadge show={event.isGooutOfficial} size="md" />
+          </div>
         </div>
       </div>
 

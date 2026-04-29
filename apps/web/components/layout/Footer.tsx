@@ -58,7 +58,7 @@ export function Footer() {
               Discover independent cafes and unforgettable events in Hyderabad.
             </p>
             <Link
-              href="https://instagram.com"
+              href="https://www.instagram.com/goout_hyd?igsh=MTA5bXBlb3V3bGw0Mw=="
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GoOut Hyd on Instagram"
