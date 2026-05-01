@@ -40,10 +40,10 @@ export function EventCard({ event }: EventCardProps) {
   return (
     <Link
       href={`/events/${event.slug}`}
-      className="group block overflow-hidden rounded-2xl bg-foam border border-brand-border shadow-sm transition-shadow hover:shadow-md"
+      className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
     >
       {/* Cover image with date badge overlay */}
-      <div className="relative h-48 w-full overflow-hidden bg-roast/20">
+      <div className="relative h-48 w-full overflow-hidden bg-foreground/8">
         {event.coverImage ? (
           <Image
             src={event.coverImage}
@@ -53,15 +53,15 @@ export function EventCard({ event }: EventCardProps) {
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-roast/30 to-caramel/20">
-            <span className="font-heading text-3xl text-caramel/60">
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0a0a0a]/10 to-[#fbf497]/10">
+            <span className="text-3xl font-medium text-foreground/20">
               {event.title.charAt(0)}
             </span>
           </div>
         )}
 
         {/* Date badge */}
-        <span className="absolute left-3 top-3 rounded-md bg-espresso/80 px-2 py-1 text-xs font-medium text-foam">
+        <span className="absolute left-3 top-3 rounded-md bg-[#0a0a0a]/80 px-2 py-1 text-xs font-medium text-[#f8f7f2]">
           {dateBadge}
         </span>
       </div>
@@ -73,26 +73,26 @@ export function EventCard({ event }: EventCardProps) {
             <GooutOfficialBadge show size="sm" />
           </div>
         )}
-        <h3 className="font-heading text-lg text-espresso transition-colors group-hover:text-caramel line-clamp-2">
+        <h3 className="line-clamp-2 text-lg font-medium text-foreground transition-colors group-hover:text-foreground/70">
           {event.title}
         </h3>
 
-        <p className="mt-1 text-sm text-roast/70 line-clamp-1">{venueLabel}</p>
+        <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{venueLabel}</p>
 
         <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="rounded-full bg-caramel px-2.5 py-0.5 text-xs font-medium text-foam shrink-0">
+          <span className="shrink-0 rounded-full bg-[#0a0a0a] px-2.5 py-0.5 text-xs font-medium text-[#fbf497]">
             {getEventTypeLabel(event.eventType)}
           </span>
-          <span className="text-right text-sm font-medium text-espresso">
+          <span className="text-right text-sm font-medium text-foreground">
             {payable === null ? (
               "Free Entry"
             ) : listStrike !== null ? (
               <span className="inline-flex flex-wrap items-center justify-end gap-x-1.5 gap-y-0.5">
                 <span>₹{payable}</span>
-                <span className="text-xs font-normal text-roast/50 line-through">
+                <span className="text-xs font-normal text-foreground/40 line-through">
                   ₹{listStrike}
                 </span>
-                <span className="rounded bg-caramel/15 px-1 text-[10px] font-semibold uppercase tracking-wide text-caramel">
+                <span className="rounded bg-[#fbf497]/20 px-1 text-[10px] font-semibold uppercase tracking-wide text-[#0a0a0a]">
                   Early
                 </span>
               </span>

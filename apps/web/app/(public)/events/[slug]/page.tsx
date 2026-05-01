@@ -95,15 +95,15 @@ export default async function EventDetailPage({ params }: PageProps) {
             priority
           />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-roast/30 to-caramel/20" />
+          <div className="h-full w-full bg-gradient-to-br from-[#0a0a0a]/10 to-[#fbf497]/10" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-espresso/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/80 to-transparent" />
         <div className="absolute bottom-0 left-0 p-6 sm:p-10">
-          <h1 className="line-clamp-2 font-heading text-4xl text-foam sm:text-5xl">
+          <h1 className="line-clamp-2 text-4xl font-medium text-[#f8f7f2] sm:text-5xl">
             {event.title}
           </h1>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="inline-block rounded-full bg-caramel px-3 py-1 text-sm font-medium text-foam">
+            <span className="inline-block rounded-full bg-[#0a0a0a] px-3 py-1 text-sm font-medium text-[#fbf497]">
               {getEventTypeLabel(event.eventType)}
             </span>
             <GooutOfficialBadge show={event.isGooutOfficial} size="md" />
@@ -137,10 +137,10 @@ export default async function EventDetailPage({ params }: PageProps) {
           {/* Description */}
           {event.description && (
             <div className="lg:col-span-2">
-              <h2 className="mb-4 font-heading text-2xl text-espresso">
+              <h2 className="mb-4 text-2xl font-medium text-foreground">
                 About this event
               </h2>
-              <div className="whitespace-pre-line text-base leading-relaxed text-roast/80">
+              <div className="whitespace-pre-line text-base leading-relaxed text-muted-foreground">
                 {normalizeEventDescriptionForDisplay(event.description)}
               </div>
             </div>

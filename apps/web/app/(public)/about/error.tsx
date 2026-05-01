@@ -15,10 +15,10 @@ export default function AboutError({ reset }: AboutErrorProps): ReactElement {
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-error/10">
         <AlertCircle className="h-7 w-7 text-brand-error" />
       </div>
-      <h2 className="font-heading text-2xl text-espresso">
+      <h2 className="text-2xl font-medium text-foreground">
         Something went wrong
       </h2>
-      <p className="mt-2 max-w-sm text-sm text-roast/70">
+      <p className="mt-2 max-w-sm text-sm text-muted-foreground">
         We couldn&apos;t load the About page. Please try again.
       </p>
       <Button variant="secondary" className="mt-6" onClick={reset}>

@@ -61,8 +61,8 @@ export function CategoryFilterCards() {
             className={cn(
               "flex shrink-0 flex-col items-center gap-1.5 rounded-xl border px-5 py-3 text-sm font-medium whitespace-nowrap transition-colors",
               isActive
-                ? "border-caramel bg-caramel text-foam"
-                : "border-brand-border bg-foam text-espresso hover:border-caramel hover:text-caramel",
+                ? "border-[#0a0a0a] bg-[#0a0a0a] text-[#fbf497]"
+                : "border-border bg-card text-foreground hover:border-foreground/40 hover:text-foreground/70",
             )}
           >
             <Icon className="h-5 w-5" />

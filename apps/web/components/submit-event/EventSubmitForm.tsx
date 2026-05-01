@@ -85,12 +85,12 @@ export function EventSubmitForm() {
   }
 
   return (
-    <Card className="border-brand-border bg-foam shadow-md">
+    <Card className="border-border bg-card shadow-md">
       <CardHeader>
-        <CardTitle className="font-heading text-2xl text-espresso">
+        <CardTitle className="text-2xl font-medium text-foreground">
           Submit Your Event
         </CardTitle>
-        <CardDescription className="text-roast/80">
+        <CardDescription className="text-muted-foreground">
           Tell us about your event — we&apos;ll review it and list it within 24
           hours.
         </CardDescription>
@@ -112,7 +112,6 @@ export function EventSubmitForm() {
               required
               maxLength={120}
               placeholder="Jazz Night at Olive, Open Mic Wednesday…"
-              className="border-input-border"
             />
           </div>
 
@@ -123,7 +122,7 @@ export function EventSubmitForm() {
             <Select value={eventType || undefined} onValueChange={setEventType}>
               <SelectTrigger
                 id="eventType"
-                className="w-full border-input-border"
+                className="w-full"
                 aria-label="Event type"
               >
                 <SelectValue placeholder="Select event type" />
@@ -145,7 +144,6 @@ export function EventSubmitForm() {
               name="startTime"
               type="datetime-local"
               required
-              className="border-input-border"
             />
           </div>
 
@@ -159,7 +157,6 @@ export function EventSubmitForm() {
               required
               maxLength={100}
               placeholder="Your name or organisation"
-              className="border-input-border"
             />
           </div>
 
@@ -172,14 +169,13 @@ export function EventSubmitForm() {
               autoComplete="tel"
               placeholder="+91 98765 43210"
               required
-              className="border-input-border"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="organizerInstagram">
               Instagram handle{" "}
-              <span className="font-normal text-roast/50">(optional)</span>
+              <span className="font-normal text-muted-foreground">(optional)</span>
             </Label>
             <Input
               id="organizerInstagram"
@@ -187,7 +183,6 @@ export function EventSubmitForm() {
               type="text"
               placeholder="@yourevent"
               maxLength={60}
-              className="border-input-border"
             />
           </div>
 
@@ -212,7 +207,6 @@ export function EventSubmitForm() {
                 type="text"
                 maxLength={150}
                 placeholder="Lamakaan, Hard Rock Cafe, Studio 29…"
-                className="border-input-border"
               />
             </div>
           )}
@@ -220,7 +214,7 @@ export function EventSubmitForm() {
           <div className="space-y-2">
             <Label htmlFor="description">
               About this event{" "}
-              <span className="font-normal text-roast/50">(optional)</span>
+              <span className="font-normal text-muted-foreground">(optional)</span>
             </Label>
             <Textarea
               id="description"
@@ -228,14 +222,14 @@ export function EventSubmitForm() {
               placeholder="Line-up, format, what to expect, what to bring…"
               maxLength={1000}
               rows={4}
-              className="resize-none border-input-border"
+              className="resize-none"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="ticketPrice">
               Ticket price (₹){" "}
-              <span className="font-normal text-roast/50">
+              <span className="font-normal text-muted-foreground">
                 (leave blank for free events)
               </span>
             </Label>
@@ -246,14 +240,13 @@ export function EventSubmitForm() {
               min={1}
               max={100000}
               placeholder="e.g. 299"
-              className="border-input-border"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="coverImage">
               Cover image URL{" "}
-              <span className="font-normal text-roast/50">(optional)</span>
+              <span className="font-normal text-muted-foreground">(optional)</span>
             </Label>
             <Input
               id="coverImage"
@@ -261,7 +254,6 @@ export function EventSubmitForm() {
               type="url"
               placeholder="https://…"
               maxLength={500}
-              className="border-input-border"
             />
           </div>
 
@@ -278,7 +270,7 @@ export function EventSubmitForm() {
           <Button
             type="submit"
             disabled={isPending}
-            className="w-full bg-caramel text-foam hover:bg-caramel/90"
+            className="w-full bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
           >
             {isPending ? (
               <>

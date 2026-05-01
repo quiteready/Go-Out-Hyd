@@ -26,10 +26,10 @@ export function CafeCard({ cafe }: CafeCardProps) {
   return (
     <Link
       href={`/cafes/${cafe.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-brand-border bg-foam shadow-sm transition-shadow hover:shadow-md"
+      className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
     >
       {/* Cover image */}
-      <div className="relative h-48 w-full overflow-hidden bg-roast/10">
+      <div className="relative h-48 w-full overflow-hidden bg-foreground/8">
         {cafe.coverImage ? (
           <Image
             src={cafe.coverImage}
@@ -39,8 +39,8 @@ export function CafeCard({ cafe }: CafeCardProps) {
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-caramel/5">
-            <span className="font-heading text-3xl text-caramel/40">
+          <div className="flex h-full w-full items-center justify-center bg-foreground/5">
+            <span className="text-3xl font-medium text-foreground/20">
               {cafe.name.charAt(0)}
             </span>
           </div>
@@ -55,7 +55,7 @@ export function CafeCard({ cafe }: CafeCardProps) {
             {vibes.slice(0, 2).map((vibe) => (
               <span
                 key={vibe}
-                className="rounded-full bg-milk px-2.5 py-0.5 text-xs font-medium text-roast/70"
+                className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
               >
                 {vibe}
               </span>
@@ -63,12 +63,12 @@ export function CafeCard({ cafe }: CafeCardProps) {
           </div>
         )}
 
-        <h3 className="font-heading text-lg text-espresso transition-colors line-clamp-1 group-hover:text-caramel">
+        <h3 className="text-lg font-medium text-foreground transition-colors line-clamp-1 group-hover:text-foreground/70">
           {cafe.name}
         </h3>
 
         {/* Area */}
-        <div className="mt-2 flex items-center gap-1 text-sm text-roast/60">
+        <div className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
           <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} />
           <span>{cafe.area}</span>
         </div>

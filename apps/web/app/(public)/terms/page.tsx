@@ -120,7 +120,7 @@ export default function TermsOfServicePage(): ReactElement {
           <p>
             Unless an event is <strong>cancelled by the organiser</strong> (or
             as described in our{" "}
-            <Link href="/refunds" className="text-caramel underline underline-offset-2 hover:text-espresso">
+            <Link href="/refunds" className="text-foreground underline underline-offset-2 hover:text-foreground/70">
               Refund &amp; Cancellation Policy
             </Link>
             ), ticket

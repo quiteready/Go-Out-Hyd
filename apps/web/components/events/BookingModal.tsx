@@ -263,14 +263,14 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-heading text-2xl text-espresso">
+          <DialogTitle className="text-2xl font-medium text-foreground">
             Book your ticket
           </DialogTitle>
           <DialogDescription>
             {event.title}
             {event.listPrice !== undefined &&
               event.listPrice > event.payablePrice && (
-                <span className="mt-2 block text-xs text-roast/80">
+                <span className="mt-2 block text-xs text-muted-foreground">
                   Early bird: ₹{event.payablePrice} per ticket (regular ₹
                   {event.listPrice})
                 </span>
@@ -337,19 +337,19 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
           </div>
 
           <Collapsible open={step === "payment"}>
-            <div className="overflow-hidden rounded-md bg-milk">
+            <div className="overflow-hidden rounded-md bg-secondary">
               <div
                 className="flex items-center justify-between px-4 py-3"
                 aria-expanded={step === "payment"}
               >
-                <span className="text-sm font-medium text-roast">Total</span>
+                <span className="text-sm font-medium text-muted-foreground">Total</span>
                 <div className="flex items-center gap-2">
-                  <span className="font-heading text-xl text-espresso">
+                  <span className="text-xl font-medium text-foreground">
                     ₹{totalRupees}
                   </span>
                   <ChevronDown
                     className={cn(
-                      "h-4 w-4 shrink-0 text-roast/60 transition-transform duration-200",
+                      "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
                       step === "payment" && "rotate-180",
                     )}
                     aria-hidden
@@ -358,18 +358,18 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
               </div>
 
               <CollapsibleContent>
-                <div className="space-y-2 border-t border-roast/10 px-4 pb-3 pt-2">
-                  <div className="flex items-center justify-between text-sm text-roast">
+                <div className="space-y-2 border-t border-foreground/10 px-4 pb-3 pt-2">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>{ticketsRowLabel}</span>
                     <span>₹{ticketSubtotalRupees}</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-roast">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>Booking fee</span>
                     <span>₹{convenienceFeeRupees}</span>
                   </div>
-                  <div className="flex items-center justify-between border-t border-roast/10 pt-2">
-                    <span className="text-sm font-medium text-roast">Total</span>
-                    <span className="font-heading text-xl text-espresso">
+                  <div className="flex items-center justify-between border-t border-foreground/10 pt-2">
+                    <span className="text-sm font-medium text-muted-foreground">Total</span>
+                    <span className="text-xl font-medium text-foreground">
                       ₹{totalRupees}
                     </span>
                   </div>
@@ -379,11 +379,11 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
           </Collapsible>
 
           {step === "payment" && (
-            <p className="text-center text-xs leading-relaxed text-roast/90">
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
               By completing this purchase you agree to our{" "}
               <Link
                 href="/terms"
-                className="font-medium text-caramel underline underline-offset-2 hover:text-espresso"
+                className="font-medium text-foreground underline underline-offset-2 hover:text-foreground/70"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -392,7 +392,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
               and{" "}
               <Link
                 href="/refunds"
-                className="font-medium text-caramel underline underline-offset-2 hover:text-espresso"
+                className="font-medium text-foreground underline underline-offset-2 hover:text-foreground/70"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -415,7 +415,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-caramel text-foam hover:bg-caramel/90"
+                className="bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
               >
                 Continue
               </Button>
@@ -423,7 +423,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-caramel text-foam hover:bg-caramel/90"
+                className="bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
               >
                 {isLoading ? "Processing…" : "Pay"}
               </Button>

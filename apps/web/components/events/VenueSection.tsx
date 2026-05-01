@@ -26,12 +26,12 @@ export function VenueSection({ cafe, venue }: VenueSectionProps) {
 
 function CafeVenue({ cafe }: { cafe: Cafe }) {
   return (
-    <section className="bg-milk py-12">
+    <section className="bg-secondary py-12">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-6 font-heading text-3xl text-espresso">Venue</h2>
+        <h2 className="mb-6 text-3xl font-medium text-foreground">Venue</h2>
 
-        <div className="flex items-center gap-4 rounded-2xl border border-brand-border bg-foam p-4 shadow-sm">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-roast/20">
+        <div className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-foreground/8">
             {cafe.coverImage ? (
               <Image
                 src={cafe.coverImage}
@@ -41,8 +41,8 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
                 className="object-cover"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-roast/30 to-caramel/20">
-                <span className="font-heading text-xl text-caramel/60">
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0a0a0a]/10 to-[#fbf497]/10">
+                <span className="text-xl font-medium text-foreground/20">
                   {cafe.name.charAt(0)}
                 </span>
               </div>
@@ -50,8 +50,8 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
           </div>
 
           <div>
-            <p className="font-medium text-espresso">{cafe.name}</p>
-            <p className="mt-0.5 text-sm text-roast/70">{cafe.area}</p>
+            <p className="font-medium text-foreground">{cafe.name}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">{cafe.area}</p>
           </div>
         </div>
 
@@ -61,9 +61,9 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
               href={cafe.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
+              className="inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-foreground/70"
             >
-              <MapPin className="h-4 w-4 text-caramel" />
+              <MapPin className="h-4 w-4 text-muted-foreground" />
               Get Directions
             </a>
           </div>
@@ -72,7 +72,7 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
         <div className="mt-6">
           <Link
             href={`/cafes/${cafe.slug}`}
-            className="font-medium text-caramel transition-colors hover:text-roast"
+            className="font-medium text-foreground transition-colors hover:text-foreground/70"
           >
             View Full Cafe Profile →
           </Link>
@@ -84,14 +84,14 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
 
 function CustomVenueBlock({ venue }: { venue: CustomVenue }) {
   return (
-    <section className="bg-milk py-12">
+    <section className="bg-secondary py-12">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-6 font-heading text-3xl text-espresso">Venue</h2>
+        <h2 className="mb-6 text-3xl font-medium text-foreground">Venue</h2>
 
-        <div className="rounded-2xl border border-brand-border bg-foam p-6 shadow-sm">
-          <p className="font-medium text-espresso">{venue.name}</p>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <p className="font-medium text-foreground">{venue.name}</p>
           {venue.address && (
-            <p className="mt-1 text-sm text-roast/70">{venue.address}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{venue.address}</p>
           )}
 
           {venue.mapsUrl && (
@@ -100,9 +100,9 @@ function CustomVenueBlock({ venue }: { venue: CustomVenue }) {
                 href={venue.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-espresso transition-colors hover:text-caramel"
+                className="inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-foreground/70"
               >
-                <MapPin className="h-4 w-4 text-caramel" />
+                <MapPin className="h-4 w-4 text-muted-foreground" />
                 Get Directions
               </a>
             </div>

@@ -38,8 +38,8 @@ export function AreaFilterPills() {
         className={cn(
           "rounded-full px-4 py-1.5 text-sm font-medium transition-colors border",
           !activeArea
-            ? "bg-caramel text-espresso border-caramel"
-            : "bg-transparent text-roast border-brand-border hover:border-caramel hover:text-caramel",
+            ? "bg-[#0a0a0a] text-[#fbf497] border-[#0a0a0a]"
+            : "bg-transparent text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
         )}
       >
         All Areas
@@ -56,8 +56,8 @@ export function AreaFilterPills() {
             className={cn(
               "rounded-full px-4 py-1.5 text-sm font-medium transition-colors border",
               isActive
-                ? "bg-caramel text-espresso border-caramel"
-                : "bg-transparent text-roast border-brand-border hover:border-caramel hover:text-caramel",
+                ? "bg-[#0a0a0a] text-[#fbf497] border-[#0a0a0a]"
+                : "bg-transparent text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
             )}
           >
             {area.name}

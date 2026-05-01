@@ -17,17 +17,17 @@ export default function BookingConfirmationError({ error, reset }: ErrorProps) {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-16 text-center sm:px-6">
-      <h1 className="font-heading text-3xl text-espresso">
+      <h1 className="text-3xl font-medium text-foreground">
         Could not load your ticket
       </h1>
-      <p className="mt-4 text-roast/80">
+      <p className="mt-4 text-muted-foreground">
         Something went wrong while loading your booking. Your payment, if
         completed, is still saved. Please try again or contact us.
       </p>
       <div className="mt-6 flex justify-center gap-3">
         <Button
           onClick={() => reset()}
-          className="bg-caramel text-foam hover:bg-caramel/90"
+          className="bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
         >
           Try again
         </Button>

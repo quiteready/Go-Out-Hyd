@@ -34,10 +34,10 @@ export default async function CafesPage({ searchParams }: CafesPageProps) {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="font-heading text-4xl text-espresso">
+        <h1 className="text-4xl font-medium text-foreground">
           {activeAreaName ? `Cafes in ${activeAreaName}` : "All Cafes"}
         </h1>
-        <p className="mt-2 text-roast/70">
+        <p className="mt-2 text-muted-foreground">
           {activeAreaName
             ? `Showing cafes in ${activeAreaName}`
             : "Explore cafes across Hyderabad"}
@@ -68,13 +68,13 @@ export default async function CafesPage({ searchParams }: CafesPageProps) {
 function EmptyState({ area }: { area?: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-caramel/10">
-        <Coffee className="h-8 w-8 text-caramel" />
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-foreground/8">
+        <Coffee className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h2 className="font-heading text-2xl text-espresso">
+      <h2 className="text-2xl font-medium text-foreground">
         {area ? `No cafes in ${area} yet` : "No cafes yet"}
       </h2>
-      <p className="mt-2 max-w-sm text-sm text-roast/60">
+      <p className="mt-2 max-w-sm text-sm text-muted-foreground">
         {area
           ? `We haven't listed any cafes in ${area} yet. Try another area or check back soon.`
           : "We're working on adding cafes. Check back soon."}

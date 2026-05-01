@@ -9,7 +9,7 @@ interface PhotoGalleryProps {
 export function PhotoGallery({ images, cafeName }: PhotoGalleryProps) {
   return (
     <section>
-      <h2 className="mb-4 font-heading text-3xl text-espresso">Gallery</h2>
+      <h2 className="mb-4 text-3xl font-medium text-foreground">Gallery</h2>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         {images.map((image) => (
           <div

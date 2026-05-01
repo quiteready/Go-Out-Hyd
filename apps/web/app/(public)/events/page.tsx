@@ -42,10 +42,10 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="font-heading text-4xl text-espresso">
+        <h1 className="text-4xl font-medium text-foreground">
           {categoryLabel ? `${categoryLabel} Events` : "Events"}
         </h1>
-        <p className="mt-2 text-roast/70">
+        <p className="mt-2 text-muted-foreground">
           {categoryLabel
             ? `Upcoming ${categoryLabel.toLowerCase()} events across Hyderabad`
             : "Discover what's happening at Hyderabad's best independent cafes"}

@@ -28,22 +28,22 @@ const steps = [
 
 export default function SubmitEventPage() {
   return (
-    <div className="font-body">
-      <section className="bg-espresso px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+    <div>
+      <section className="bg-[#0a0a0a] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="font-heading text-4xl leading-tight text-cream sm:text-5xl">
+          <h1 className="text-4xl font-medium leading-tight text-[#f8f7f2] sm:text-5xl">
             Bring Your Event to Hyderabad
           </h1>
-          <p className="mt-4 text-lg text-foam/90 sm:text-xl">
+          <p className="mt-4 text-lg text-[#f8f7f2]/90 sm:text-xl">
             Live music, open mics, workshops, jamming sessions — if it&apos;s
             happening in the city, it belongs here.
           </p>
         </div>
       </section>
 
-      <section className="bg-milk px-4 py-14 sm:px-6 sm:py-16">
+      <section className="bg-secondary px-4 py-14 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-center font-heading text-2xl text-espresso sm:text-3xl">
+          <h2 className="text-center text-2xl font-medium text-foreground sm:text-3xl">
             How it works
           </h2>
           <ol className="mt-10 flex list-none flex-col items-center gap-6 md:flex-row md:justify-center md:gap-2">
@@ -53,16 +53,16 @@ export default function SubmitEventPage() {
                 className="flex w-full max-w-[280px] flex-col items-center md:w-auto md:max-w-none md:flex-row md:items-center md:gap-4"
               >
                 {index > 0 ? (
-                  <span className="mb-2 text-caramel/40 md:mb-0 md:text-xl">
+                  <span className="mb-2 text-foreground/30 md:mb-0 md:text-xl">
                     →
                   </span>
                 ) : null}
                 <div className="flex w-full flex-col items-center text-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-caramel/20 text-caramel">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-foreground/8 text-foreground">
                     <span className="sr-only">Step {index + 1}</span>
                     <Icon className="h-7 w-7" aria-hidden />
                   </div>
-                  <p className="mt-4 font-medium text-espresso">{title}</p>
+                  <p className="mt-4 font-medium text-foreground">{title}</p>
                 </div>
               </li>
             ))}
@@ -70,7 +70,7 @@ export default function SubmitEventPage() {
         </div>
       </section>
 
-      <section className="bg-cream px-4 py-14 sm:px-6 sm:pb-20">
+      <section className="bg-background px-4 py-14 sm:px-6 sm:pb-20">
         <div className="mx-auto max-w-lg">
           <EventSubmitForm />
         </div>

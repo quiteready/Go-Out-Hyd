@@ -13,17 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function AboutPage(): ReactElement {
   return (
-    <div className="font-body">
-      <section className="bg-espresso px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+    <div>
+      <section className="bg-[#0a0a0a] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="font-heading text-[2rem] leading-tight text-cream sm:text-5xl sm:leading-tight">
+          <h1 className="text-[2rem] font-medium leading-tight text-[#f8f7f2] sm:text-5xl sm:leading-tight">
             Built in Hyderabad, for Hyderabad
           </h1>
         </div>
       </section>
 
-      <section className="bg-cream px-4 py-14 sm:px-6 sm:py-16">
-        <div className="mx-auto max-w-3xl space-y-5 text-base leading-relaxed text-roast sm:text-lg">
+      <section className="bg-background px-4 py-14 sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-3xl space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
           <p>
             GoOut Hyd grew out of years of running live events across the city.
             Wilson has worked with artists, venues, and crowds long enough to know
@@ -47,8 +47,8 @@ export default function AboutPage(): ReactElement {
         </div>
       </section>
 
-      <section className="bg-milk px-4 py-14 sm:px-6 sm:py-16">
-        <blockquote className="mx-auto max-w-3xl text-center font-heading text-xl italic leading-snug text-espresso sm:text-2xl md:text-3xl">
+      <section className="bg-secondary px-4 py-14 sm:px-6 sm:py-16">
+        <blockquote className="mx-auto max-w-3xl text-center text-xl italic leading-snug text-foreground sm:text-2xl md:text-3xl">
           We believe Hyderabad&apos;s best experiences happen at independent
           cafes, not chains. GoOut Hyd exists to make sure you never miss them.
         </blockquote>
@@ -56,14 +56,14 @@ export default function AboutPage(): ReactElement {
 
       <TeamSection />
 
-      <section className="bg-milk px-4 py-14 sm:px-6 sm:pb-20">
+      <section className="bg-secondary px-4 py-14 sm:px-6 sm:pb-20">
         <div className="mx-auto flex max-w-lg flex-col items-center text-center">
-          <h2 className="font-heading text-2xl text-espresso sm:text-3xl">
+          <h2 className="text-2xl font-medium text-foreground sm:text-3xl">
             Want to partner with us?
           </h2>
           <Link
             href="/partner"
-            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-md bg-caramel px-8 py-2.5 text-sm font-medium text-foam transition-colors hover:bg-caramel/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-milk"
+            className="mt-6 inline-flex min-h-11 items-center justify-center rounded-md bg-[#0a0a0a] px-8 py-2.5 text-sm font-medium text-[#fbf497] transition-colors hover:bg-[#0a0a0a]/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fbf497] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             List Your Cafe
           </Link>
@@ -71,7 +71,7 @@ export default function AboutPage(): ReactElement {
             href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-caramel transition-colors hover:text-caramel/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2 focus-visible:ring-offset-milk"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fbf497] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="GoOut Hyd on Instagram"
           >
             <Instagram className="h-5 w-5 shrink-0" aria-hidden />

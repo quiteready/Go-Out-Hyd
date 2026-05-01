@@ -29,7 +29,7 @@ export function BookButton({ event }: BookButtonProps) {
     <>
       <Button
         size="lg"
-        className="mt-4 w-full bg-caramel text-foam hover:bg-caramel/90"
+        className="mt-4 w-full bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
         onClick={() => setOpen(true)}
       >
         <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
@@ -40,7 +40,7 @@ export function BookButton({ event }: BookButtonProps) {
               <span className="text-sm text-foam/80 line-through">
                 ₹{event.listPrice}
               </span>
-              <span className="rounded bg-foam/15 px-1.5 text-xs font-medium">
+              <span className="rounded bg-[#fbf497]/20 px-1.5 text-xs font-medium text-[#0a0a0a]">
                 Early bird
               </span>
             </>

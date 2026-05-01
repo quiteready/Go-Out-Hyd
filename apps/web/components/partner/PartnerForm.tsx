@@ -49,7 +49,7 @@ export function PartnerForm() {
       return;
     }
     if (state.success) {
-      toast.success("Thanks! Wilson will reach out within 24 hours");
+      toast.success("Thanks! We'll reach out within 24 hours");
       formRef.current?.reset();
       setArea("");
       return;
@@ -77,12 +77,12 @@ export function PartnerForm() {
   }
 
   return (
-    <Card className="border-brand-border bg-foam shadow-md">
+    <Card className="border-border bg-card shadow-md">
       <CardHeader>
-        <CardTitle className="font-heading text-2xl text-espresso">
+        <CardTitle className="text-2xl font-medium text-foreground">
           Get Started
         </CardTitle>
-        <CardDescription className="text-roast/80">
+        <CardDescription className="text-muted-foreground">
           Tell us about you and your cafe — we&apos;ll call you within 24 hours.
         </CardDescription>
       </CardHeader>
@@ -103,7 +103,6 @@ export function PartnerForm() {
               autoComplete="name"
               required
               maxLength={100}
-              className="border-input-border"
             />
           </div>
           <div className="space-y-2">
@@ -115,7 +114,6 @@ export function PartnerForm() {
               autoComplete="organization"
               required
               maxLength={100}
-              className="border-input-border"
             />
           </div>
           <div className="space-y-2">
@@ -127,7 +125,6 @@ export function PartnerForm() {
               autoComplete="tel"
               placeholder="+91 98765 43210"
               required
-              className="border-input-border"
             />
           </div>
           <div className="space-y-2">
@@ -136,7 +133,7 @@ export function PartnerForm() {
             <Select value={area || undefined} onValueChange={setArea}>
               <SelectTrigger
                 id="area"
-                className="w-full border-input-border"
+                className="w-full"
                 aria-label="Area or location"
               >
                 <SelectValue placeholder="Select your area" />
@@ -153,7 +150,7 @@ export function PartnerForm() {
           <div className="space-y-2">
             <Label htmlFor="instagram_handle">
               Instagram handle{" "}
-              <span className="text-roast/50 font-normal">(optional)</span>
+              <span className="font-normal text-muted-foreground">(optional)</span>
             </Label>
             <Input
               id="instagram_handle"
@@ -161,13 +158,12 @@ export function PartnerForm() {
               type="text"
               placeholder="@yourcafe"
               maxLength={50}
-              className="border-input-border"
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">
               Tell us about your cafe{" "}
-              <span className="text-roast/50 font-normal">(optional)</span>
+              <span className="font-normal text-muted-foreground">(optional)</span>
             </Label>
             <Textarea
               id="description"
@@ -175,7 +171,7 @@ export function PartnerForm() {
               placeholder="What makes your cafe special? Ambiance, specialties, events you host..."
               maxLength={500}
               rows={4}
-              className="border-input-border resize-none"
+              className="resize-none"
             />
           </div>
           <input
@@ -189,7 +185,7 @@ export function PartnerForm() {
           <Button
             type="submit"
             disabled={isPending}
-            className="w-full bg-caramel text-foam hover:bg-caramel/90"
+            className="w-full bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
           >
             {isPending ? (
               <>

@@ -55,13 +55,13 @@ export default async function BookingConfirmationPage({ searchParams }: PageProp
   if (ticket.status !== "paid") {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center sm:px-6">
-        <h1 className="font-heading text-3xl text-espresso">Payment pending</h1>
-        <p className="mt-4 text-roast/80">
+        <h1 className="text-3xl font-medium text-foreground">Payment pending</h1>
+        <p className="mt-4 text-muted-foreground">
           We have not received confirmation of your payment yet. If money was
           deducted, it will appear once our payment provider confirms. Please do
           not retry — contact us if this persists.
         </p>
-        <Button asChild className="mt-6 bg-caramel text-foam hover:bg-caramel/90">
+        <Button asChild className="mt-6 bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90">
           <Link href="/events">Back to events</Link>
         </Button>
       </div>
@@ -75,22 +75,22 @@ export default async function BookingConfirmationPage({ searchParams }: PageProp
 
   return (
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6 sm:py-16">
-      <div className="rounded-lg border border-sand bg-foam p-6 shadow-sm sm:p-10">
+      <div className="rounded-lg border border-sand bg-card p-6 shadow-sm sm:p-10">
         <div className="text-center">
-          <span className="inline-flex rounded-full bg-caramel/15 px-4 py-1 text-sm font-medium text-caramel">
+          <span className="inline-flex rounded-full bg-[#fbf497]/20 px-4 py-1 text-sm font-medium text-[#0a0a0a]">
             Confirmed
           </span>
-          <h1 className="mt-4 font-heading text-3xl text-espresso sm:text-4xl">
+          <h1 className="mt-4 text-3xl font-medium text-foreground sm:text-4xl">
             Your ticket is ready
           </h1>
-          <p className="mt-2 text-roast/80">
+          <p className="mt-2 text-muted-foreground">
             Show this QR code at the venue entrance.
           </p>
         </div>
 
         {qrDataUrl && (
           <div className="mt-8 flex justify-center">
-            <div className="rounded-lg border-4 border-caramel bg-foam p-3">
+            <div className="rounded-lg border-4 border-[#fbf497] bg-card p-3">
               <Image
                 src={qrDataUrl}
                 alt="Ticket QR Code"
@@ -102,50 +102,50 @@ export default async function BookingConfirmationPage({ searchParams }: PageProp
           </div>
         )}
 
-        <p className="mt-3 text-center font-mono text-xs text-roast/60">
+        <p className="mt-3 text-center font-mono text-xs text-foreground/40">
           {ticket.ticketCode}
         </p>
 
         <dl className="mt-8 space-y-3 border-t border-sand pt-6 text-sm">
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Event</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Event</dt>
+            <dd className="text-right font-medium text-foreground">
               {ticket.event.title}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Date</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Date</dt>
+            <dd className="text-right font-medium text-foreground">
               {formatEventDate(ticket.event.startTime)}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Venue</dt>
-            <dd className="text-right font-medium text-espresso">{venueLine}</dd>
+            <dt className="text-muted-foreground">Venue</dt>
+            <dd className="text-right font-medium text-foreground">{venueLine}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Name</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Name</dt>
+            <dd className="text-right font-medium text-foreground">
               {ticket.customerName}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Tickets</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Tickets</dt>
+            <dd className="text-right font-medium text-foreground">
               {ticket.quantity}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Amount paid</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Amount paid</dt>
+            <dd className="text-right font-medium text-foreground">
               ₹{ticket.amountPaid}
             </dd>
           </div>
         </dl>
 
-        <p className="mt-6 text-center text-sm text-roast/70">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           A copy of this ticket has been emailed to{" "}
-          <span className="font-medium text-espresso">
+          <span className="font-medium text-foreground">
             {ticket.customerEmail}
           </span>
           .

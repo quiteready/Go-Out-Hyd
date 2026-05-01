@@ -65,12 +65,12 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
     Boolean(instagramHref);
 
   return (
-    <div className="rounded-2xl border border-brand-border bg-foam p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
       <div className="space-y-4">
         {/* Date & time */}
         <div className="flex items-start gap-3">
-          <Calendar className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
-          <span className="text-espresso">
+          <Calendar className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+          <span className="text-foreground">
             {formatEventDateTime(event.startTime)}
           </span>
         </div>
@@ -78,16 +78,16 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
         {/* Venue */}
         {event.venueTba ? (
           <div className="flex items-start gap-3">
-            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
-            <span className="text-roast/70 italic">Venue TBA — location coming soon</span>
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="italic text-muted-foreground">Venue TBA — location coming soon</span>
           </div>
         ) : cafe ? (
           <div className="flex items-start gap-3">
-            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
-            <span className="text-espresso">
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="text-foreground">
               <Link
                 href={`/cafes/${cafe.slug}`}
-                className="font-medium underline-offset-2 transition-colors hover:text-caramel hover:underline"
+                className="font-medium underline-offset-2 transition-colors hover:text-foreground/70 hover:underline"
               >
                 {cafe.name}
               </Link>
@@ -97,34 +97,34 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
           </div>
         ) : event.venueName ? (
           <div className="flex items-start gap-3">
-            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
-            <span className="text-espresso">
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="text-foreground">
               <span className="font-medium">{event.venueName}</span>
               {event.venueAddress ? `, ${event.venueAddress}` : ""}
             </span>
           </div>
         ) : (
           <div className="flex items-start gap-3">
-            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
-            <span className="text-roast/70">Venue TBC</span>
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="text-muted-foreground">Venue TBC</span>
           </div>
         )}
 
-        {/* Organizer / contact (organizer fields override café when set) */}
+        {/* Organizer / contact */}
         {showContactBlock && (
-          <div className="flex flex-col gap-2 border-t border-brand-border/60 pt-3">
-            <p className="text-xs font-medium uppercase tracking-wide text-roast/55">
+          <div className="flex flex-col gap-2 border-t border-border/60 pt-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-foreground/40">
               {contact.sectionLabel}
             </p>
             {contact.displayName && (
-              <p className="text-sm font-semibold text-espresso">{contact.displayName}</p>
+              <p className="text-sm font-semibold text-foreground">{contact.displayName}</p>
             )}
             {contact.phone && telHref && (
               <a
                 href={telHref}
-                className="flex items-center gap-3 text-sm font-medium text-espresso transition-colors hover:text-caramel"
+                className="flex items-center gap-3 text-sm font-medium text-foreground transition-colors hover:text-foreground/70"
               >
-                <Phone className="h-5 w-5 shrink-0 text-caramel" />
+                <Phone className="h-5 w-5 shrink-0 text-muted-foreground" />
                 {contact.phone}
               </a>
             )}
@@ -133,9 +133,9 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
                 href={instagramHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm font-medium text-espresso transition-colors hover:text-caramel"
+                className="flex items-center gap-3 text-sm font-medium text-foreground transition-colors hover:text-foreground/70"
               >
-                <Instagram className="h-5 w-5 shrink-0 text-caramel" />
+                <Instagram className="h-5 w-5 shrink-0 text-muted-foreground" />
                 {displayInstagramLabel(contact.instagramHandle)}
               </a>
             )}
@@ -144,27 +144,27 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
 
         {/* Event type */}
         <div className="flex items-center gap-3">
-          <TypeIcon className="h-5 w-5 shrink-0 text-caramel" />
-          <span className="text-espresso">
+          <TypeIcon className="h-5 w-5 shrink-0 text-muted-foreground" />
+          <span className="text-foreground">
             {getEventTypeLabel(event.eventType)}
           </span>
         </div>
 
         {/* Ticket price */}
         <div className="flex items-start gap-3">
-          <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-caramel" />
-          <div className="text-espresso">
+          <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+          <div className="text-foreground">
             {payable === null ? (
               <span className="font-medium">Free Entry</span>
             ) : listStrike !== null ? (
               <div>
                 <p className="font-medium">
                   ₹{payable}{" "}
-                  <span className="text-sm font-normal text-roast/55 line-through">
+                  <span className="text-sm font-normal text-foreground/40 line-through">
                     ₹{listStrike}
                   </span>
                 </p>
-                <p className="mt-0.5 text-xs text-caramel">Early bird pricing</p>
+                <p className="mt-0.5 text-xs text-[#fbf497]">Early bird pricing</p>
               </div>
             ) : (
               <span className="font-medium">₹{payable}</span>

@@ -50,10 +50,10 @@ export function CategoryFilterTabs() {
             onClick={() => setCategory(value)}
             aria-pressed={isActive}
             className={cn(
-              "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2",
+              "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fbf497] focus-visible:ring-offset-2",
               isActive
-                ? "bg-caramel text-white"
-                : "bg-milk text-roast/70 hover:bg-cream hover:text-espresso",
+                ? "bg-[#0a0a0a] text-[#fbf497]"
+                : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground",
             )}
           >
             {label}

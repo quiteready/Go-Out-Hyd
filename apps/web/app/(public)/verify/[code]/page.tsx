@@ -39,51 +39,51 @@ export default async function VerifyTicketPage({ params }: PageProps) {
       <div
         className={`rounded-lg border p-6 text-center shadow-sm ${
           isValid
-            ? "border-caramel/40 bg-foam"
+            ? "border-[#fbf497]/40 bg-card"
             : "border-red-300 bg-red-50"
         }`}
       >
         <div
           className={`inline-flex rounded-full px-4 py-1 text-sm font-semibold ${
             isValid
-              ? "bg-caramel/15 text-caramel"
+              ? "bg-[#fbf497]/20 text-[#0a0a0a]"
               : "bg-red-200 text-red-800"
           }`}
         >
           {isValid ? "VALID TICKET" : "NOT PAID"}
         </div>
-        <h1 className="mt-4 font-heading text-2xl text-espresso sm:text-3xl">
+        <h1 className="mt-4 text-2xl font-medium text-foreground sm:text-3xl">
           {ticket.event.title}
         </h1>
 
         <dl className="mt-6 space-y-3 border-t border-sand pt-6 text-left text-sm">
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Name</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Name</dt>
+            <dd className="text-right font-medium text-foreground">
               {ticket.customerName}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Tickets</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Tickets</dt>
+            <dd className="text-right font-medium text-foreground">
               {ticket.quantity}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Date</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Date</dt>
+            <dd className="text-right font-medium text-foreground">
               {formatEventDate(ticket.event.startTime)}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-roast/70">Venue</dt>
-            <dd className="text-right font-medium text-espresso">
+            <dt className="text-muted-foreground">Venue</dt>
+            <dd className="text-right font-medium text-foreground">
               {venueLine}
             </dd>
           </div>
         </dl>
 
-        <p className="mt-6 font-mono text-xs text-roast/50">
+        <p className="mt-6 font-mono text-xs text-foreground/40">
           {ticket.ticketCode.slice(0, 8)}…{ticket.ticketCode.slice(-4)}
         </p>
       </div>

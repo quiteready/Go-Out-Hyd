@@ -55,9 +55,12 @@ export function HeroSection() {
           </span>
 
           {/* Wordmark — DM Sans 500, never serif */}
-          <h1 className="mb-[22px] leading-[0.88]">
+          <h1 className="mb-[22px] leading-[0.88] ml-[-3mm]">
             <span className="block font-sans font-medium text-[clamp(52px,13vw,144px)] tracking-[-0.02em] text-white [text-shadow:0_0_60px_rgba(10,10,10,0.5)]">
-              GoOut Hyd.
+              GoOut
+            </span>
+            <span className="block font-sans font-medium text-[clamp(52px,13vw,144px)] tracking-[-0.02em] text-white [text-shadow:0_0_60px_rgba(10,10,10,0.5)]">
+              Hyd.
             </span>
           </h1>
 

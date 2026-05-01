@@ -49,11 +49,11 @@ export default async function CafeProfilePage({ params }: PageProps) {
             priority
           />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-roast/30 to-caramel/20" />
+          <div className="h-full w-full bg-gradient-to-br from-[#0a0a0a]/10 to-[#fbf497]/10" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-espresso/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/80 to-transparent" />
         <div className="absolute bottom-0 left-0 p-6 sm:p-10">
-          <h1 className="line-clamp-2 font-heading text-4xl text-foam sm:text-5xl">
+          <h1 className="line-clamp-2 text-4xl font-medium text-[#f8f7f2] sm:text-5xl">
             {cafe.name}
           </h1>
           <span className="mt-3 inline-block rounded-full border border-foam/40 px-3 py-1 text-sm text-foam/80">
@@ -72,8 +72,8 @@ export default async function CafeProfilePage({ params }: PageProps) {
           {/* About */}
           {cafe.description && (
             <section>
-              <h2 className="mb-4 font-heading text-3xl text-espresso">About</h2>
-              <p className="leading-relaxed text-roast/80">{cafe.description}</p>
+              <h2 className="mb-4 text-3xl font-medium text-foreground">About</h2>
+              <p className="leading-relaxed text-muted-foreground">{cafe.description}</p>
             </section>
           )}
 
