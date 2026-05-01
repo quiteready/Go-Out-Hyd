@@ -1,94 +1,106 @@
-import type { ReactElement } from "react";
+"use client";
+
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Coffee } from "lucide-react";
-import { cn } from "@/lib/utils";
 
-const HERO_PHOTOS = [
-  {
-    src: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=500&fit=crop",
-    alt: "Cosy cafe interior",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=400&h=500&fit=crop",
-    alt: "Live music night at a cafe",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=500&fit=crop",
-    alt: "Specialty coffee art",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=400&h=500&fit=crop",
-    alt: "Workshop at a cafe",
-  },
-] as const;
+const HERO_SRC =
+  "https://images.unsplash.com/photo-1572427401206-c0e90ac69e3a?auto=format&fit=crop&w=1600&q=80";
 
-export function HeroSection(): ReactElement {
+export function HeroSection() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Parallax — translate the image wrapper on scroll
+  useEffect(() => {
+    const onScroll = () => {
+      if (wrapperRef.current) {
+        wrapperRef.current.style.transform = `translateY(${
+          window.scrollY * 0.3
+        }px)`;
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <section className="w-full bg-cream">
-      {/* Two-column layout */}
-      <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 sm:pt-16 lg:grid lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8 lg:pt-20 lg:pb-12">
-        {/* Left column — content */}
-        <div className="flex flex-col items-start">
-          {/* Badge pill */}
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-caramel/10 px-3.5 py-1.5">
-            <Coffee className="h-3.5 w-3.5 text-caramel" strokeWidth={2.5} />
-            <span className="text-xs font-semibold text-caramel">
-              Hyderabad&apos;s Independent Cafe Scene
-            </span>
-          </div>
+    <section className="relative h-[100dvh] overflow-hidden bg-[#0a0a0a]">
+      {/* Parallax wrapper — Image inside gets Ken Burns */}
+      <div
+        ref={wrapperRef}
+        className="absolute inset-[-20px] h-[calc(100%+40px)] w-[calc(100%+40px)] will-change-transform"
+      >
+        <Image
+          src={HERO_SRC}
+          alt="Charminar, Hyderabad"
+          fill
+          priority
+          sizes="100vw"
+          className="hero-ken-burns object-cover [filter:saturate(0.6)_contrast(1.1)_brightness(0.85)]"
+        />
+      </div>
 
-          {/* Headline */}
-          <h1 className="font-heading text-4xl leading-tight text-espresso sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-            Discover the Best Cafes &amp; Events in Hyderabad
+      {/* Yellow frame — thin, confident */}
+      <div className="hero-frame" aria-hidden="true" />
+
+      {/* Dark gradient overlay */}
+      <div className="hero-overlay absolute inset-0 z-[2] flex items-center justify-center">
+        <div
+          className="relative z-[4] w-full max-w-[700px] px-6 text-left"
+          data-reveal
+        >
+          {/* City eyebrow */}
+          <span className="mb-[14px] block text-[11px] font-medium uppercase tracking-[0.4em] text-yellow opacity-85">
+            Hyderabad
+          </span>
+
+          {/* Wordmark — DM Sans 500, never serif */}
+          <h1 className="mb-[22px] leading-[0.88]">
+            <span className="block font-sans font-medium text-[clamp(52px,13vw,144px)] tracking-[-0.02em] text-white [text-shadow:0_0_60px_rgba(10,10,10,0.5)]">
+              GoOut Hyd.
+            </span>
           </h1>
 
+          {/* Yellow rule */}
+          <hr className="mb-[18px] h-[2px] w-12 border-none bg-yellow opacity-70" />
+
           {/* Subtitle */}
-          <p className="mt-5 max-w-lg text-base text-roast/80 sm:text-lg">
-            Explore independent cafes, attend live music nights, open mics,
-            workshops, and more — all in one place.
+          <p className="max-w-[360px] text-[clamp(14px,2.2vw,17px)] font-light tracking-[0.015em] text-white opacity-50">
+            Everything happening in the city
           </p>
 
-          {/* CTA buttons */}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+          {/* CTAs */}
+          <div className="mt-7 flex flex-wrap gap-3">
             <Link
-              href="/cafes"
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-caramel px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2"
+              href="/events"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[6px] bg-yellow px-6 text-[13px] font-medium tracking-[0.02em] text-black transition-opacity hover:opacity-85"
             >
-              Explore Cafes
+              Explore
             </Link>
             <Link
               href="/events"
-              className="inline-flex min-h-11 items-center justify-center rounded-md border border-caramel bg-transparent px-6 py-2.5 text-sm font-medium text-caramel transition-colors hover:bg-caramel/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-caramel focus-visible:ring-offset-2"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[6px] border border-white/25 bg-transparent px-6 text-[13px] font-light tracking-[0.02em] text-white transition-colors hover:border-white/50"
             >
-              Browse Events
+              Find your area
             </Link>
           </div>
-
         </div>
+      </div>
 
-        {/* Right column — staggered 2×2 photo grid, desktop only */}
-        <div className="mt-12 hidden lg:mt-0 lg:block">
-          <div className="grid grid-cols-2 gap-4">
-            {HERO_PHOTOS.map((photo, index) => (
-              <div
-                key={photo.src}
-                className={cn(
-                  "relative h-56 overflow-hidden rounded-2xl",
-                  index % 2 === 1 && "mt-8",
-                )}
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(min-width: 1024px) 20vw, 0px"
-                  className="object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Scroll cue — CSS animates in after 2.5s */}
+      <div
+        className="hero-scroll-cue absolute bottom-7 left-1/2 z-[3]"
+        aria-hidden="true"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10m0 0L4 9m4 4l4-4"
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
     </section>
   );

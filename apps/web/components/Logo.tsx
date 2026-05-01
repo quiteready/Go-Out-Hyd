@@ -7,7 +7,7 @@ interface LogoProps {
 export function Logo({ className }: LogoProps) {
   return (
     <span
-      className={cn("font-heading text-espresso tracking-tight", className)}
+      className={cn("font-sans font-medium tracking-tight", className)}
     >
       GoOut Hyd
     </span>

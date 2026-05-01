@@ -11,20 +11,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        // GoOut Hyd brand palette
-        espresso: "#1A1A2E",
-        roast: "#374151",
-        caramel: "#E8602A",
-        gold: "#D4501F",
-        cream: "#FEFCF8",
-        milk: "#F8F6F2",
-        foam: "#FFFFFF",
-        // GoOut Hyd UI system colors
-        "brand-border": "#E8DCC8",
-        "input-border": "#D4C9B5",
-        "brand-success": "#2D7A4F",
-        "brand-warning": "#C4813A",
-        "brand-error": "#C43A3A",
+        // GoOut Hyd brand palette — black / white / yellow only
+        black: "#0a0a0a",
+        white: "#f8f7f2",
+        yellow: "#fbf497",
         // shadcn/ui CSS variable tokens (used by all shadcn components)
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -66,9 +56,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        heading: ["var(--font-heading)", "Georgia", "serif"],
+        // font-display → DM Serif Display. Used in ≤2 places (wink band + philosophy heading).
+        display: ["var(--font-display)", "serif"],
+        // font-body alias kept so existing non-landing components don't break during migration
         body: ["var(--font-body)", "system-ui", "sans-serif"],
-        // keeps shadcn's font-sans utility working with the body font
+        // font-sans = DM Sans. Use font-sans font-medium for all headings, card titles, buttons.
         sans: ["var(--font-body)", "system-ui", "sans-serif"],
       },
     },

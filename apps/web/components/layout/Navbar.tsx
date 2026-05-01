@@ -23,15 +23,15 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="w-full bg-espresso">
+    <header className="w-full bg-black">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Wordmark */}
         <Link href="/" aria-label="GoOut Hyd home">
-          <Logo className="text-cream text-xl" />
+          <Logo className="text-white text-xl" />
         </Link>
 
         {/* Center tagline — hidden on mobile */}
-        <p className="hidden text-sm text-cream/60 md:block">
+        <p className="hidden text-sm text-white/40 md:block">
           Made with love in Hyderabad
         </p>
 
@@ -44,8 +44,8 @@ export function Navbar() {
               className={cn(
                 "text-sm transition-colors",
                 pathname === href || pathname.startsWith(href + "/")
-                  ? "text-caramel font-medium"
-                  : "text-cream/80 hover:text-cream",
+                  ? "text-yellow font-medium"
+                  : "text-white/70 hover:text-white",
               )}
             >
               {label}
@@ -53,7 +53,7 @@ export function Navbar() {
           ))}
           <Button
             asChild
-            className="bg-caramel text-espresso font-medium hover:bg-gold"
+            className="bg-yellow text-black font-medium hover:opacity-85 hover:bg-yellow"
           >
             <Link href="/partner">Partner with Us</Link>
           </Button>
@@ -67,15 +67,15 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 aria-label="Open navigation menu"
-                className="text-cream hover:bg-espresso/80 hover:text-cream"
+                className="text-white hover:bg-white/10 hover:text-white"
               >
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-espresso border-roast w-72">
+            <SheetContent side="right" className="bg-black border-white/10 w-72">
               <div className="mt-6 flex flex-col gap-6">
                 <Link href="/" aria-label="GoOut Hyd home">
-                  <Logo className="text-cream text-lg" />
+                  <Logo className="text-white text-lg" />
                 </Link>
                 <nav className="flex flex-col gap-4">
                   {NAV_LINKS.map(({ href, label }) => (
@@ -85,8 +85,8 @@ export function Navbar() {
                         className={cn(
                           "text-base transition-colors",
                           pathname === href || pathname.startsWith(href + "/")
-                            ? "text-caramel font-medium"
-                            : "text-cream/80 hover:text-cream",
+                            ? "text-yellow font-medium"
+                            : "text-white/70 hover:text-white",
                         )}
                       >
                         {label}
@@ -97,12 +97,12 @@ export function Navbar() {
                 <SheetClose asChild>
                   <Button
                     asChild
-                    className="bg-caramel text-espresso font-medium hover:bg-gold w-full"
+                    className="bg-yellow text-black font-medium hover:opacity-85 hover:bg-yellow w-full"
                   >
                     <Link href="/partner">Partner with Us</Link>
                   </Button>
                 </SheetClose>
-                <p className="text-xs text-cream/40">
+                <p className="text-xs text-white/30">
                   Made with love in Hyderabad
                 </p>
               </div>

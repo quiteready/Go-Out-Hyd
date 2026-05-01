@@ -1,17 +1,16 @@
-import type { ReactElement } from "react";
 import type { Metadata } from "next";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { BrowseByArea } from "@/components/landing/BrowseByArea";
-import { FeaturedCafes } from "@/components/landing/FeaturedCafes";
-import { UpcomingEventsSection } from "@/components/landing/UpcomingEventsSection";
-import { PartnerCTABanner } from "@/components/landing/PartnerCTABanner";
-import { getFeaturedCafes } from "@/lib/queries/cafes";
-import { getUpcomingEventsForLanding } from "@/lib/queries/events";
 import { env } from "@/lib/env";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { MarqueeStrip } from "@/components/landing/MarqueeStrip";
+import { PhilosophySection } from "@/components/landing/PhilosophySection";
+import { WinkBand } from "@/components/landing/WinkBand";
+import { DiscoverSection } from "@/components/landing/DiscoverSection";
+import { AreasSection } from "@/components/landing/AreasSection";
+import { PartnerCTABanner } from "@/components/landing/PartnerCTABanner";
 
-const LANDING_TITLE = "GoOut Hyd -- Discover Hyderabad's Best Cafes & Events";
+const LANDING_TITLE = "GoOut Hyd — Everything happening in Hyderabad";
 const LANDING_DESCRIPTION =
-  "Your weekend starts here. Browse independent cafes, discover live music nights, open mics, workshops, and more across Hyderabad.";
+  "Your weekend starts here. Live music, comedy, workshops, open mics, and more across Hyderabad.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
@@ -35,18 +34,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function HomePage(): Promise<ReactElement> {
-  const [cafes, events] = await Promise.all([
-    getFeaturedCafes(6),
-    getUpcomingEventsForLanding(4),
-  ]);
-
+export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <BrowseByArea />
-      <UpcomingEventsSection events={events} />
-      <FeaturedCafes cafes={cafes} />
+      <MarqueeStrip />
+      <PhilosophySection />
+      <WinkBand />
+      <DiscoverSection />
+      <AreasSection />
       <PartnerCTABanner />
     </>
   );

@@ -1,12 +1,15 @@
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import "./globals.css";
 
 export { metadata } from "@/lib/metadata";
 
 const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
-  variable: "--font-heading",
+  // Renamed: --font-heading → --font-display
+  // Tailwind: use font-display in ≤2 places (wink band + philosophy heading only)
+  variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
 });
@@ -25,8 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
-      <body className="font-body antialiased bg-background text-foreground">
+      <body className="font-sans antialiased bg-background text-foreground">
         {children}
+        <ScrollReveal />
         <Toaster />
       </body>
     </html>
