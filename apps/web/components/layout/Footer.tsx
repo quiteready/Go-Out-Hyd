@@ -27,7 +27,7 @@ function FooterLinkGroup({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs font-semibold uppercase tracking-widest text-white/30">
+      <p className="text-xs font-medium uppercase tracking-[0.28em] text-white/30">
         {heading}
       </p>
       <nav className="flex flex-col gap-2">
@@ -55,7 +55,7 @@ export function Footer() {
           <div className="col-span-2 flex flex-col gap-3 sm:col-span-2 lg:col-span-1">
             <Logo className="text-white text-xl" />
             <p className="max-w-xs text-sm leading-relaxed text-white/50">
-              Explore independent cafes and unforgettable events in Hyderabad.
+              Everything happening in the city. Friday plans, sorted.
             </p>
             <Link
               href="https://www.instagram.com/goout_hyd?igsh=MTA5bXBlb3V3bGw0Mw=="
@@ -87,10 +87,10 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 sm:flex-row sm:items-center">
-          <p className="text-xs text-white/25">
+          <p className="text-xs text-white/40">
             © {new Date().getFullYear()} GoOut Hyd. All rights reserved.
           </p>
-          <p className="text-xs text-white/25">Made with love in Hyderabad</p>
+          <p className="text-xs text-white/40">Made with love in Hyderabad</p>
         </div>
       </div>
     </footer>

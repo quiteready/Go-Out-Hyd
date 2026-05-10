@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { href: "/cafes", label: "Cafes" },
   { href: "/events", label: "Events" },
+  { href: "/submit-event", label: "Submit event" },
   { href: "/about", label: "About" },
 ] as const;
 
@@ -30,11 +31,6 @@ export function Navbar() {
           <Logo className="text-white text-xl" />
         </Link>
 
-        {/* Center tagline — hidden on mobile */}
-        <p className="hidden text-sm text-white/40 md:block">
-          Made with love in Hyderabad
-        </p>
-
         {/* Desktop right — nav links + CTA */}
         <div className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map(({ href, label }) => (
@@ -44,8 +40,8 @@ export function Navbar() {
               className={cn(
                 "text-sm transition-colors",
                 pathname === href || pathname.startsWith(href + "/")
-                  ? "text-yellow font-medium"
-                  : "text-white/70 hover:text-white",
+                  ? "text-yellow font-medium border-b-2 border-yellow pb-0.5"
+                  : "text-white/70 font-light hover:text-white",
               )}
             >
               {label}
@@ -74,8 +70,9 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="bg-black border-white/10 w-72">
               <div className="mt-6 flex flex-col gap-6">
-                <Link href="/" aria-label="GoOut Hyd home">
+                <Link href="/" aria-label="GoOut Hyd home" className="flex items-center">
                   <Logo className="text-white text-lg" />
+                  <span className="ml-2 text-[10px] tracking-[0.4em] text-yellow/60">హైదరాబాద్</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
                   {NAV_LINKS.map(({ href, label }) => (
@@ -86,7 +83,7 @@ export function Navbar() {
                           "text-base transition-colors",
                           pathname === href || pathname.startsWith(href + "/")
                             ? "text-yellow font-medium"
-                            : "text-white/70 hover:text-white",
+                            : "text-white/70 font-light hover:text-white",
                         )}
                       >
                         {label}
@@ -102,9 +99,6 @@ export function Navbar() {
                     <Link href="/partner">Partner with Us</Link>
                   </Button>
                 </SheetClose>
-                <p className="text-xs text-white/30">
-                  Made with love in Hyderabad
-                </p>
               </div>
             </SheetContent>
           </Sheet>

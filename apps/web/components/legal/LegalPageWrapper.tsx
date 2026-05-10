@@ -24,7 +24,7 @@ export default function LegalPageWrapper({
       <div className="bg-gradient-to-b from-background to-muted/20 border-b">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl font-medium text-foreground mb-6 tracking-tight">
               {title}
             </h1>
             {description && (
@@ -60,14 +60,14 @@ export default function LegalPageWrapper({
         <div className="max-w-5xl mx-auto">
           <div
             className="prose prose-lg prose-slate max-w-none
-                         [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h2]:mt-16 [&_h2]:mb-8 [&_h2]:pb-4 [&_h2]:border-b-2 [&_h2]:border-border [&_h2]:leading-tight
+                         [&_h2]:text-3xl [&_h2]:font-medium [&_h2]:text-foreground [&_h2]:mt-16 [&_h2]:mb-8 [&_h2]:pb-4 [&_h2]:border-b-2 [&_h2]:border-border [&_h2]:leading-tight
                          [&_h3]:text-2xl [&_h3]:font-medium [&_h3]:text-foreground [&_h3]:mt-12 [&_h3]:mb-6 [&_h3]:leading-snug
                          [&_h4]:text-xl [&_h4]:font-medium [&_h4]:text-foreground [&_h4]:mt-8 [&_h4]:mb-4 [&_h4]:leading-normal
-                         [&_p]:text-foreground [&_p]:leading-loose [&_p]:mb-6 [&_p]:text-lg
-                         [&_ul]:text-foreground [&_ul]:space-y-3 [&_ul]:mb-8 [&_ul]:ml-6 [&_ul]:text-lg [&_ul]:list-disc
-                         [&_ol]:text-foreground [&_ol]:space-y-3 [&_ol]:mb-8 [&_ol]:ml-6 [&_ol]:text-lg [&_ol]:list-decimal
-                         [&_li]:leading-loose [&_li]:pl-2
-                         [&_strong]:font-semibold [&_strong]:text-foreground
+                         [&_p]:text-foreground [&_p]:font-light [&_p]:leading-[1.85] [&_p]:mb-6 [&_p]:text-[15px]
+                         [&_ul]:text-foreground [&_ul]:space-y-3 [&_ul]:mb-8 [&_ul]:ml-6 [&_ul]:text-[15px] [&_ul]:font-light [&_ul]:list-disc
+                         [&_ol]:text-foreground [&_ol]:space-y-3 [&_ol]:mb-8 [&_ol]:ml-6 [&_ol]:text-[15px] [&_ol]:font-light [&_ol]:list-decimal
+                         [&_li]:leading-[1.85] [&_li]:pl-2
+                         [&_strong]:font-medium [&_strong]:text-foreground
                          [&_a]:text-primary [&_a]:hover:underline [&_a]:font-medium
                          [&_blockquote]:border-l-4 [&_blockquote]:border-primary/30 [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:my-8 [&_blockquote]:bg-muted/20 [&_blockquote]:py-4 [&_blockquote]:rounded-r-lg
                          [&_section]:mb-12
@@ -78,9 +78,9 @@ export default function LegalPageWrapper({
                          max-sm:[&_h2]:text-2xl max-sm:[&_h2]:mt-12 max-sm:[&_h2]:mb-6
                          max-sm:[&_h3]:text-xl max-sm:[&_h3]:mt-8 max-sm:[&_h3]:mb-4
                          max-sm:[&_h4]:text-lg max-sm:[&_h4]:mt-6 max-sm:[&_h4]:mb-3
-                         max-sm:[&_p]:text-base
-                         max-sm:[&_ul]:text-base max-sm:[&_ul]:ml-4
-                         max-sm:[&_ol]:text-base max-sm:[&_ol]:ml-4"
+                         max-sm:[&_p]:text-[15px]
+                         max-sm:[&_ul]:text-[15px] max-sm:[&_ul]:ml-4
+                         max-sm:[&_ol]:text-[15px] max-sm:[&_ol]:ml-4"
           >
             {children}
           </div>

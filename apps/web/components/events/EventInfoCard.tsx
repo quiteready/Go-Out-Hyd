@@ -117,7 +117,7 @@ export function EventInfoCard({ event }: EventInfoCardProps) {
               {contact.sectionLabel}
             </p>
             {contact.displayName && (
-              <p className="text-sm font-semibold text-foreground">{contact.displayName}</p>
+              <p className="text-sm font-medium text-foreground">{contact.displayName}</p>
             )}
             {contact.phone && telHref && (
               <a

@@ -8,6 +8,7 @@ import {
 import { CategoryFilterTabs } from "@/components/events/CategoryFilterTabs";
 import { EventCard } from "@/components/events/EventCard";
 import { EventEmptyState } from "@/components/events/EventEmptyState";
+import { PageHero } from "@/components/layout/PageHero";
 
 interface EventsPageProps {
   searchParams: Promise<{ category?: string }>;
@@ -39,36 +40,31 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     : undefined;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-medium text-foreground">
-          {categoryLabel ? `${categoryLabel} Events` : "Events"}
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          {categoryLabel
-            ? `Upcoming ${categoryLabel.toLowerCase()} events across Hyderabad`
-            : "Discover what's happening at Hyderabad's best independent cafes"}
-        </p>
-      </div>
-
-      {/* Category filter tabs — Suspense required because CategoryFilterTabs reads useSearchParams */}
-      <div className="mb-8">
-        <Suspense fallback={<div className="h-9" />}>
-          <CategoryFilterTabs />
-        </Suspense>
-      </div>
-
-      {/* Event grid or empty state */}
-      {events.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+    <>
+      <PageHero
+        eyebrow="EVENTS"
+        title={categoryLabel ? `${categoryLabel} events` : "What's on this weekend"}
+        lead="Discover what's happening at Hyderabad's best independent cafes"
+      />
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        {/* Category filter tabs — Suspense required because CategoryFilterTabs reads useSearchParams */}
+        <div className="mb-8">
+          <Suspense fallback={<div className="h-9" />}>
+            <CategoryFilterTabs />
+          </Suspense>
         </div>
-      ) : (
-        <EventEmptyState categoryLabel={categoryLabel} />
-      )}
-    </div>
+
+        {/* Event grid or empty state */}
+        {events.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        ) : (
+          <EventEmptyState categoryLabel={categoryLabel} />
+        )}
+      </div>
+    </>
   );
 }

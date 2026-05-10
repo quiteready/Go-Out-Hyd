@@ -10,17 +10,23 @@ const HERO_SRC =
 export function HeroSection() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Parallax — translate the image wrapper on scroll
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
     const onScroll = () => {
-      if (wrapperRef.current) {
-        wrapperRef.current.style.transform = `translateY(${
-          window.scrollY * 0.3
-        }px)`;
-      }
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        if (wrapperRef.current) {
+          wrapperRef.current.style.transform = `translateY(${window.scrollY * 0.3}px)`;
+        }
+      });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (

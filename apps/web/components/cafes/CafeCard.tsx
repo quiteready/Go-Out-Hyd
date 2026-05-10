@@ -7,29 +7,14 @@ interface CafeCardProps {
   cafe: Cafe;
 }
 
-/**
- * Static area-to-vibes map used until the schema gains a dedicated tags field.
- * Replace with schema-driven data once available.
- */
-const AREA_VIBES: Record<string, string[]> = {
-  "Banjara Hills": ["Specialty Coffee", "Live Music"],
-  "Jubilee Hills": ["Art Space", "Workshop Space"],
-  Kondapur: ["Quiet Space", "Board Games"],
-  Gachibowli: ["Open Mic", "Art Space"],
-  Madhapur: ["Rooftop", "Live Music"],
-  "Hitech City": ["Gaming", "Specialty Coffee"],
-};
-
 export function CafeCard({ cafe }: CafeCardProps) {
-  const vibes = AREA_VIBES[cafe.area] ?? [];
-
   return (
     <Link
       href={`/cafes/${cafe.slug}`}
       className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
     >
       {/* Cover image */}
-      <div className="relative h-48 w-full overflow-hidden bg-foreground/8">
+      <div className="relative h-48 w-full overflow-hidden bg-secondary">
         {cafe.coverImage ? (
           <Image
             src={cafe.coverImage}
@@ -49,27 +34,13 @@ export function CafeCard({ cafe }: CafeCardProps) {
 
       {/* Card body */}
       <div className="p-4">
-        {/* Vibe tag pills — only rendered when tags exist */}
-        {vibes.length > 0 && (
-          <div className="mb-2.5 flex flex-wrap gap-1.5">
-            {vibes.slice(0, 2).map((vibe) => (
-              <span
-                key={vibe}
-                className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
-              >
-                {vibe}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <h3 className="text-lg font-medium text-foreground transition-colors line-clamp-1 group-hover:text-foreground/70">
+        <h3 className="text-lg font-medium text-foreground line-clamp-1 transition-transform group-hover:-translate-y-[3px]">
           {cafe.name}
         </h3>
 
         {/* Area */}
         <div className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
-          <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} />
+          <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
           <span>{cafe.area}</span>
         </div>
       </div>

@@ -9,7 +9,7 @@ interface EventEmptyStateProps {
 export function EventEmptyState({ categoryLabel }: EventEmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-foreground/[0.06]">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
         <CalendarX className="h-8 w-8 text-foreground/40" />
       </div>
       <h2 className="font-sans font-medium text-2xl text-foreground">

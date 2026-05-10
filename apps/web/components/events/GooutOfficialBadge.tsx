@@ -14,7 +14,7 @@ export function GooutOfficialBadge({
 
   if (size === "sm") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-[#fbf497] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#0a0a0a]">
+      <span className="inline-flex items-center gap-1 rounded-full bg-[#fbf497] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.05em] text-[#0a0a0a]">
         <Star className="h-2.5 w-2.5 fill-[#0a0a0a] text-[#0a0a0a]" aria-hidden />
         GoOut Official
       </span>
@@ -22,7 +22,7 @@ export function GooutOfficialBadge({
   }
 
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fbf497] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#0a0a0a]">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fbf497] px-3 py-1 text-xs font-medium uppercase tracking-[0.05em] text-[#0a0a0a]">
       <Star className="h-3.5 w-3.5 fill-[#0a0a0a] text-[#0a0a0a]" aria-hidden />
       GoOut Official
     </span>

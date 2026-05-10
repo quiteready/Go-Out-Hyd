@@ -31,7 +31,7 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
         <h2 className="mb-6 text-3xl font-medium text-foreground">Venue</h2>
 
         <div className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-foreground/8">
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-secondary">
             {cafe.coverImage ? (
               <Image
                 src={cafe.coverImage}
@@ -41,7 +41,7 @@ function CafeVenue({ cafe }: { cafe: Cafe }) {
                 className="object-cover"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0a0a0a]/10 to-[#fbf497]/10">
+              <div className="flex h-full w-full items-center justify-center bg-secondary">
                 <span className="text-xl font-medium text-foreground/20">
                   {cafe.name.charAt(0)}
                 </span>

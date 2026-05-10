@@ -1,7 +1,8 @@
 const MARQUEE_ITEMS = [
   "Live Music", "Comedy Nights", "Open Mics", "Workshops",
   "Art Shows", "Cafe Crawls", "Poetry Slams", "Jazz Evenings",
-  "Film Screenings", "Book Clubs",
+  "Film Screenings", "Book Clubs", "Irani Chai", "Baithak Nights",
+  "Biryani Sundays", "హైదరాబాద్",
 ];
 
 const TRACK = MARQUEE_ITEMS.join(" · ") + " · ";

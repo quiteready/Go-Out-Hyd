@@ -1,4 +1,4 @@
-import { DM_Serif_Display, DM_Sans } from "next/font/google";
+import { DM_Serif_Display, DM_Sans, Noto_Sans_Telugu } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import "./globals.css";
@@ -21,13 +21,20 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const notoSansTelugu = Noto_Sans_Telugu({
+  weight: ["300", "500"],
+  variable: "--font-telugu",
+  subsets: ["telugu"],
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${dmSerifDisplay.variable} ${dmSans.variable} ${notoSansTelugu.variable}`}>
       <body className="font-sans antialiased bg-background text-foreground">
         {children}
         <ScrollReveal />

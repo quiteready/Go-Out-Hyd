@@ -1,22 +1,15 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
-/**
- * ScrollReveal — watches all [data-reveal] elements and adds .revealed
- * when they enter the viewport (12% threshold, 30px bottom margin).
- *
- * Falls back to immediately revealing everything when IntersectionObserver
- * is not available (old browsers / no-JS environments).
- *
- * Rendered once in the root layout so it covers all public pages.
- */
 export function ScrollReveal() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
 
     if (!("IntersectionObserver" in window)) {
-      // Graceful fallback — reveal immediately
       els.forEach((el) => el.classList.add("revealed"));
       return;
     }
@@ -36,8 +29,7 @@ export function ScrollReveal() {
     els.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
-  // Renders nothing — pure side-effect component
   return null;
 }

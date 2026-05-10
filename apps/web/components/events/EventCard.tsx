@@ -40,10 +40,10 @@ export function EventCard({ event }: EventCardProps) {
   return (
     <Link
       href={`/events/${event.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
+      className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-[3px]"
     >
       {/* Cover image with date badge overlay */}
-      <div className="relative h-48 w-full overflow-hidden bg-foreground/8">
+      <div className="relative h-48 w-full overflow-hidden bg-secondary">
         {event.coverImage ? (
           <Image
             src={event.coverImage}
@@ -53,7 +53,7 @@ export function EventCard({ event }: EventCardProps) {
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0a0a0a]/10 to-[#fbf497]/10">
+          <div className="flex h-full w-full items-center justify-center bg-secondary">
             <span className="text-3xl font-medium text-foreground/20">
               {event.title.charAt(0)}
             </span>
@@ -61,7 +61,7 @@ export function EventCard({ event }: EventCardProps) {
         )}
 
         {/* Date badge */}
-        <span className="absolute left-3 top-3 rounded-md bg-[#0a0a0a]/80 px-2 py-1 text-xs font-medium text-[#f8f7f2]">
+        <span className="absolute left-3 top-3 rounded-md bg-[#0a0a0a]/80 px-2 py-1 text-[11px] font-medium tracking-[2px] uppercase text-[#f8f7f2]">
           {dateBadge}
         </span>
       </div>
@@ -73,7 +73,7 @@ export function EventCard({ event }: EventCardProps) {
             <GooutOfficialBadge show size="sm" />
           </div>
         )}
-        <h3 className="line-clamp-2 text-lg font-medium text-foreground transition-colors group-hover:text-foreground/70">
+        <h3 className="line-clamp-2 text-lg font-medium text-foreground transition-transform group-hover:-translate-y-[3px]">
           {event.title}
         </h3>
 
@@ -92,7 +92,7 @@ export function EventCard({ event }: EventCardProps) {
                 <span className="text-xs font-normal text-foreground/40 line-through">
                   ₹{listStrike}
                 </span>
-                <span className="rounded bg-[#fbf497]/20 px-1 text-[10px] font-semibold uppercase tracking-wide text-[#0a0a0a]">
+                <span className="rounded bg-[#fbf497]/20 px-1 text-[10px] font-medium uppercase tracking-[0.05em] text-[#0a0a0a]">
                   Early
                 </span>
               </span>

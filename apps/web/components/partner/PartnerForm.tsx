@@ -77,10 +77,10 @@ export function PartnerForm() {
   }
 
   return (
-    <Card className="border-border bg-card shadow-md">
+    <Card className="border-border bg-card shadow-sm">
       <CardHeader>
         <CardTitle className="text-2xl font-medium text-foreground">
-          Get Started
+          Get started
         </CardTitle>
         <CardDescription className="text-muted-foreground">
           Tell us about you and your cafe — we&apos;ll call you within 24 hours.
@@ -185,7 +185,7 @@ export function PartnerForm() {
           <Button
             type="submit"
             disabled={isPending}
-            className="w-full bg-[#0a0a0a] text-[#fbf497] hover:bg-[#0a0a0a]/90"
+            className="w-full bg-yellow text-black hover:opacity-85 hover:bg-yellow"
           >
             {isPending ? (
               <>
@@ -193,7 +193,7 @@ export function PartnerForm() {
                 Sending…
               </>
             ) : (
-              "Request a Callback"
+              "Request a callback"
             )}
           </Button>
         </form>

@@ -36,7 +36,7 @@ export function BookButton({ event }: BookButtonProps) {
           <span>Book Now —</span>
           {showStrike ? (
             <>
-              <span className="font-semibold">₹{event.payablePrice}</span>
+              <span className="font-medium">₹{event.payablePrice}</span>
               <span className="text-sm text-foam/80 line-through">
                 ₹{event.listPrice}
               </span>
@@ -45,7 +45,7 @@ export function BookButton({ event }: BookButtonProps) {
               </span>
             </>
           ) : (
-            <span className="font-semibold">₹{event.payablePrice}</span>
+            <span className="font-medium">₹{event.payablePrice}</span>
           )}
         </span>
       </Button>

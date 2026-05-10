@@ -62,6 +62,8 @@ export default {
         body: ["var(--font-body)", "system-ui", "sans-serif"],
         // font-sans = DM Sans. Use font-sans font-medium for all headings, card titles, buttons.
         sans: ["var(--font-body)", "system-ui", "sans-serif"],
+        // font-telugu → Noto Sans Telugu. Use for any Telugu script text.
+        telugu: ["var(--font-telugu)", "var(--font-body)", "sans-serif"],
       },
     },
   },
