@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 import { PageHero } from "@/components/layout/PageHero";
-import { PartnerForm } from "@/components/partner/PartnerForm";
+import { PartnerFormsSwitcher } from "@/components/partner/PartnerFormsSwitcher";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "List Your Cafe",
+    title: "Partner With Us",
     description:
-      "Join Hyderabad's only platform built for independent cafes. Get discovered, host events, and grow your tables — request a callback from GoOut Hyd.",
+      "List your cafe or submit an event request. Join Hyderabad's local discovery platform and we'll reach out within 24 hours.",
   };
 }
 
@@ -98,8 +98,17 @@ export default function PartnerPage() {
       </section>
 
       <section className="bg-background px-4 py-14 sm:px-6 sm:pb-20">
-        <div className="mx-auto max-w-lg">
-          <PartnerForm />
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-medium text-foreground sm:text-3xl">
+              Tell us what you need
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Choose what you want to submit, then fill one simple form.
+            </p>
+          </div>
+
+          <PartnerFormsSwitcher />
         </div>
       </section>
     </div>

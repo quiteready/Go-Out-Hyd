@@ -8,6 +8,7 @@ import {
   CalendarDays,
   Ticket,
   Inbox,
+  Megaphone,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { adminLogout } from "@/app/actions/admin/auth";
@@ -26,6 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/events", label: "Events", icon: CalendarDays },
   { href: "/admin/tickets", label: "Tickets", icon: Ticket },
   { href: "/admin/leads", label: "Leads", icon: Inbox },
+  { href: "/admin/event-leads", label: "Event Leads", icon: Megaphone },
 ];
 
 export function AdminSidebar() {

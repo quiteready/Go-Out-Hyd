@@ -1,4 +1,11 @@
-import { Coffee, CalendarDays, Ticket, Inbox, CalendarClock } from "lucide-react";
+import {
+  Coffee,
+  CalendarDays,
+  Ticket,
+  Inbox,
+  CalendarClock,
+  Megaphone,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { OverviewCounts } from "@/lib/queries/admin/overview";
 
@@ -45,10 +52,16 @@ export function CountsGrid({ counts }: CountsGridProps) {
       icon: Inbox,
       hint: 'Partner form submissions still marked "new".',
     },
+    {
+      label: "New event leads",
+      value: counts.newEventLeads,
+      icon: Megaphone,
+      hint: 'Event request submissions still marked "new".',
+    },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {items.map((item) => {
         const Icon = item.icon;
         return (

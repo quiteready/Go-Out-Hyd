@@ -3,5 +3,6 @@ export * from "./cafe-images";
 export * from "./menu-items";
 export * from "./events";
 export * from "./cafe-leads";
+export * from "./event-leads";
 export * from "./tickets";
 

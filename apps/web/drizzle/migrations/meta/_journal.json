@@ -36,6 +36,13 @@
       "when": 1777475194966,
       "tag": "0004_empty_captain_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1778678852511,
+      "tag": "0005_bitter_junta",
+      "breakpoints": true
     }
   ]
 }

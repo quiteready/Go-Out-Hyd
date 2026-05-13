@@ -135,6 +135,129 @@ export async function sendLeadNotification(
   return { ok: true };
 }
 
+// ─── Event lead notification ──────────────────────────────────────────────────
+
+export type EventLeadNotificationPayload = {
+  contactName: string;
+  contactPhone: string;
+  contactInstagramHandle?: string;
+  eventTitle: string;
+  eventType?: string;
+  expectedDateNote?: string;
+  venueName?: string;
+  area?: string;
+  ticketingType: "free" | "paid" | "undecided";
+  expectedTicketPrice?: number;
+  details?: string;
+  createdAt: Date;
+};
+
+export type SendEventLeadNotificationResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+function toTicketingLabel(
+  ticketingType: EventLeadNotificationPayload["ticketingType"],
+): string {
+  if (ticketingType === "free") return "Free event";
+  if (ticketingType === "paid") return "Paid ticketed event";
+  return "Undecided";
+}
+
+function buildEventLeadEmailHtml(
+  lead: EventLeadNotificationPayload,
+  dashboardUrl: string,
+): string {
+  const rows: [string, string][] = [
+    ["Contact name", lead.contactName],
+    ["Phone", lead.contactPhone],
+    ...(lead.contactInstagramHandle
+      ? ([["Instagram", lead.contactInstagramHandle]] as [string, string][])
+      : []),
+    ["Event title", lead.eventTitle],
+    ...(lead.eventType ? ([["Event type", lead.eventType]] as [string, string][]) : []),
+    ...(lead.expectedDateNote
+      ? ([["Expected date", lead.expectedDateNote]] as [string, string][])
+      : []),
+    ...(lead.venueName ? ([["Venue", lead.venueName]] as [string, string][]) : []),
+    ...(lead.area ? ([["Area", lead.area]] as [string, string][]) : []),
+    ["Ticketing", toTicketingLabel(lead.ticketingType)],
+    ...(lead.expectedTicketPrice
+      ? ([["Expected ticket price", `₹${lead.expectedTicketPrice}`]] as [string, string][])
+      : []),
+    ...(lead.details ? ([["Details", lead.details]] as [string, string][]) : []),
+    [
+      "Submitted at",
+      lead.createdAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+    ],
+  ];
+
+  const tableRows = rows
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:8px 12px;border:1px solid #e5e7eb;font-weight:600;">${escapeHtml(label)}</td><td style="padding:8px 12px;border:1px solid #e5e7eb;">${escapeHtml(value)}</td></tr>`,
+    )
+    .join("");
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="utf-8" /></head>
+  <body style="font-family:system-ui,sans-serif;line-height:1.5;color:#111827;">
+    <h1 style="font-size:1.25rem;">New event hosting lead</h1>
+    <table style="border-collapse:collapse;margin:16px 0;">${tableRows}</table>
+    <p style="margin-top:16px;">
+      Open the Supabase dashboard and review the <strong>event_leads</strong> table:
+      <a href="${escapeHtml(dashboardUrl)}">${escapeHtml(dashboardUrl)}</a>
+    </p>
+  </body>
+</html>`;
+}
+
+export async function sendEventLeadNotification(
+  lead: EventLeadNotificationPayload,
+): Promise<SendEventLeadNotificationResult> {
+  const apiKey = env.RESEND_API_KEY;
+  const rawTo = env.LEAD_NOTIFICATION_EMAIL;
+
+  if (!apiKey || !rawTo) {
+    console.warn(
+      "[sendEventLeadNotification] Skipping email: set RESEND_API_KEY and LEAD_NOTIFICATION_EMAIL to enable notifications.",
+    );
+    return { ok: true };
+  }
+
+  const toList = rawTo
+    .split(",")
+    .map((addr) => addr.trim())
+    .filter(Boolean);
+
+  if (toList.length === 0) {
+    console.warn(
+      "[sendEventLeadNotification] Skipping email: LEAD_NOTIFICATION_EMAIL parsed to empty recipient list.",
+    );
+    return { ok: true };
+  }
+
+  const dashboardUrl = getSupabaseDashboardEditorUrl(env.SUPABASE_URL);
+  const html = buildEventLeadEmailHtml(lead, dashboardUrl);
+  const subject = `New Event Lead: ${lead.eventTitle}`;
+
+  const resend = new Resend(apiKey);
+  const { error } = await resend.emails.send({
+    from: "GoOut Hyd <leads@goouthyd.com>",
+    to: toList,
+    subject,
+    html,
+  });
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}
+
 // ─── Event submission notification ────────────────────────────────────────────
 
 export type EventSubmissionNotificationPayload = {

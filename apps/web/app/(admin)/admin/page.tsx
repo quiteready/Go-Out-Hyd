@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Coffee, CalendarDays, Ticket, Inbox } from "lucide-react";
+import { Coffee, CalendarDays, Ticket, Inbox, Megaphone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { CountsGrid } from "@/components/admin/overview/CountsGrid";
 import { RecentActivity } from "@/components/admin/overview/RecentActivity";
@@ -42,6 +42,12 @@ const QUICK_LINKS: QuickLink[] = [
     description: "Partner form submissions from cafe owners.",
     icon: Inbox,
   },
+  {
+    href: "/admin/event-leads",
+    label: "Event Leads",
+    description: "Event host requests submitted through partner form.",
+    icon: Megaphone,
+  },
 ];
 
 export default async function AdminOverviewPage() {
@@ -72,7 +78,7 @@ export default async function AdminOverviewPage() {
         <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-500">
           Quick links
         </h3>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {QUICK_LINKS.map((link) => {
             const Icon = link.icon;
             return (

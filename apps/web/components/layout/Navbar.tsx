@@ -14,10 +14,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/cafes", label: "Cafes" },
-  { href: "/events", label: "Events" },
-  { href: "/submit-event", label: "Submit event" },
-  { href: "/about", label: "About" },
+  { href: "/cafes", label: "Cafes", matchPath: "/cafes" },
+  { href: "/events", label: "Events", matchPath: "/events" },
+  { href: "/about", label: "About", matchPath: "/about" },
 ] as const;
 
 export function Navbar() {
@@ -33,13 +32,13 @@ export function Navbar() {
 
         {/* Desktop right — nav links + CTA */}
         <div className="hidden items-center gap-6 md:flex">
-          {NAV_LINKS.map(({ href, label }) => (
+          {NAV_LINKS.map(({ href, label, matchPath }) => (
             <Link
               key={href}
               href={href}
               className={cn(
                 "text-sm transition-colors",
-                pathname === href || pathname.startsWith(href + "/")
+                pathname === matchPath || pathname.startsWith(matchPath + "/")
                   ? "text-yellow font-medium border-b-2 border-yellow pb-0.5"
                   : "text-white/70 font-light hover:text-white",
               )}
@@ -75,13 +74,14 @@ export function Navbar() {
                   <span className="ml-2 text-[10px] tracking-[0.4em] text-yellow/60">హైదరాబాద్</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
-                  {NAV_LINKS.map(({ href, label }) => (
+                  {NAV_LINKS.map(({ href, label, matchPath }) => (
                     <SheetClose asChild key={href}>
                       <Link
                         href={href}
                         className={cn(
                           "text-base transition-colors",
-                          pathname === href || pathname.startsWith(href + "/")
+                          pathname === matchPath ||
+                            pathname.startsWith(matchPath + "/")
                             ? "text-yellow font-medium"
                             : "text-white/70 font-light hover:text-white",
                         )}

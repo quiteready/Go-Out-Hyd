@@ -1,6 +1,6 @@
 import { and, count, desc, eq, gt, gte, lt } from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
-import { cafes, events, tickets, cafeLeads } from "@/lib/drizzle/schema";
+import { cafes, events, tickets, cafeLeads, eventLeads } from "@/lib/drizzle/schema";
 
 const IST_OFFSET_MINUTES = 5 * 60 + 30;
 
@@ -52,6 +52,7 @@ export interface OverviewCounts {
   ticketsSoldThisWeek: number;
   ticketsSoldToday: number;
   newLeads: number;
+  newEventLeads: number;
 }
 
 export async function getOverviewCounts(): Promise<OverviewCounts> {
@@ -66,6 +67,7 @@ export async function getOverviewCounts(): Promise<OverviewCounts> {
     weekTicketsRow,
     todayTicketsRow,
     newLeadsRow,
+    newEventLeadsRow,
   ] = await Promise.all([
     db
       .select({ c: count() })
@@ -100,6 +102,10 @@ export async function getOverviewCounts(): Promise<OverviewCounts> {
       .select({ c: count() })
       .from(cafeLeads)
       .where(eq(cafeLeads.status, "new")),
+    db
+      .select({ c: count() })
+      .from(eventLeads)
+      .where(eq(eventLeads.status, "new")),
   ]);
 
   return {
@@ -108,6 +114,7 @@ export async function getOverviewCounts(): Promise<OverviewCounts> {
     ticketsSoldThisWeek: Number(weekTicketsRow[0]?.c ?? 0),
     ticketsSoldToday: Number(todayTicketsRow[0]?.c ?? 0),
     newLeads: Number(newLeadsRow[0]?.c ?? 0),
+    newEventLeads: Number(newEventLeadsRow[0]?.c ?? 0),
   };
 }
 

@@ -15,7 +15,7 @@ const PARTNER_CARDS = [
     heading: "Running an event?",
     body: "Post your gig, workshop, or pop-up and we'll help you fill the room.",
     cta: "Post an event",
-    href: "/submit-event",
+    href: "/partner#event-submit",
   },
 ] as const;
 
