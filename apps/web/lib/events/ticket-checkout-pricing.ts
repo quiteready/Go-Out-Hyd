@@ -3,8 +3,8 @@
  * No GST line — amounts are whole rupees; Razorpay orders use paise (× 100) at the edge.
  */
 
-/** Convenience fee as a fraction of ticket subtotal (3%). */
-export const TICKET_CONVENIENCE_FEE_RATE = 0.03;
+/** Convenience fee as a fraction of ticket subtotal (4%). */
+export const TICKET_CONVENIENCE_FEE_RATE = 0.04;
 
 export type TicketCheckoutBreakdown = {
   ticketSubtotalRupees: number;

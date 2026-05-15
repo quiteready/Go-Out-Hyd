@@ -91,10 +91,10 @@
 /* Yellow frame — thin, confident, brand-consistent */
 .hero-frame {
   position: absolute;
-  top: 6%;
+  top: 2%;
   left: 5%;
   right: 5%;
-  bottom: 6%;
+  bottom: 3%;
   border: 1px solid rgba(251, 244, 151, 0.18);
   pointer-events: none;
   z-index: 3;
@@ -231,8 +231,8 @@
   content: '';
   position: absolute;
   top: 20px;
-  left: 10%;
-  right: 10%;
+  left: 39px;
+  right: 39px;
   height: 0.5px;
   background: linear-gradient(
     90deg,
@@ -242,6 +242,34 @@
     transparent
   );
   z-index: 0;
+}
+
+/* Curved connector between area rows (road-like link) */
+.pearl-road-curve {
+  pointer-events: none;
+  position: absolute;
+  left: 39px;
+  right: 39px;
+  top: 72px;
+  width: auto;
+  height: 64px;
+  z-index: 0;
+}
+
+.pearl-road-curve path {
+  fill: none;
+  stroke: rgba(251, 244, 151, 0.22);
+  stroke-width: 0.8;
+  stroke-linecap: round;
+}
+
+.pearl-road-curve--flip {
+  transform: scaleX(-1);
+  transform-origin: center;
+}
+
+.pearl-road-curve--desktop {
+  top: 76px;
 }
 
 /* The dot — radial gradient to look like a real pearl */

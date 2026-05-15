@@ -30,7 +30,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative h-[100dvh] overflow-hidden bg-[#0a0a0a]">
+    <section className="relative h-[82dvh] min-h-[620px] overflow-hidden bg-[#0a0a0a] sm:h-[88dvh] lg:h-[92dvh]">
       {/* Parallax wrapper — Image inside gets Ken Burns */}
       <div
         ref={wrapperRef}
@@ -61,7 +61,7 @@ export function HeroSection() {
           </span>
 
           {/* Wordmark — DM Sans 500, never serif */}
-          <h1 className="mb-[22px] leading-[0.88] ml-[-3mm]">
+          <h1 className="mb-[22px] leading-[0.88] sm:ml-[-3mm]">
             <span className="block font-sans font-medium text-[clamp(52px,13vw,144px)] tracking-[-0.02em] text-white [text-shadow:0_0_60px_rgba(10,10,10,0.5)]">
               GoOut
             </span>
@@ -87,7 +87,7 @@ export function HeroSection() {
               Explore
             </Link>
             <Link
-              href="/events"
+              href="/cafes"
               className="inline-flex min-h-[44px] items-center justify-center rounded-[6px] border border-white/25 bg-transparent px-6 text-[13px] font-light tracking-[0.02em] text-white transition-colors hover:border-white/50"
             >
               Find your area

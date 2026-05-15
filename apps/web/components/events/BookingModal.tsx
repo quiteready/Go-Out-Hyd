@@ -364,7 +364,7 @@ export function BookingModal({ event, open, onOpenChange }: BookingModalProps) {
                     <span>₹{ticketSubtotalRupees}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>Booking fee</span>
+                    <span>Convenience fee</span>
                     <span>₹{convenienceFeeRupees}</span>
                   </div>
                   <div className="flex items-center justify-between border-t border-foreground/10 pt-2">

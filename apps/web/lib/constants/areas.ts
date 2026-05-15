@@ -7,6 +7,10 @@ export const AREAS = [
   { slug: "kondapur", name: "Kondapur" },
   { slug: "gachibowli", name: "Gachibowli" },
   { slug: "madhapur", name: "Madhapur" },
+  { slug: "kompally", name: "Kompally" },
+  { slug: "sainikpuri", name: "Sainikpuri" },
+  { slug: "nanakramguda", name: "Nanakramguda" },
+  { slug: "uppal", name: "Uppal" },
 ] as const;
 
 export type AreaSlug = (typeof AREAS)[number]["slug"];

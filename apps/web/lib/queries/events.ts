@@ -1,4 +1,14 @@
-import { eq, asc, and, gt, ne } from "drizzle-orm";
+import {
+  eq,
+  asc,
+  and,
+  gt,
+  ne,
+  or,
+  isNull,
+  isNotNull,
+  type SQL,
+} from "drizzle-orm";
 import { db } from "@/lib/drizzle/db";
 import { events, cafes } from "@/lib/drizzle/schema";
 
@@ -10,10 +20,35 @@ export type EventWithCafe = typeof events.$inferSelect & {
   } | null;
 };
 
+const RECENT_START_GRACE_HOURS = 6;
+
+/**
+ * Public listings should include:
+ * - upcoming events that start in the future,
+ * - ongoing events (when endTime is set and still in the future),
+ * - recently started events without endTime (grace window to avoid
+ *   "just started" events disappearing immediately).
+ */
+function getPublicUpcomingVisibilityCondition(now: Date): SQL {
+  const recentStartCutoff = new Date(
+    now.getTime() - RECENT_START_GRACE_HOURS * 60 * 60 * 1000,
+  );
+
+  return and(
+    eq(events.status, "upcoming"),
+    or(
+      gt(events.startTime, now),
+      and(isNotNull(events.endTime), gt(events.endTime, now)),
+      and(isNull(events.endTime), gt(events.startTime, recentStartCutoff)),
+    ),
+  ) as SQL;
+}
+
 export async function getUpcomingEvents(
   category?: string,
 ): Promise<EventWithCafe[]> {
   const now = new Date();
+  const visibilityCondition = getPublicUpcomingVisibilityCondition(now);
 
   const rows = await db
     .select({
@@ -27,14 +62,13 @@ export async function getUpcomingEvents(
     .where(
       category
         ? and(
-            gt(events.startTime, now),
-            eq(events.status, "upcoming"),
+            visibilityCondition,
             eq(
               events.eventType,
               category as (typeof events.$inferSelect)["eventType"],
             ),
           )
-        : and(gt(events.startTime, now), eq(events.status, "upcoming")),
+        : visibilityCondition,
     )
     .orderBy(asc(events.startTime));
 
@@ -55,6 +89,7 @@ export async function getUpcomingEventsForLanding(
   limit = 4,
 ): Promise<EventWithCafe[]> {
   const now = new Date();
+  const visibilityCondition = getPublicUpcomingVisibilityCondition(now);
 
   const rows = await db
     .select({
@@ -65,7 +100,7 @@ export async function getUpcomingEventsForLanding(
     })
     .from(events)
     .leftJoin(cafes, eq(events.cafeId, cafes.id))
-    .where(and(gt(events.startTime, now), eq(events.status, "upcoming")))
+    .where(visibilityCondition)
     .orderBy(asc(events.startTime))
     .limit(limit);
 
@@ -119,16 +154,11 @@ export async function getEventsByCafe(
   cafeId: string,
 ): Promise<(typeof events.$inferSelect)[]> {
   const now = new Date();
+  const visibilityCondition = getPublicUpcomingVisibilityCondition(now);
 
   return db
     .select()
     .from(events)
-    .where(
-      and(
-        eq(events.cafeId, cafeId),
-        eq(events.status, "upcoming"),
-        gt(events.startTime, now),
-      ),
-    )
+    .where(and(eq(events.cafeId, cafeId), visibilityCondition))
     .orderBy(asc(events.startTime));
 }

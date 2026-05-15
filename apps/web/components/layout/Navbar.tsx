@@ -10,6 +10,8 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetHeader,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
@@ -68,6 +70,9 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="bg-black border-white/10 w-72">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Mobile navigation menu</SheetTitle>
+              </SheetHeader>
               <div className="mt-6 flex flex-col gap-6">
                 <Link href="/" aria-label="GoOut Hyd home" className="flex items-center">
                   <Logo className="text-white text-lg" />
